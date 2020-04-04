@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">PetGarden</string>
+    <string name="app_title">Pet Garden</string>
+    <string name="logo_description">Application Logo</string>
+    <string name="user_or_email">Usuario o Correo</string>
+    <string name="password">Contraseña</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="login_with_facebook">Iniciar Sesion con facebook</string>
+    <string name="login_with_google">Iniciar sesion con google</string>
+    <string name="register">¿No tienes cuenta?. Registrate</string>
+</resources>
