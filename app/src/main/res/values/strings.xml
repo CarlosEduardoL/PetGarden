@@ -17,4 +17,5 @@
     <string name="Next">Siguiente</string>
     <string name="terms_of_services">Estoy de acuerdo con los Terminos de servicio y Politica de Privacidad.</string>
     <string name="email_question">¿Cuál es tu correo electrónico?</string>
+    <string name="birth_question">¿Cuándo naciste?</string>
 </resources>
