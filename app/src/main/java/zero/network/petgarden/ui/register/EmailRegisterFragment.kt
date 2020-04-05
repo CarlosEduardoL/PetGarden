@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import zero.network.petgarden.R
 
 
-class RegisterEmailFragment : Fragment() {
+class EmailRegisterFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

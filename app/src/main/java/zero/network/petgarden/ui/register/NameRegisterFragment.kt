@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import zero.network.petgarden.R
 
 
-class RegisterNameFragment : Fragment() {
+class NameRegisterFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

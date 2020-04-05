@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".ui.register.RegisterNameFragment">
+    tools:context=".ui.register.NameRegisterFragment">
 
     <TextView
         style="@style/RegisterTitle"
@@ -43,7 +43,7 @@
         style="@style/AppButton"
         android:layout_marginBottom="64dp"
         android:text="@string/Next" />
-    
+
 
 
 </LinearLayout>
