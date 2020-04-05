@@ -1,4 +1,4 @@
-package zero.network.petgarden.ui.login
+package zero.network.petgarden.ui.register
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,14 +9,13 @@ import android.view.ViewGroup
 import zero.network.petgarden.R
 
 
-class NameFragment : Fragment() {
+class RegisterNameFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_name, container, false)
+    ): View = inflater.inflate(R.layout.fragment_register_name, container, false).apply {
+
     }
 
 }
