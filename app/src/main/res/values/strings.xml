@@ -20,6 +20,10 @@
     <string name="birth_question">¿Cuándo naciste?</string>
     <string name="role_question">¿Eres dueño o cuidador?</string>
     <string name="pet_question">¿Qué tipo de mascota tienes?</string>
+    <string name="dog">Perruno</string>
+    <string name="cat">Gatuno</string>
+    <string name="others">Otros</string>
     <string name="owner">Dueño</string>
     <string name="pet_care">Cuidador</string>
+
 </resources>
