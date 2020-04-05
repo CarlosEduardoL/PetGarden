@@ -25,5 +25,6 @@
     <string name="others">Otros</string>
     <string name="owner">Dueño</string>
     <string name="pet_care">Cuidador</string>
+    <string name="pet_name_question">¿Cómo se llama tu mascota?</string>
 
 </resources>

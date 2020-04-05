@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".ui.register.NameRegisterFragment">
+    tools:context=".ui.register.BirthRegisterFragment">
 
     <TextView
         style="@style/RegisterTitle"
@@ -15,6 +15,7 @@
         android:textAlignment="center" />
 
     <DatePicker
+        android:id="@+id/birthInputDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:datePickerMode="spinner"
@@ -25,6 +26,7 @@
         android:layout_marginBottom="32dp"/>
 
     <Button
+        android:id="@+id/nextButton"
         style="@style/AppButton"
         android:layout_marginBottom="64dp"
         android:text="@string/Next" />

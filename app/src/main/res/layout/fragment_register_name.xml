@@ -62,6 +62,7 @@
     </LinearLayout>
 
     <Button style="@style/AppButton"
+        android:id="@+id/nextButton"
         android:text="@string/Next"
         android:layout_marginBottom="64dp"/>
 
