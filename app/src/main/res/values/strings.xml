@@ -29,11 +29,13 @@
     <string name="type_cat">Gato</string>
     <string name="type_other">Otro</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="pet_age_question">¿Cuál es la edad de tu mascota?</string>
     <string name="ageOfPet">0</string>
     <string name="month_or_year">Años</string>
     <string name="pet_picture">¡Tomémosle una foto a tu mascota!</string>
+
+    <string name="password_confirm">Confirme la contraseña</string>
+    <string name="password_question">¿Cuál será tu\n contraseña?</string>
+    <string name="email_example">alguien@correo.com</string>
 
 </resources>
