@@ -39,10 +39,7 @@ class LoginActivity : AppCompatActivity() {
             setSpan(
                 object : ClickableSpan() {
                     override fun onClick(widget: View) {
-                        Intent(this@LoginActivity, RegisterActivity::class.java).apply {
-                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                            startActivity(this)
-                        }
+                        startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
                     }
                 },
                 content.indexOf(lastWord),

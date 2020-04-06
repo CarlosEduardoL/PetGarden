@@ -9,8 +9,6 @@
     <string name="login_with_google">Iniciar sesion con google</string>
     <string name="register">¿No tienes cuenta?. Registrate</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="name_question">¿Cual es tu nombre?</string>
     <string name="name">Nombre</string>
     <string name="last_name">Apellido</string>
@@ -26,5 +24,9 @@
     <string name="owner">Dueño</string>
     <string name="pet_care">Cuidador</string>
     <string name="pet_name_question">¿Cómo se llama tu mascota?</string>
+
+    <string name="type_dog">Perro</string>
+    <string name="type_cat">Gato</string>
+    <string name="type_other">Otro</string>
 
 </resources>
