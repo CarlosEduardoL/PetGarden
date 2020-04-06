@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".ui.register.PetPicFragment">
+
+    <TextView
+        style="@style/RegisterTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="80dp"
+        android:text="@string/pet_picture"
+        android:textAlignment="center" />
+
+
+    <ImageButton
+        style="@style/AppButton"
+        android:id="@+id/nextButton"
+        android:layout_marginBottom="64dp"
+        android:layout_height="52dp"
+        android:text="@string/Next"
+        android:src="@drawable/camera_icon"/>
+
+
+
+</LinearLayout>

@@ -34,5 +34,6 @@
     <string name="pet_age_question">¿Cuál es la edad de tu mascota?</string>
     <string name="ageOfPet">0</string>
     <string name="month_or_year">Años</string>
+    <string name="pet_picture">¡Tomémosle una foto a tu mascota!</string>
 
 </resources>
