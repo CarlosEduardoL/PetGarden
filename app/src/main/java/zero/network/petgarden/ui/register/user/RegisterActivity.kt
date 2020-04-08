@@ -1,4 +1,4 @@
-package zero.network.petgarden.ui.register
+package zero.network.petgarden.ui.register.user
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

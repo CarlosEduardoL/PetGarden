@@ -2,7 +2,7 @@
     <string name="app_name">PetGarden</string>
     <string name="app_title">Pet Garden</string>
     <string name="logo_description">Application Logo</string>
-    <string name="user_or_email">Usuario o Correo</string>
+    <string name="email">correo@ejemplo.com</string>
     <string name="password">Contraseña</string>
     <string name="login">Iniciar sesión</string>
     <string name="login_with_facebook">Iniciar Sesion con facebook</string>
@@ -37,5 +37,6 @@
     <string name="password_confirm">Confirme la contraseña</string>
     <string name="password_question">¿Cuál será tu\n contraseña?</string>
     <string name="email_example">alguien@correo.com</string>
+    <string name="no_register_info">Correo o contraseña incorrecta</string>
 
 </resources>

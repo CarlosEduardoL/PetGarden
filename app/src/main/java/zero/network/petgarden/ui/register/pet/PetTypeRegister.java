@@ -1,4 +1,4 @@
-package zero.network.petgarden.ui.register;
+package zero.network.petgarden.ui.register.pet;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import zero.network.petgarden.R;
 
 
-public class RegisterTypePet extends Fragment {
+public class PetTypeRegister extends Fragment {
 
-    public RegisterTypePet() {
+    public PetTypeRegister() {
         // Required empty public constructor
     }
 

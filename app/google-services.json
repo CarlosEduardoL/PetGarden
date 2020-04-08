@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "796808954674",
+    "firebase_url": "https://pet-garden-7be77.firebaseio.com",
+    "project_id": "pet-garden-7be77",
+    "storage_bucket": "pet-garden-7be77.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796808954674:android:c1115a9c5c03b11a568d2b",
+        "android_client_info": {
+          "package_name": "zero.network.petgarden"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "796808954674-g027b7tf02vlip177mkfh13dktvbkvi3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "zero.network.petgarden",
+            "certificate_hash": "19c7ae387cdf29ee58b14afc04c1c5ae26db682b"
+          }
+        },
+        {
+          "client_id": "796808954674-labtd4d87761rpaplff8a53n0p36enu8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4AzwQ7_nvlqfWQ0j_5XvBnI4loRdtKNw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796808954674-labtd4d87761rpaplff8a53n0p36enu8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -11,9 +11,11 @@ import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
 import zero.network.petgarden.R
-import zero.network.petgarden.ui.register.RegisterActivity
+import zero.network.petgarden.ui.register.user.RegisterActivity
+import zero.network.petgarden.util.toText
 
 
 class LoginActivity : AppCompatActivity() {
@@ -21,15 +23,29 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
         setRegisterButton()
-        facebookButton.setOnClickListener {
-            showToast("¿Quien quiere hacerlo?")
-            intentToWeb("https://developers.facebook.com/docs/facebook-login/android/?locale=es_ES#quickstarts-header")
+
+        val fbAuth = FirebaseAuth.getInstance()
+
+        loginButton.setOnClickListener {
+            if (emailInput.toText().isNotEmpty() && passwordInput.toText().isNotEmpty())
+                fbAuth.signInWithEmailAndPassword(emailInput.toText(), passwordInput.toText()).addOnCompleteListener {
+                    if (it.isSuccessful){
+                        Intent(this@LoginActivity, RegisterActivity::class.java).let {
+
+                        }
+                    }else {
+                        showToast(getString(R.string.no_register_info))
+                    }
+                }
         }
+
         googleButton.setOnClickListener {
             showToast("¿Quien quiere hacerlo?")
             intentToWeb("https://developers.google.com/identity/sign-in/android/start-integrating")
         }
+
     }
 
     private fun setRegisterButton() {
