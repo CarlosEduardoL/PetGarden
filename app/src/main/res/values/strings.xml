@@ -42,5 +42,6 @@
     <string name="field_error">Este campo es obligatorio y no puede estar vacio porfavor llenelo</string>
     <string name="terms_message">Usted debe aceptar los terminos y condiciones de servicio si desea continuar</string>
     <string name="pass_confirm_message">Ambas contraseñas deben ser iguales</string>
+    <string name="age_error">Usted debe ser mayor de 16 años para poder usar nuestros servicios</string>
 
 </resources>
