@@ -29,7 +29,7 @@ class LoginActivity : AppCompatActivity() {
         val fbAuth = FirebaseAuth.getInstance()
 
         loginButton.setOnClickListener {
-            if (emailInput.toText().isNotEmpty() && passwordInput.toText().isNotEmpty())
+            if (emailInput.text.isNotEmpty() && passwordInput.text.isNotEmpty())
                 fbAuth.signInWithEmailAndPassword(emailInput.toText(), passwordInput.toText()).addOnCompleteListener {
                     if (it.isSuccessful){
                         Intent(this@LoginActivity, RegisterActivity::class.java).let {

@@ -39,4 +39,8 @@
     <string name="email_example">alguien@correo.com</string>
     <string name="no_register_info">Correo o contraseña incorrecta</string>
 
+    <string name="field_error">Este campo es obligatorio y no puede estar vacio porfavor llenelo</string>
+    <string name="terms_message">Usted debe aceptar los terminos y condiciones de servicio si desea continuar</string>
+    <string name="pass_confirm_message">Ambas contraseñas deben ser iguales</string>
+
 </resources>
