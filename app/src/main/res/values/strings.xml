@@ -44,6 +44,7 @@
     <string name="pass_confirm_message">Ambas contraseñas deben ser iguales</string>
     <string name="age_error">Usted debe ser mayor de 16 años para poder usar nuestros servicios</string>
 
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
