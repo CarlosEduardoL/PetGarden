@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    android:background="#5A5959">
+    android:background="#ffffff">
 
 
     <ImageView
-        android:id="@+id/imagePlaylist"
+        android:id="@+id/photoSitterList"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginStart="8dp"
@@ -20,38 +20,54 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/nameList"
+        android:id="@+id/nameSitterList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        android:text="Nombre playlist"
-        android:textColor="#FFFFFF"
+        android:layout_marginTop="8dp"
+        android:text="Maira Cifuentes"
+        android:textColor="#000000"
         android:textSize="16dp"
-        app:layout_constraintStart_toEndOf="@+id/imagePlaylist"
-        app:layout_constraintTop_toTopOf="@+id/imagePlaylist" />
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/photoSitterList"
+        app:layout_constraintTop_toTopOf="@+id/photoSitterList" />
 
     <TextView
-        android:id="@+id/nameUser"
+        android:id="@+id/schedule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="1dp"
-        android:text="Nechiton"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@+id/imagePlaylist"
-        app:layout_constraintTop_toBottomOf="@+id/nameList" />
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="4dp"
+        android:text="Disponibilidad horaria: 4:00 PM a 8:00 PM"
+        android:textColor="#000000"
+        android:textSize="12dp"
+        app:layout_constraintStart_toEndOf="@+id/photoSitterList"
+        app:layout_constraintTop_toBottomOf="@+id/nameSitterList" />
 
     <TextView
-        android:id="@+id/nbSongs"
+        android:id="@+id/price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="1dp"
-        android:text="8 canciones"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@+id/imagePlaylist"
-        app:layout_constraintTop_toBottomOf="@+id/nameUser" />
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="4dp"
+        android:text="Precio: $2.500/hora"
+        android:textColor="#000000"
+        android:textSize="12dp"
+        app:layout_constraintStart_toEndOf="@+id/photoSitterList"
+        app:layout_constraintTop_toBottomOf="@+id/schedule" />
+
+    <RatingBar
+        android:id="@+id/MyRating"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="80dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:isIndicator="true"
+        android:numStars="5"
+        android:stepSize="0.1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/sitterRow"
