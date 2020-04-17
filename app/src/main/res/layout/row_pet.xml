@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="300dp"
+    android:layout_width="match_parent"
     android:layout_height="108dp"
     android:layout_centerHorizontal="false"
     android:layout_gravity="center_horizontal"
@@ -10,17 +10,18 @@
 
 
     <ImageView
-        android:id="@+id/imagePlaylist"
+        android:id="@+id/imagePet"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_gravity="center"
-        android:layout_marginStart="8dp"
+        android:layout_marginLeft="32dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="32dp"
         android:layout_marginBottom="10dp"
         android:background="#555" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="130dp"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical">
@@ -71,14 +72,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:layout_marginRight="24dp"
         android:gravity="center"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/textView8"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:text="Recomendaciones"
             android:textColor="#FFFFFF"
             android:textSize="12dp" />
@@ -86,7 +89,8 @@
         <TextView
             android:id="@+id/breedText2"
             style="@style/infoPetText"
-            android:layout_height="wrap_content"
+            android:layout_width="92dp"
+            android:layout_height="55dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginRight="8dp"

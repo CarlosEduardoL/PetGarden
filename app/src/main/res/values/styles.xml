@@ -19,6 +19,17 @@
         <item name="android:layout_marginEnd">32dp</item>
     </style>
 
+    <style name="changePassword" parent="@style/AppTheme">
+        <item name="android:textSize">16dp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/rounded_corner_btn</item>
+        <item name="android:fontFamily">@font/roboto_bold</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">32dp</item>
+        <item name="android:layout_marginStart">32dp</item>
+        <item name="android:layout_marginEnd">32dp</item>
+    </style>
+
     <style name="filterButton" parent="@style/AppTheme">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@android:color/white</item>
