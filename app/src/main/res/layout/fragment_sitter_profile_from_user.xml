@@ -81,7 +81,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/sdd"
             style="@style/emailUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/addInfo"
+            android:id="@+id/priceText"
             style="@style/emailUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -150,7 +150,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/addInfo"
+            android:id="@+id/addInfo2"
             style="@style/emailUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -181,7 +181,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/s1"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="left"
@@ -189,7 +189,7 @@
             app:srcCompat="@drawable/clock_icon" />
 
         <TextView
-            android:id="@+id/nameSitterTxt4"
+            android:id="@+id/s"
             style="@style/emailUser"
             android:layout_width="320dp"
             android:layout_height="wrap_content"
