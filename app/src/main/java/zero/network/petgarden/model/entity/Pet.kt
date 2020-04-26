@@ -9,5 +9,7 @@ data class Pet(
     var name: String = "",
     var breed: String = "",
     var years: Int = 0,
-    var weight: Int = 0
+    var weight: Int = 0,
+    var about: String,
+    var image: String
 ): Serializable
