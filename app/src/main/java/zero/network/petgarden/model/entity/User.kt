@@ -1,26 +1,17 @@
 package zero.network.petgarden.model.entity
 
+import zero.network.petgarden.model.behaivor.IUser
 import java.io.Serializable
 import java.util.*
 
-open class User(
-    val id: String = UUID.randomUUID().toString(),
-    var name: String = "",
-    var lastName: String = "",
-    var email: String = "",
-    var password: String = "",
-    var birthDay: Date = Date(),
-    var imageURL: String = "",
-    var location: Location = Location(0.0,0.0)
-): Serializable
+data class User(
+    override val id: String = UUID.randomUUID().toString(),
+    override var name: String = "",
+    override var lastName: String = "",
+    override var email: String = "",
+    override var password: String = "",
+    override var birthDay: Date = Date(),
+    override var imageURL: String = "",
+    override var location: Location = Location(0.0,0.0)
+): Serializable, IUser
 
-class Owner(
-    id: String = UUID.randomUUID().toString(),
-    name: String = "",
-    lastName: String = "",
-    email: String = "",
-    password: String = "",
-    birthDay: Date = Date(),
-    imageURL: String = "",
-    location: Location = Location(0.0,0.0)
-): User(id, name, lastName, email, password, birthDay, imageURL, location)
