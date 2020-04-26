@@ -9,6 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.user.owner.OwnerActivity"></activity>
         <activity android:name=".ui.register.user.RoleRegisterFragment" />
         <activity android:name=".ui.register.user.RegisterActivity" />
         <activity android:name=".ui.login.LoginActivity">
@@ -19,10 +20,9 @@
             </intent-filter>
         </activity>
 
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD4AzwQ7_nvlqfWQ0j_5XvBnI4loRdtKNw"/>
+            android:value="AIzaSyD4AzwQ7_nvlqfWQ0j_5XvBnI4loRdtKNw" />
     </application>
 
 </manifest>
