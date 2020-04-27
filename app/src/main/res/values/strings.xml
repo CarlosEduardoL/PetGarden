@@ -38,11 +38,17 @@
     <string name="password_question">¿Cuál será tu\n contraseña?</string>
     <string name="email_example">alguien@correo.com</string>
     <string name="no_register_info">Correo o contraseña incorrecta</string>
+    <string name="sign_in_google_error">No fue posible acceder mediante la cuenta Google</string>
+
 
     <string name="field_error">Este campo es obligatorio y no puede estar vacio porfavor llenelo</string>
     <string name="terms_message">Usted debe aceptar los terminos y condiciones de servicio si desea continuar</string>
     <string name="pass_confirm_message">Ambas contraseñas deben ser iguales</string>
     <string name="age_error">Usted debe ser mayor de 16 años para poder usar nuestros servicios</string>
+
+    <string name="facebook_app_id">611470406121354</string>
+    <string name="fb_login_protocol_scheme">fb611470406121354</string>
+
 
 
     <!-- TODO: Remove or change this placeholder text -->

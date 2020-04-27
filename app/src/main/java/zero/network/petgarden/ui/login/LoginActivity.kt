@@ -11,14 +11,27 @@ import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_login.*
 import zero.network.petgarden.R
+import zero.network.petgarden.model.entity.Location
+import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.ui.register.user.RegisterActivity
 import zero.network.petgarden.util.toText
+import com.facebook.FacebookSdk
+import com.facebook.appevents.AppEventsLogger
+import java.util.*
 
 
 class LoginActivity : AppCompatActivity() {
+
+    val RC_SIGN_IN = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,12 +54,98 @@ class LoginActivity : AppCompatActivity() {
                 }
         }
 
-        googleButton.setOnClickListener {
-            showToast("¿Quien quiere hacerlo?")
-            intentToWeb("https://developers.google.com/identity/sign-in/android/start-integrating")
+
+        googleButton.setOnClickListener{
+
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestEmail().requestProfile().build()
+
+            val mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+
+            val signInIntent = mGoogleSignInClient.signInIntent
+            startActivityForResult(signInIntent, RC_SIGN_IN)
         }
 
+
     }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode === RC_SIGN_IN) {
+            val task: Task<GoogleSignInAccount> =
+                GoogleSignIn.getSignedInAccountFromIntent(data)
+            handleGoogleSignIn(task)
+        }
+    }
+
+    private fun handleGoogleSignIn(completedTask: Task<GoogleSignInAccount>) {
+        try {
+            val account: GoogleSignInAccount? = completedTask.getResult(ApiException::class.java)
+
+            if(account!=null ) {
+                val email = "" + account.email
+                val name = "" + account.givenName
+                val lastName = "" + account.familyName
+                val photo = account.photoUrl.toString()
+                val user = User(UUID.randomUUID().toString(), name, lastName, email, "", Date(), photo, Location(0.0,0.0))
+
+                if (userAlreadyExists(email)) {
+                    //Es sitter? Mandelo a la activity de maps de sitter
+
+                }else {
+                    //Cambiar esto para que vaya hasta el fragment
+                    val intent = Intent(this, RegisterActivity::class.java)
+                    intent.putExtra("user", user)
+                    startActivity(intent)
+                }
+            }
+
+        } catch (e: ApiException) {
+            showToast(getString(R.string.sign_in_google_error))
+
+        }
+    }
+
+    private fun userAlreadyExists(email:String):Boolean{
+        var isOwner = false
+        var isSitter = false
+
+        val queryBusquedaOwner: Query =
+            FirebaseDatabase.getInstance().getReference().child("users").child("owners").orderByChild("email")
+                .equalTo(email)
+
+            queryBusquedaOwner.addListenerForSingleValueEvent(object:ValueEventListener{
+                override fun onCancelled(p0: DatabaseError) {}
+
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.getChildrenCount() > 0L) {
+                        isOwner =true
+                    }
+                }
+
+            })
+
+        val queryBusquedaSitter: Query =
+            FirebaseDatabase.getInstance().getReference().child("users").child("sitters").orderByChild("email")
+                .equalTo(email)
+
+        queryBusquedaSitter.addListenerForSingleValueEvent(object:ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {}
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.getChildrenCount() > 0L) {
+                    isSitter =true
+                }
+            }
+
+        })
+
+        return isSitter || isOwner
+    }
+
+
 
     private fun setRegisterButton() {
         val content = getString(R.string.register)
@@ -77,4 +176,5 @@ class LoginActivity : AppCompatActivity() {
         i.data = Uri.parse(link)
         startActivity(i)
     }
+
 }
