@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".ui.register.pet.PetTypeRegisterFragment">
+    tools:context=".ui.register.pet.PetTypeFragment">
 
     <TextView
         style="@style/RegisterTitle"
@@ -24,7 +24,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
     style="@style/AppButton"
-    android:id="@+id/PerroButton"
+    android:id="@+id/DogButton"
     android:layout_width="match_parent"
     android:layout_height="49dp"
     android:layout_marginBottom="24dp"
@@ -59,7 +59,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         style="@style/AppButton"
-        android:id="@+id/GatoButton"
+        android:id="@+id/CatButton"
         android:layout_width="match_parent"
         android:layout_height="49dp"
         android:layout_marginBottom="24dp"
@@ -95,7 +95,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         style="@style/AppButton"
-        android:id="@+id/OtrosButton"
+        android:id="@+id/OthersButton"
         android:layout_width="match_parent"
         android:layout_height="49dp"
         android:layout_marginBottom="64dp"

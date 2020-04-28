@@ -1,4 +1,4 @@
-package zero.network.petgarden.ui.register.user;
+package zero.network.petgarden.ui.user.owner;
 
 import android.os.Bundle;
 
@@ -13,10 +13,10 @@ import zero.network.petgarden.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link MapFragment#newInstance} factory method to
+ * Use the {@link filterFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapFragment extends Fragment {
+public class filterFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -26,7 +26,7 @@ public class MapFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public MapFragment() {
+    public filterFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class MapFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment fragment_map.
+     * @return A new instance of fragment fragment_filter.
      */
     // TODO: Rename and change types and number of parameters
-    public static MapFragment newInstance(String param1, String param2) {
-        MapFragment fragment = new MapFragment();
+    public static filterFragment newInstance(String param1, String param2) {
+        filterFragment fragment = new filterFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +61,6 @@ public class MapFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map, container, false);
+        return inflater.inflate(R.layout.fragment_filter, container, false);
     }
 }

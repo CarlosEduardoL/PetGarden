@@ -13,7 +13,7 @@ import zero.network.petgarden.model.entity.Pet
 /**
  * A simple [Fragment] subclass.
  */
-class PetNameRegisterFragment(private val listener: OnNextListener, private val pet: Pet) : Fragment() {
+class PetNameFragment(private val listener: OnNextListener, private val pet: Pet) : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,7 +23,7 @@ class PetNameRegisterFragment(private val listener: OnNextListener, private val 
         nameInput.setText(pet.name)
         nextButton.setOnClickListener {
             pet.name
-            listener.next(this@PetNameRegisterFragment, pet)
+            listener.next(this@PetNameFragment)
         }
     }
 

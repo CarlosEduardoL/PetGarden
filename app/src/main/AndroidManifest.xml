@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.register.pet.PetBreedRegisterFragment"></activity>
+        <activity android:name=".ui.register.pet.PetBreedFragment"></activity>
         <activity android:name=".ui.register.pet.PetRegisterActivity" />
         <activity android:name=".ui.user.sitter.SitterActivity" />
         <activity android:name=".ui.user.owner.OwnerActivity" />

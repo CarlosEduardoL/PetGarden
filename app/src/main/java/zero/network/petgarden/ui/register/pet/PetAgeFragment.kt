@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.fragment_age_of_pet.view.*
 import zero.network.petgarden.R
 import zero.network.petgarden.model.entity.Pet
 
-class PetAgeRegisterFragment(private val listener: OnNextListener, private val pet: Pet) : Fragment() {
+class PetAgeFragment(private val listener: OnNextListener, private val pet: Pet) : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -25,7 +25,7 @@ class PetAgeRegisterFragment(private val listener: OnNextListener, private val p
         }
         nextButton.setOnClickListener {
             pet.years = age.value()
-            listener.next(this@PetAgeRegisterFragment, pet)
+            listener.next(this@PetAgeFragment)
         }
     }
 

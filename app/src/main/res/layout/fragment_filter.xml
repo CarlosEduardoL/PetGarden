@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".ui.register.user.filterFragment" >
+    tools:context=".ui.user.owner.filterFragment" >
 
     <TextView
         style="@style/FilterSubtitle"

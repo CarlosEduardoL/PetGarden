@@ -10,12 +10,13 @@ import android.view.ViewGroup;
 
 import zero.network.petgarden.R;
 
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link PetWeightFragment#newInstance} factory method to
+ * Use the {@link MapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PetWeightFragment extends Fragment {
+public class MapFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -25,7 +26,7 @@ public class PetWeightFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public PetWeightFragment() {
+    public MapFragment() {
         // Required empty public constructor
     }
 
@@ -35,11 +36,11 @@ public class PetWeightFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment PetWeightFragment.
+     * @return A new instance of fragment fragment_map.
      */
     // TODO: Rename and change types and number of parameters
-    public static PetWeightFragment newInstance(String param1, String param2) {
-        PetWeightFragment fragment = new PetWeightFragment();
+    public static MapFragment newInstance(String param1, String param2) {
+        MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -60,6 +61,6 @@ public class PetWeightFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pet_weight, container, false);
+        return inflater.inflate(R.layout.fragment_map, container, false);
     }
 }
