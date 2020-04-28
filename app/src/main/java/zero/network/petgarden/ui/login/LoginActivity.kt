@@ -1,5 +1,6 @@
 package zero.network.petgarden.ui.login
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -11,6 +12,7 @@ import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.facebook.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -24,15 +26,19 @@ import zero.network.petgarden.model.entity.Location
 import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.ui.register.user.RegisterActivity
 import zero.network.petgarden.util.toText
-import com.facebook.FacebookSdk
 import com.facebook.appevents.AppEventsLogger
+import com.facebook.login.Login
+import com.facebook.login.LoginResult
+import com.facebook.login.widget.LoginButton
+import kotlinx.android.synthetic.main.activity_login.view.*
 import java.util.*
 
 
 class LoginActivity : AppCompatActivity() {
 
-    val RC_SIGN_IN = 1
+    private  val RC_SIGN_IN = 1
 
+    @SuppressLint("WrongViewCast")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -66,6 +72,32 @@ class LoginActivity : AppCompatActivity() {
             startActivityForResult(signInIntent, RC_SIGN_IN)
         }
 
+        val mCallbackManager = CallbackManager.Factory.create()
+        val loginButton = findViewById<LoginButton>(R.id.facebookButton);
+        loginButton.registerCallback(mCallbackManager, object:FacebookCallback<LoginResult>{
+            override fun onSuccess(result: LoginResult) {
+                handleFacebookToken(result.accessToken)
+            }
+
+            override fun onCancel() {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onError(error: FacebookException?) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+        })
+
+        facebookButton.setOnClickListener{
+            FacebookSdk.sdkInitialize(applicationContext)
+
+        }
+
+
+    }
+
+    private fun handleFacebookToken(accessToken: AccessToken) {
 
     }
 
@@ -73,7 +105,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode === RC_SIGN_IN) {
+        if (requestCode == RC_SIGN_IN) {
             val task: Task<GoogleSignInAccount> =
                 GoogleSignIn.getSignedInAccountFromIntent(data)
             handleGoogleSignIn(task)

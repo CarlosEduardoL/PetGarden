@@ -143,6 +143,20 @@
         android:contentDescription="@string/login_with_google" />
 
 
+    <ImageView
+        android:id="@+id/facebookButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:contentDescription="@string/login_with_facebook"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/googleButton"
+        app:srcCompat="@drawable/facebook_login" />
+
     <TextView
         android:id="@+id/registerButton"
         android:layout_width="wrap_content"
@@ -158,8 +172,8 @@
         android:id="@+id/buttonPruebas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="144dp"
+        android:layout_marginTop="112dp"
+        android:layout_marginEnd="160dp"
         android:text="Pruebas"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/googleButton" />
