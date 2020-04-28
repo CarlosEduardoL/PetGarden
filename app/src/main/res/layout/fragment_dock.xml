@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.user.owner.DockFragment">
+    tools:context=".ui.user.owner.DockFragment"
+    >
+
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="5dp"
         android:background="@drawable/bottom_navigation_background"
-        app:menu="@menu/bottom_navigation"
-        android:elevation="8dp"
-        app:itemIconTint="@drawable/bottom_navigation_color_selector"/>
+        android:elevation="10dp"
+        app:itemIconTint="@drawable/bottom_navigation_color_selector"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_navigation" />
 
 
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
