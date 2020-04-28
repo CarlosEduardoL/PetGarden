@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
@@ -30,7 +31,12 @@ import com.facebook.appevents.AppEventsLogger
 import com.facebook.login.Login
 import com.facebook.login.LoginResult
 import com.facebook.login.widget.LoginButton
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_login.view.*
+import org.json.JSONException
+import org.json.JSONObject
+import java.net.MalformedURLException
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -51,9 +57,10 @@ class LoginActivity : AppCompatActivity() {
             if (emailInput.text.isNotEmpty() && passwordInput.text.isNotEmpty())
                 fbAuth.signInWithEmailAndPassword(emailInput.toText(), passwordInput.toText()).addOnCompleteListener {
                     if (it.isSuccessful){
-                        Intent(this@LoginActivity, RegisterActivity::class.java).let {
-
-                        }
+                        if(isSitter(emailInput.toText()))
+                            startFragmentSitter()
+                        else
+                            startFragmentOwner()
                     }else {
                         showToast(getString(R.string.no_register_info))
                     }
@@ -76,7 +83,7 @@ class LoginActivity : AppCompatActivity() {
         val loginButton = findViewById<LoginButton>(R.id.facebookButton);
         loginButton.registerCallback(mCallbackManager, object:FacebookCallback<LoginResult>{
             override fun onSuccess(result: LoginResult) {
-                handleFacebookToken(result.accessToken)
+                handleFacebookToken(result)
             }
 
             override fun onCancel() {
@@ -89,16 +96,37 @@ class LoginActivity : AppCompatActivity() {
 
         })
 
-        facebookButton.setOnClickListener{
-            FacebookSdk.sdkInitialize(applicationContext)
-
-        }
-
-
     }
 
-    private fun handleFacebookToken(accessToken: AccessToken) {
+    private fun handleFacebookToken(loginResult: LoginResult)  {
 
+       val request: GraphRequest = GraphRequest.newMeRequest(loginResult.getAccessToken(),object:GraphRequest.GraphJSONObjectCallback {
+           override fun onCompleted(objec: JSONObject, response: GraphResponse?) {
+               try {
+                   val email = objec.getString("email");
+
+                   if (userAlreadyExists(email)) {
+                       if(isSitter(email))
+                         startFragmentSitter()
+                       else
+                        startFragmentOwner()
+                   }else {
+                       val name = objec.getString("first_name");
+                       val lastName = objec.getString("last_name");
+                       val photo = "https://graph.facebook.com/" + (objec.getString("id"))+"/picture?width=500&height=500"
+                       val birthday = SimpleDateFormat("dd/MM/yyyy").parse(objec.getString("birthday"))// O el formato es MM/dd/yyyy, lo averiguaremos
+                       val user = User(UUID.randomUUID().toString(), name, lastName, email, "", birthday, photo, Location(0.0,0.0))
+
+                       startFragmentRoleUser(user)
+                   }
+
+               } catch (e: JSONException) {
+                   e.printStackTrace();
+               } catch (e: MalformedURLException) {
+                   e.printStackTrace();
+               }
+           }
+       })
     }
 
 
@@ -118,19 +146,20 @@ class LoginActivity : AppCompatActivity() {
 
             if(account!=null ) {
                 val email = "" + account.email
-                val name = "" + account.givenName
-                val lastName = "" + account.familyName
-                val photo = account.photoUrl.toString()
-                val user = User(UUID.randomUUID().toString(), name, lastName, email, "", Date(), photo, Location(0.0,0.0))
 
                 if (userAlreadyExists(email)) {
-                    //Es sitter? Mandelo a la activity de maps de sitter
+                    if(isSitter(email))
+                        startFragmentSitter()
+                    else
+                        startFragmentOwner()
 
                 }else {
-                    //Cambiar esto para que vaya hasta el fragment
-                    val intent = Intent(this, RegisterActivity::class.java)
-                    intent.putExtra("user", user)
-                    startActivity(intent)
+                    val name = "" + account.givenName
+                    val lastName = "" + account.familyName
+                    val photo = account.photoUrl.toString()
+                    val user = User(UUID.randomUUID().toString(), name, lastName, email, "", Date(), photo, Location(0.0,0.0))
+
+                    startFragmentRoleUser(user)
                 }
             }
 
@@ -177,6 +206,25 @@ class LoginActivity : AppCompatActivity() {
         return isSitter || isOwner
     }
 
+    private fun isSitter(email:String):Boolean{
+        var isSitter = false
+
+        val queryBusquedaSitter: Query =
+            FirebaseDatabase.getInstance().getReference().child("users").child("sitters").orderByChild("email")
+                .equalTo(email)
+
+        queryBusquedaSitter.addListenerForSingleValueEvent(object:ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {}
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.getChildrenCount() > 0L) {
+                    isSitter =true
+                }
+            }
+        })
+        return isSitter
+    }
+
 
 
     private fun setRegisterButton() {
@@ -209,4 +257,22 @@ class LoginActivity : AppCompatActivity() {
         startActivity(i)
     }
 
+    private  fun startFragmentSitter(){
+        //Cambiar esto para que vaya hasta el mapa del sitter
+        val intent = Intent(this, RegisterActivity::class.java)
+        startActivity(intent)
+    }
+
+    private  fun startFragmentOwner(){
+        //Cambiar esto para que vaya hasta el mapa del owner
+        val intent = Intent(this, RegisterActivity::class.java)
+        startActivity(intent)
+    }
+
+    private  fun startFragmentRoleUser(user:User){
+        //Cambiar esto para que vaya hasta el fragment de roles
+        val intent = Intent(this, RegisterActivity::class.java)
+        intent.putExtra("user", user)
+        startActivity(intent)
+    }
 }
