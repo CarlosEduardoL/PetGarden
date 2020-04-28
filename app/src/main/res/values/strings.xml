@@ -52,5 +52,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="pet_breed_question">¿Qué raza es?</string>
+    <string name="pet_weight_question">¿Cuál es el peso de tu mascota (Kg)?</string>
 
 </resources>
