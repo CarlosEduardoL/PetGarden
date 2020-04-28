@@ -13,7 +13,6 @@ import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.ui.element.ActionBarFragment
-import zero.network.petgarden.ui.register.OnNextListener
 import zero.network.petgarden.ui.user.owner.OwnerActivity
 import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.show
@@ -21,7 +20,8 @@ import zero.network.petgarden.util.show
 /**
  * @author CarlosEduardoL
  */
-class RegisterActivity : AppCompatActivity(), OnNextListener {
+class RegisterActivity : AppCompatActivity(),
+    OnNextListener {
 
     private lateinit var nameFragment: NameRegisterFragment
     private lateinit var emailFragment: EmailRegisterFragment

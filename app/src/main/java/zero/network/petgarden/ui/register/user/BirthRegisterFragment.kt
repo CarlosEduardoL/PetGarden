@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_register_birth.view.*
 import zero.network.petgarden.R
 import zero.network.petgarden.model.entity.User
-import zero.network.petgarden.ui.register.OnNextListener
 import zero.network.petgarden.util.onClick
 import zero.network.petgarden.util.show
 import java.util.*

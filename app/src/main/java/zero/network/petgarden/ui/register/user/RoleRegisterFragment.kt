@@ -10,7 +10,6 @@ import zero.network.petgarden.R
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
-import zero.network.petgarden.ui.register.OnNextListener
 
 class RoleRegisterFragment(
     private val user: User,

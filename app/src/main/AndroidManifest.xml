@@ -11,7 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.user.sitter.SitterActivity"></activity>
+        <activity android:name=".ui.register.pet.PetBreedRegisterFragment"></activity>
+        <activity android:name=".ui.register.pet.PetRegisterActivity" />
+        <activity android:name=".ui.user.sitter.SitterActivity" />
         <activity android:name=".ui.user.owner.OwnerActivity" />
         <activity android:name=".ui.register.user.RoleRegisterFragment" />
         <activity android:name=".ui.register.user.RegisterActivity" />
@@ -26,10 +28,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyD4AzwQ7_nvlqfWQ0j_5XvBnI4loRdtKNw" />
-
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
-
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
     </application>
 
 </manifest>
