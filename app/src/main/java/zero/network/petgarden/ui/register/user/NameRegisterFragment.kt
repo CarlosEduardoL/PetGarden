@@ -33,7 +33,7 @@ class NameRegisterFragment(
                     lastNameInput.toText().let {lastName ->
                         if (lastName.isNotEmpty()) {
                             user.lastName = lastName
-                            listener.next(this@NameRegisterFragment)
+                            listener.next(this@NameRegisterFragment, user)
                         }
                     }
                 } else {

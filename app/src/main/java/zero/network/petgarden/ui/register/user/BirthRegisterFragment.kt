@@ -30,15 +30,15 @@ class BirthRegisterFragment(
         val calendar = Calendar.getInstance()
         calendar.time = user.birthDay;
 
-        birthInputDate.apply {
-            updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+        birthInputDate.let {
+            it.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
 
-            nextButton.onClick {
-                if (yearsSince < 16){
+            nextButton.onClick {_ ->
+                if (it.yearsSince < 16){
                     show(getString(R.string.age_error))
                 }else {
-                    user.birthDay = date
-                    listener.next(this@BirthRegisterFragment)
+                    user.birthDay = it.date
+                    listener.next(this@BirthRegisterFragment, user)
                 }
             }
         }

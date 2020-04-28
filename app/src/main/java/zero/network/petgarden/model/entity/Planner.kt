@@ -1,15 +1,19 @@
 package zero.network.petgarden.model.entity
 
 import zero.network.petgarden.model.behaivor.IPlanner
+import java.io.Serializable
 
 data class Task(val petID: String, val duration: Duration)
 
-class Planner: IPlanner {
-    private val _availability = mutableListOf<Duration>()
+class Planner(
+    private val _availability: MutableList<Duration> = mutableListOf(),
+    private val _tasks: MutableList<Task> = mutableListOf()
+): IPlanner, Serializable {
+
     override val availabilities: List<Duration>
         get() = _availability
 
-    private val _tasks = mutableListOf<Task>()
+
     override val tasks: List<Task>
         get() = _tasks
 

@@ -35,7 +35,7 @@ class EmailRegisterFragment(
             emailInput.toText().let {
                 if (it.isNotEmpty()){
                     user.email = it
-                    listener.next(this@EmailRegisterFragment)
+                    listener.next(this@EmailRegisterFragment, user)
                 }else {
                     show(getString(R.string.field_error))
                 }

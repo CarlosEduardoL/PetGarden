@@ -38,7 +38,7 @@ class PasswordRegisterFragment(
                     }else {
                         user.password = it
                         println("Pase xD")
-                        listener.next(this@PasswordRegisterFragment)
+                        listener.next(this@PasswordRegisterFragment, user)
                     }
                 }else {
                     show(getString(R.string.pass_confirm_message))

@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="zero.network.petgarden">
 
-
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.user.owner.OwnerActivity"></activity>
+        <activity android:name=".ui.user.sitter.SitterActivity"></activity>
+        <activity android:name=".ui.user.owner.OwnerActivity" />
         <activity android:name=".ui.register.user.RoleRegisterFragment" />
         <activity android:name=".ui.register.user.RegisterActivity" />
         <activity android:name=".ui.login.LoginActivity">
