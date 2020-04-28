@@ -10,13 +10,12 @@ import android.view.ViewGroup;
 
 import zero.network.petgarden.R;
 
-
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link DockOwnerFragment#newInstance} factory method to
+ * Use the {@link DockFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DockOwnerFragment extends Fragment {
+public class DockFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -26,7 +25,7 @@ public class DockOwnerFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public DockOwnerFragment() {
+    public DockFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +35,11 @@ public class DockOwnerFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment DockOwnerFragment.
+     * @return A new instance of fragment DockFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static DockOwnerFragment newInstance(String param1, String param2) {
-        DockOwnerFragment fragment = new DockOwnerFragment();
+    public static DockFragment newInstance(String param1, String param2) {
+        DockFragment fragment = new DockFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +60,6 @@ public class DockOwnerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dock_owner, container, false);
+        return inflater.inflate(R.layout.fragment_dock, container, false);
     }
 }

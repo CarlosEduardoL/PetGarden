@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <menu
-        android:id="@+id/search"
+    <item
+        android:id="@+id/nav_map"
         android:icon="@drawable/ic_map"
-        android:title="Search"/>
-
+        android:title="Mapa"/>
     <item
-        android:id="@+id/comment"
+        android:id="@+id/nav_sitter"
         android:icon="@drawable/ic_sitters"
-        android:title="Comment" />
-
+        android:title="Cuidadores"/>
     <item
-        android:id="@+id/stats"
+        android:id="@+id/nav_profile"
         android:icon="@drawable/ic_profile"
-        android:title="Stats" />
+        android:title="Perfil"/>
+
 </menu>
