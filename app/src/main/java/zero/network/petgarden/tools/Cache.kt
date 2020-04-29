@@ -1,19 +1,22 @@
 package zero.network.petgarden.tools
 
 import androidx.room.Room
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import zero.network.petgarden.ui.login.LoginActivity
 import java.io.File
 
-private lateinit var db: AppDatabase
+private lateinit var db: ImgRegDatabase
 
 fun LoginActivity.initDatabase() {
     db = Room.databaseBuilder(
         applicationContext,
-        AppDatabase::class.java, "database-name"
+        ImgRegDatabase::class.java,
+        "regDataBase"
     ).build()
 }
 
-fun uploadImage(id: String, image: File) {
+suspend fun uploadImage(id: String, image: File) = withContext(IO) {
 
 }
 

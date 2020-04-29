@@ -1,24 +1,15 @@
 package zero.network.petgarden.tools
 
-import androidx.room.*
-import java.util.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 @Entity
 data class ImgReg(
     @PrimaryKey val id: String,
-    @ColumnInfo(name = "date") val date: Date
+    @ColumnInfo(name = "date") val date: Long
 )
 
-@Dao
-interface ImgRegDao {
-    @Insert
-    fun insert(imgReg: ImgReg)
 
-    @Query("Select * from imgreg where id = (:id)")
-    fun get(id: String): ImgReg
-}
 
-@Database(entities = [ImgReg::class], version = 1)
-abstract class AppDatabase : RoomDatabase() {
-    abstract fun imgRegDao(): ImgRegDao
-}
+
