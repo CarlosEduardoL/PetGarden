@@ -39,6 +39,7 @@ import org.json.JSONObject
 import zero.network.petgarden.databinding.ActivityLoginBinding
 import zero.network.petgarden.ui.register.user.RegisterFacebookActivity
 import zero.network.petgarden.ui.register.user.RoleRegisterFragment
+import zero.network.petgarden.util.extra
 import java.net.MalformedURLException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -140,7 +141,7 @@ class LoginActivity : AppCompatActivity() {
                         name,
                         lastName,
                         email,
-                        "",
+                        "1234567",
                         birthday,
                         photo,
                         Location(0.0, 0.0)
@@ -314,6 +315,7 @@ class LoginActivity : AppCompatActivity() {
     private fun startFragmentRoleUser(user: User) {
         //Cambiar esto para que vaya hasta el fragment de roles
         val intent = Intent(this, RegisterFacebookActivity::class.java)
+        intent.putExtra("user", user)
         startActivity(intent)
     }
 }

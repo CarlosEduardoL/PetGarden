@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_role_register.*
 import zero.network.petgarden.R
 import zero.network.petgarden.model.behaivor.IUser
@@ -18,19 +19,23 @@ import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.extra
 import zero.network.petgarden.util.show
 
-class RegisterFacebookActivity(private val user: User): AppCompatActivity() {
+
+class RegisterFacebookActivity(): AppCompatActivity() {
 
     companion object {
         private const val PET_CALLBACK = 2900
     }
 
+    private var user: User = User()
     private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_role_register)
-        ownerButton.setOnClickListener{
-        }
+        database = FirebaseDatabase.getInstance().reference
+        user = intent.extras!!.get("user") as User
+
+
 
         sitterButton.setOnClickListener{
             FirebaseAuth.getInstance()
