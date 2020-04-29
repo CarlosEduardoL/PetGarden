@@ -107,8 +107,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun handleFacebookToken(loginResult: LoginResult)  {
-        val profile = Profile.getCurrentProfile().firstName
-        System.out.println("Prifle"+profile)
        val request: GraphRequest = GraphRequest.newMeRequest(loginResult.getAccessToken(), object:GraphRequest.GraphJSONObjectCallback {
            override fun onCompleted(objec: JSONObject, response: GraphResponse) {
                System.out.println("entro onComplented")
