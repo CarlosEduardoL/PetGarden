@@ -10,6 +10,7 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -43,6 +44,7 @@ import java.util.*
 class LoginActivity : AppCompatActivity() {
 
     private  val RC_SIGN_IN = 1
+    private val callbackFacebook =CallbackManager.Factory.create()
 
     @SuppressLint("WrongViewCast")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +69,7 @@ class LoginActivity : AppCompatActivity() {
                 }
         }
 
-
+        //Google
         googleButton.setOnClickListener{
 
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -79,30 +81,39 @@ class LoginActivity : AppCompatActivity() {
             startActivityForResult(signInIntent, RC_SIGN_IN)
         }
 
-        val mCallbackManager = CallbackManager.Factory.create()
-        val loginButton = findViewById<LoginButton>(R.id.facebookButton);
-        loginButton.registerCallback(mCallbackManager, object:FacebookCallback<LoginResult>{
+        val fbookButton = findViewById<LoginButton>(R.id.facebookButton);
+
+        val  callback = object: FacebookCallback<LoginResult>{
             override fun onSuccess(result: LoginResult) {
+                System.out.println("entroSUccess")
                 handleFacebookToken(result)
             }
 
             override fun onCancel() {
+                System.out.println("entroCancel")
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
             }
 
             override fun onError(error: FacebookException?) {
+                System.out.println("entroError")
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
+        }
 
-        })
+        fbookButton.setPermissions("email", "user_birthday","user_posts");
+        fbookButton.registerCallback(callbackFacebook, callback);
 
     }
 
     private fun handleFacebookToken(loginResult: LoginResult)  {
-
-       val request: GraphRequest = GraphRequest.newMeRequest(loginResult.getAccessToken(),object:GraphRequest.GraphJSONObjectCallback {
-           override fun onCompleted(objec: JSONObject, response: GraphResponse?) {
+        val profile = Profile.getCurrentProfile().firstName
+        System.out.println("Prifle"+profile)
+       val request: GraphRequest = GraphRequest.newMeRequest(loginResult.getAccessToken(), object:GraphRequest.GraphJSONObjectCallback {
+           override fun onCompleted(objec: JSONObject, response: GraphResponse) {
+               System.out.println("entro onComplented")
                try {
+                   System.out.println("entroHandleFB")
                    val email = objec.getString("email");
 
                    if (userAlreadyExists(email)) {
@@ -136,13 +147,14 @@ class LoginActivity : AppCompatActivity() {
         if (requestCode == RC_SIGN_IN) {
             val task: Task<GoogleSignInAccount> =
                 GoogleSignIn.getSignedInAccountFromIntent(data)
-            handleGoogleSignIn(task)
+                handleGoogleSignIn(task)
         }
+        callbackFacebook.onActivityResult(requestCode, resultCode, data);
     }
 
     private fun handleGoogleSignIn(completedTask: Task<GoogleSignInAccount>) {
         try {
-            val account: GoogleSignInAccount? = completedTask.getResult(ApiException::class.java)
+            val account = completedTask.getResult(ApiException::class.java)
 
             if(account!=null ) {
                 val email = "" + account.email
@@ -156,7 +168,11 @@ class LoginActivity : AppCompatActivity() {
                 }else {
                     val name = "" + account.givenName
                     val lastName = "" + account.familyName
-                    val photo = account.photoUrl.toString()
+                    var photo = account.photoUrl.toString()
+
+                  if(photo==null)
+                        photo=""
+
                     val user = User(UUID.randomUUID().toString(), name, lastName, email, "", Date(), photo, Location(0.0,0.0))
 
                     startFragmentRoleUser(user)
@@ -164,8 +180,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
         } catch (e: ApiException) {
-            showToast(getString(R.string.sign_in_google_error))
-
+           showToast(getString(R.string.sign_in_google_error))
         }
     }
 
@@ -187,7 +202,6 @@ class LoginActivity : AppCompatActivity() {
                 }
 
             })
-
         val queryBusquedaSitter: Query =
             FirebaseDatabase.getInstance().getReference().child("users").child("sitters").orderByChild("email")
                 .equalTo(email)

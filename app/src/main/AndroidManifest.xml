@@ -29,7 +29,7 @@
         </activity>
 
         <meta-data
-            android:name="com.google.android.geo.API_KEY"
+            android:name="com.google.android.geo.AIzaSyB8w7mIzR5bg_aQUY7ZVUXwAs-8HT2Kvqw"
             android:value="AIzaSyD4AzwQ7_nvlqfWQ0j_5XvBnI4loRdtKNw" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
