@@ -47,7 +47,7 @@ class LoginActivity : AppCompatActivity() {
     private val RC_SIGN_IN = 1
     private val callbackFacebook = CallbackManager.Factory.create()
 
-    private lateinit var binding: ActivityLoginBinding
+    lateinit var binding: ActivityLoginBinding
 
     @SuppressLint("WrongViewCast")
     override fun onCreate(savedInstanceState: Bundle?) {
