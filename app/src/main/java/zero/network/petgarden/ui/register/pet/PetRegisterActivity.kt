@@ -4,6 +4,8 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
@@ -107,6 +109,8 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CAMERA_INTENT && resultCode == Activity.RESULT_OK){
             onBackPressed()
+            val image = BitmapFactory.decodeFile(picFragment.imageDir().path)
+            val thumbnail = Bitmap.createScaledBitmap(image, image.width/4, image.height/4,false)
         }
     }
 

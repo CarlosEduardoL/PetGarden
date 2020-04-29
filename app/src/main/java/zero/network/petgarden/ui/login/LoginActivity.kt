@@ -37,6 +37,7 @@ import kotlinx.android.synthetic.main.activity_login.view.*
 import org.json.JSONException
 import org.json.JSONObject
 import zero.network.petgarden.databinding.ActivityLoginBinding
+import zero.network.petgarden.tools.initDatabase
 import zero.network.petgarden.ui.register.user.RegisterFacebookActivity
 import zero.network.petgarden.ui.register.user.RoleRegisterFragment
 import zero.network.petgarden.util.extra
@@ -57,6 +58,8 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        initDatabase()
 
         setRegisterButton()
 
