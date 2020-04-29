@@ -4,6 +4,7 @@
     tools:viewBindingIgnore="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:name="com.google.android.gms.maps.SupportMapFragment"
     tools:context=".ui.user.owner.MapFragment">
 
     <com.google.android.gms.maps.MapView

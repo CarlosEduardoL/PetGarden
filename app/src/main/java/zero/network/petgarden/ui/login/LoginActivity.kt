@@ -12,6 +12,7 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.facebook.*
@@ -103,6 +104,9 @@ class LoginActivity : AppCompatActivity() {
 
         fbookButton.setPermissions("email", "user_birthday","user_posts");
         fbookButton.registerCallback(callbackFacebook, callback);
+
+        val probesButton1 = findViewById<Button>(R.id.buttonPruebas);
+        val pruebas=ClasePruebas(this)
 
     }
 
