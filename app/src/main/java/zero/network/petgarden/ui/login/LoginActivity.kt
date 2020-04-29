@@ -37,6 +37,8 @@ import kotlinx.android.synthetic.main.activity_login.view.*
 import org.json.JSONException
 import org.json.JSONObject
 import zero.network.petgarden.databinding.ActivityLoginBinding
+import zero.network.petgarden.ui.register.user.RegisterFacebookActivity
+import zero.network.petgarden.ui.register.user.RoleRegisterFragment
 import java.net.MalformedURLException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -118,9 +120,7 @@ class LoginActivity : AppCompatActivity() {
         val request: GraphRequest = GraphRequest.newMeRequest(
             loginResult.accessToken
         ) { objec, response ->
-            System.out.println("entro onComplented")
             try {
-                System.out.println("entroHandleFB")
                 val email = objec.getString("email");
 
                 if (userAlreadyExists(email)) {
@@ -134,7 +134,7 @@ class LoginActivity : AppCompatActivity() {
                     val photo =
                         "https://graph.facebook.com/" + (objec.getString("id")) + "/picture?width=500&height=500"
                     val birthday =
-                        SimpleDateFormat("dd/MM/yyyy").parse(objec.getString("birthday"))// O el formato es MM/dd/yyyy, lo averiguaremos
+                        SimpleDateFormat("dd/MM/yyyy").parse(objec.getString("birthday"))// O el formato es MM/dd/yyyy??, lo averiguaremos
                     val user = User(
                         UUID.randomUUID().toString(),
                         name,
@@ -149,12 +149,20 @@ class LoginActivity : AppCompatActivity() {
                     startFragmentRoleUser(user)
                 }
 
+
+
             } catch (e: JSONException) {
                 e.printStackTrace();
             } catch (e: MalformedURLException) {
                 e.printStackTrace();
             }
         }
+
+        val parameters =  Bundle()
+        parameters.putString("fields", "id, first_name, last_name, email, birthday");
+        request.setParameters(parameters);
+        request.executeAsync();
+
     }
 
 
@@ -305,8 +313,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun startFragmentRoleUser(user: User) {
         //Cambiar esto para que vaya hasta el fragment de roles
-        val intent = Intent(this, RegisterActivity::class.java)
-        intent.putExtra("user", user)
+        val intent = Intent(this, RegisterFacebookActivity::class.java)
         startActivity(intent)
     }
 }
