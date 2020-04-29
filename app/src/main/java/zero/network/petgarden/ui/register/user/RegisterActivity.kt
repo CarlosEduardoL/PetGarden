@@ -1,5 +1,6 @@
 package zero.network.petgarden.ui.register.user
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -10,11 +11,16 @@ import com.google.firebase.database.FirebaseDatabase
 import zero.network.petgarden.R
 import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.model.entity.Owner
+import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.ui.element.ActionBarFragment
+import zero.network.petgarden.ui.register.pet.PetRegisterActivity
+import zero.network.petgarden.ui.register.pet.PetRegisterActivity.Companion.PET_KEY
+import zero.network.petgarden.ui.register.pet.PetRegisterActivity.Companion.TITLE_KEY
 import zero.network.petgarden.ui.user.owner.OwnerActivity
 import zero.network.petgarden.ui.user.sitter.SitterActivity
+import zero.network.petgarden.util.extra
 import zero.network.petgarden.util.show
 
 /**
@@ -75,16 +81,11 @@ class RegisterActivity : AppCompatActivity(),
                 .addToBackStack(REGISTER_STACK)
                 .commit()
             roleFragment -> when (state) {
-                is Owner -> FirebaseAuth.getInstance()
-                    .createUserWithEmailAndPassword(state.email, state.password)
-                    .addOnSuccessListener {
-                        database.child("users").child("owners").child(state.id).setValue(state)
-                        startUserView(state, OwnerActivity::class.java)
-                    }
-                    .addOnFailureListener {
-                        show(it.message ?: "Unexpected Error, please retry")
-                    }
-
+                is Owner -> Intent(this, PetRegisterActivity::class.java).apply {
+                    putExtra(TITLE_KEY, "Registrar Mascota")
+                    putExtra(PET_KEY, Pet())
+                    startActivityForResult(this, PET_CALLBACK)
+                }
 
                 is Sitter -> FirebaseAuth.getInstance()
                     .createUserWithEmailAndPassword(state.email, state.password)
@@ -108,7 +109,24 @@ class RegisterActivity : AppCompatActivity(),
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && data !== null && requestCode == PET_CALLBACK){
+            val owner = Owner(user).apply { pets.add(data.extra(PET_KEY){return}) }
+            FirebaseAuth.getInstance()
+                .createUserWithEmailAndPassword(owner.email, owner.password)
+                .addOnSuccessListener {
+                    database.child("users").child("owners").child(owner.id).setValue(owner)
+                    startUserView(owner, OwnerActivity::class.java)
+                }
+                .addOnFailureListener {
+                    show(it.message ?: "Unexpected Error, please retry")
+                }
+        }
+    }
+
     companion object {
+        private const val PET_CALLBACK = 2900
         private const val REGISTER_STACK = "REGISTER_STACK"
     }
 }

@@ -1,9 +1,12 @@
 package zero.network.petgarden.ui.register.pet
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import zero.network.petgarden.R
 import zero.network.petgarden.model.entity.Pet
@@ -28,22 +31,18 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener {
         setContentView(R.layout.activity_pet_register)
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.header, ActionBarFragment(extra(TITLE_KEY) { onError(it); return }, true) { onBackPressed() })
+            .replace(
+                R.id.header,
+                ActionBarFragment(
+                    extra(TITLE_KEY) { onError(it); return },
+                    true
+                ) { onBackPressed() })
             .commit()
 
 
-        pet = extra(EXTRA_KEY) { onError(it); return }
+        pet = extra(PET_KEY) { onError(it); return }
 
-        typeFragment = PetTypeFragment(this, pet)
-        nameFragment = PetNameFragment(this, pet)
-        breedFragment = PetBreedFragment(this, pet)
-        ageFragment = PetAgeFragment(this, pet)
-        weightFragment = PetWeightFragment(this, pet)
-        picFragment = PetPicFragment(this, pet)
-
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.header, typeFragment)
-            .commit()
+        requestPermission()
 
     }
 
@@ -55,7 +54,7 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener {
             ageFragment -> changeTo(weightFragment)
             weightFragment -> changeTo(picFragment)
             picFragment -> {
-                setResult(Activity.RESULT_OK, Intent().apply { putExtra(EXTRA_KEY, pet) })
+                setResult(Activity.RESULT_OK, Intent().apply { putExtra(PET_KEY, pet) })
                 finish()
             }
         }
@@ -68,11 +67,54 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener {
         finish()
     }
 
-    private fun changeTo(fragment: Fragment) = supportFragmentManager.beginTransaction().replace(R.id.body, fragment).addToBackStack(REGISTER_STACK).commit()
+    private fun changeTo(fragment: Fragment) =
+        supportFragmentManager.beginTransaction().replace(R.id.body, fragment)
+            .addToBackStack(REGISTER_STACK).commit()
+
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(
+            this, arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ), REQUEST_PERMISSION_CODE
+        )
+
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == REQUEST_PERMISSION_CODE && grantResults.all { it == PERMISSION_GRANTED }){
+            typeFragment = PetTypeFragment(this, pet)
+            nameFragment = PetNameFragment(this, pet)
+            breedFragment = PetBreedFragment(this, pet)
+            ageFragment = PetAgeFragment(this, pet)
+            weightFragment = PetWeightFragment(this, pet)
+            picFragment = PetPicFragment(this, pet)
+
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.body, typeFragment)
+                .commit()
+        }else {
+            requestPermission()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == CAMERA_INTENT && resultCode == Activity.RESULT_OK){
+            onBackPressed()
+        }
+    }
 
     companion object {
-        const val EXTRA_KEY = "PET"
+        const val PET_KEY = "PET"
         const val TITLE_KEY = "TITLE"
+        const val CAMERA_INTENT = 290
         private const val REGISTER_STACK = "REGISTER_STACK"
+        private const val REQUEST_PERMISSION_CODE = 0
     }
 }

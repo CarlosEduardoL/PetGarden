@@ -1,7 +1,10 @@
 package zero.network.petgarden.util
 
 import android.app.Activity
+import android.net.Uri
 import android.widget.Toast
+import androidx.core.content.FileProvider
+import java.io.File
 
 
 /**
@@ -21,3 +24,8 @@ inline fun<reified T> Activity.extra(key: String, onError: (error: String) -> No
         else onError("the object with key $key is not type ${T::class.java}")
     }else onError("key $key doesn't exist")
 }
+
+/**
+ *
+ */
+fun Activity.fileToUri(file: File): Uri = FileProvider.getUriForFile(this, this.packageName, file)
