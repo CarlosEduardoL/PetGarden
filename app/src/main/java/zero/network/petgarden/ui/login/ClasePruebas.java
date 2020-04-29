@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.widget.Button;
 import android.widget.Toast;
 
+import zero.network.petgarden.ui.user.owner.OwnerActivity;
+
 public class ClasePruebas {
 
     private LoginActivity activity;
@@ -20,7 +22,8 @@ public class ClasePruebas {
         buttonPruebas = activity.getBinding().buttonPruebas;
         buttonPruebas.setOnClickListener(
                 (view)->{
-                    Toast.makeText(activity,"Hola",Toast.LENGTH_SHORT);
+                    Intent i = new Intent(activity, OwnerActivity.class);
+                    activity.startActivity(i);
                 }
         );
 
