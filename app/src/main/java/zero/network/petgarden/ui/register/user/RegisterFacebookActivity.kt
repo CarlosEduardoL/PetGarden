@@ -9,15 +9,18 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_role_register.*
 import zero.network.petgarden.R
+import zero.network.petgarden.databinding.ActivityLoginBinding
 import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Pet
+import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity
 import zero.network.petgarden.ui.user.owner.OwnerActivity
 import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.extra
 import zero.network.petgarden.util.show
+import zero.network.petgarden.util.toText
 
 
 class RegisterFacebookActivity(): AppCompatActivity() {
@@ -37,14 +40,12 @@ class RegisterFacebookActivity(): AppCompatActivity() {
 
 
 
-        sitterButton.setOnClickListener{
+        sitterButton.setOnClickListener {
             FirebaseAuth.getInstance()
                 .createUserWithEmailAndPassword(user.email, user.password)
                 .addOnSuccessListener {
                     database.child("users").child("sitters").child(user.id).setValue(user)
-                    intent = Intent(this, SitterActivity::class.java)
-                    intent.putExtra("user", user)
-                    startActivity(intent)
+                    startUserView(user, SitterActivity::class.java)
                 }
                 .addOnFailureListener {
                     show(it.message ?: "Unexpected Error, please retry")
@@ -84,4 +85,6 @@ class RegisterFacebookActivity(): AppCompatActivity() {
             startActivity(this)
         }
     }
+
+
 }
