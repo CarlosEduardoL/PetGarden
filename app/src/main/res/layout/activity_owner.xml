@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.user.owner.OwnerActivity"
-    android:id="@+id/activity_owner_container"
-    android:background="@android:color/holo_blue_light">
+    android:id="@+id/activity_owner_container">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

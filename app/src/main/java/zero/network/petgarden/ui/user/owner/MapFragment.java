@@ -3,23 +3,36 @@ package zero.network.petgarden.ui.user.owner;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import android.annotation.SuppressLint;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import zero.network.petgarden.R;
 
-public class MapFragment extends SupportMapFragment implements OnMapReadyCallback {
+import static android.content.Context.LOCATION_SERVICE;
+
+public class MapFragment extends SupportMapFragment implements OnMapReadyCallback, LocationListener {
 
     private GoogleMap mMap;
+    private Marker posActual;
+    double lat=0.0;
+    double lng=0.0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,6 +53,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -48,7 +62,45 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        mMap.setMyLocationEnabled(true);
+
+        LocationManager manager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+        //Solicitar actualizaciones de posicion
+        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 2, this);
+
+        //Llevar a la ultima localizacion conocida
+        Location last = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        LatLng pos = new LatLng(last.getLatitude(), last.getLongitude());
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 18));
+        posActual = mMap.addMarker(  new MarkerOptions().position(pos).title("Yo").snippet("Mi ubicación")  );
+
+
     }
 
 
+    @Override
+    public void onLocationChanged(Location location) {
+        LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
+        posActual.setPosition(  pos  );
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
+        Log.e(">>>", "Locación cambiada");
+
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
 }
