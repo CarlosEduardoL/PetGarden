@@ -29,7 +29,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import org.json.JSONException
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.ActivityLoginBinding
 import zero.network.petgarden.model.entity.Location
@@ -75,10 +74,7 @@ class LoginActivity : AppCompatActivity() {
                 )
                     .addOnCompleteListener {
                         if (it.isSuccessful) {
-                            if (isSitter(binding.emailInput.toText()))
-                                startFragmentSitter()
-                            else
-                                startFragmentOwner()
+                            GlobalScope.launch(Main) {  chooseFragment(binding)}
                         } else {
                             show(getString(R.string.no_register_info))
                         }
@@ -101,7 +97,7 @@ class LoginActivity : AppCompatActivity() {
 
         val callback = object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult) {
-                println("entroSUccess")
+                println("entroSuccess")
                 GlobalScope.launch(Main){handleFacebookToken(result)}
             }
 
@@ -241,24 +237,14 @@ class LoginActivity : AppCompatActivity() {
         addListenerForSingleValueEvent(callback)
     }
 
-    private fun isSitter(email: String): Boolean {
-        var isSitter = false
+    private suspend fun isSitter(email: String): Boolean = withContext(IO){
 
-        val queryBusquedaSitter: Query =
+        val isSitter: Boolean =
             FirebaseDatabase.getInstance().reference.child("users").child("sitters")
                 .orderByChild("email")
-                .equalTo(email)
+                .equalTo(email).isRegister()
 
-        queryBusquedaSitter.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {}
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.childrenCount > 0) {
-                    isSitter = true
-                }
-            }
-        })
-        return isSitter
+        return@withContext  isSitter
     }
 
 
@@ -287,6 +273,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun startFragmentSitter() {
         val intent = Intent(this, SitterActivity::class.java)
+        println("fragmentSitter")
         startActivity(intent)
     }
 
@@ -300,4 +287,12 @@ class LoginActivity : AppCompatActivity() {
         intent.putExtra("user", user)
         startActivity(intent)
     }
+
+    private suspend fun chooseFragment(binding: ActivityLoginBinding) {
+        if (isSitter(binding.emailInput.toText()))
+            startFragmentSitter()
+        else
+            startFragmentOwner()
+    }
+
 }
