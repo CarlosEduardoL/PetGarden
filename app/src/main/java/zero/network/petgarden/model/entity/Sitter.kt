@@ -5,7 +5,7 @@ import zero.network.petgarden.model.behaivor.IUser
 import java.io.Serializable
 
 data class Sitter(
-    private val user: User,
+    private val user: User = User(),
     var rating: Double = 0.0,
     var kindPets: String = "Nothing Especial",
     var additional: String = "Nothing Especial",

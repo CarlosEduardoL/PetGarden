@@ -1,8 +1,7 @@
 package zero.network.petgarden.ui.user.sitter
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import zero.network.petgarden.R
+import androidx.appcompat.app.AppCompatActivity
 import zero.network.petgarden.databinding.ActivitySitterBinding
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.util.extra

@@ -32,7 +32,7 @@ class BirthRegisterFragment(
         birthInputDate.let {
             it.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
 
-            nextButton.onClick {_ ->
+            nextButton.onClick {
                 if (it.yearsSince < 16){
                     show(getString(R.string.age_error))
                 }else {
