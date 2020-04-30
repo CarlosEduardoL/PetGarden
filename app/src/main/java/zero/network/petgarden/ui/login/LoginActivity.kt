@@ -37,6 +37,7 @@ import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.tools.initDatabase
 import zero.network.petgarden.ui.register.user.RegisterActivity
 import zero.network.petgarden.ui.register.user.RegisterFacebookActivity
+import zero.network.petgarden.ui.register.user.RegisterGoogleActivity
 import zero.network.petgarden.ui.user.owner.OwnerActivity
 import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.show
@@ -207,7 +208,7 @@ class LoginActivity : AppCompatActivity() {
                         Location(0.0, 0.0)
                     )
 
-                    startFragmentRoleUser(user)
+                    startFragmentBirthday(user)
                 }
             }
 
@@ -324,6 +325,13 @@ class LoginActivity : AppCompatActivity() {
         intent.putExtra("user", user)
         startActivity(intent)
     }
+
+    private fun startFragmentBirthday(user: User) {
+        val intent = Intent(this, RegisterGoogleActivity::class.java)
+        intent.putExtra("user", user)
+        startActivity(intent)
+    }
+
 
     private suspend fun chooseFragment(binding: ActivityLoginBinding) {
         if (isSitter(binding.emailInput.toText()))
