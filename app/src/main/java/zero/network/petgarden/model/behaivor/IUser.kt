@@ -12,7 +12,7 @@ interface IUser: Serializable {
     var email: String
     var password: String
     var birthDay: Date
-    var imageURL: String
+    var imageURL: String?
     var location: Location
     val pets: MutableList<Pet>
 }

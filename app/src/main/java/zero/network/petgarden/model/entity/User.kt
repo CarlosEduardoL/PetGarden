@@ -11,7 +11,7 @@ data class User(
     override var email: String = "",
     override var password: String = "",
     override var birthDay: Date = Date(),
-    override var imageURL: String = "",
+    override var imageURL: String? = null,
     override var location: Location = Location(0.0,0.0),
     override val pets: MutableList<Pet> = mutableListOf()
 ): Serializable, IUser

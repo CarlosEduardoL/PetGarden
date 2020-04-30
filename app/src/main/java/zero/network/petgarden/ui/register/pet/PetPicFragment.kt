@@ -34,6 +34,6 @@ class PetPicFragment(private val listener: OnNextListener, private val pet: Pet,
         }
     }.root
 
-    fun imageDir() = File("${activity!!.getExternalFilesDir(null)}/photo.png")
+    fun imageDir() = File("${activity!!.getExternalFilesDir(null)}/${pet.id}.png")
 
 }

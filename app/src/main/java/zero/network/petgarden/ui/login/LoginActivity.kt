@@ -3,19 +3,19 @@ package zero.network.petgarden.ui.login
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.facebook.*
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.GraphRequest
+import com.facebook.login.LoginResult
+import com.facebook.login.widget.LoginButton
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -23,29 +23,29 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import org.json.JSONException
 import zero.network.petgarden.R
+import zero.network.petgarden.databinding.ActivityLoginBinding
 import zero.network.petgarden.model.entity.Location
 import zero.network.petgarden.model.entity.User
-import zero.network.petgarden.ui.register.user.RegisterActivity
-import zero.network.petgarden.util.toText
-import com.facebook.appevents.AppEventsLogger
-import com.facebook.login.Login
-import com.facebook.login.LoginResult
-import com.facebook.login.widget.LoginButton
-import com.google.firebase.auth.FirebaseUser
-import kotlinx.android.synthetic.main.activity_login.view.*
-import org.json.JSONException
-import org.json.JSONObject
-import zero.network.petgarden.databinding.ActivityLoginBinding
 import zero.network.petgarden.tools.initDatabase
+import zero.network.petgarden.ui.register.user.RegisterActivity
 import zero.network.petgarden.ui.register.user.RegisterFacebookActivity
-import zero.network.petgarden.ui.register.user.RoleRegisterFragment
 import zero.network.petgarden.ui.user.owner.OwnerActivity
 import zero.network.petgarden.ui.user.sitter.SitterActivity
-import zero.network.petgarden.util.extra
+import zero.network.petgarden.util.show
+import zero.network.petgarden.util.toText
 import java.net.MalformedURLException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
 class LoginActivity : AppCompatActivity() {
@@ -69,7 +69,10 @@ class LoginActivity : AppCompatActivity() {
 
         binding.loginButton.setOnClickListener {
             if (binding.emailInput.text.isNotEmpty() && binding.passwordInput.text.isNotEmpty())
-                fbAuth.signInWithEmailAndPassword(binding.emailInput.toText(), binding.passwordInput.toText())
+                fbAuth.signInWithEmailAndPassword(
+                    binding.emailInput.toText(),
+                    binding.passwordInput.toText()
+                )
                     .addOnCompleteListener {
                         if (it.isSuccessful) {
                             if (isSitter(binding.emailInput.toText()))
@@ -77,7 +80,7 @@ class LoginActivity : AppCompatActivity() {
                             else
                                 startFragmentOwner()
                         } else {
-                            showToast(getString(R.string.no_register_info))
+                            show(getString(R.string.no_register_info))
                         }
                     }
         }
@@ -94,40 +97,36 @@ class LoginActivity : AppCompatActivity() {
             startActivityForResult(signInIntent, RC_SIGN_IN)
         }
 
-        val fbookButton = findViewById<LoginButton>(R.id.facebookButton);
+        val fbookButton = findViewById<LoginButton>(R.id.facebookButton)
 
         val callback = object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult) {
-                System.out.println("entroSUccess")
-                handleFacebookToken(result)
+                println("entroSUccess")
+                GlobalScope.launch(Main){handleFacebookToken(result)}
             }
 
             override fun onCancel() {
-                System.out.println("entroCancel")
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-
+                println("entroCancel")
             }
 
             override fun onError(error: FacebookException?) {
-                System.out.println("entroError")
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                println("entroError")
             }
         }
 
-        fbookButton.setPermissions("email", "user_birthday", "user_posts");
-        fbookButton.registerCallback(callbackFacebook, callback);
+        fbookButton.setPermissions("email", "user_birthday", "user_posts")
+        fbookButton.registerCallback(callbackFacebook, callback)
 
-        val probesButton1 = findViewById<Button>(R.id.buttonPruebas);
-        val pruebas = ClasePruebas(this)
+        ClasePruebas(this)
 
     }
 
-    private fun handleFacebookToken(loginResult: LoginResult) {
+    private suspend fun handleFacebookToken(loginResult: LoginResult) {
         val request: GraphRequest = GraphRequest.newMeRequest(
             loginResult.accessToken
-        ) { objec, response ->
-            try {
-                val email = objec.getString("email");
+        ) { obj, _ ->
+            GlobalScope.launch(Main) {
+                val email = obj.getString("email")
 
                 if (userAlreadyExists(email)) {
                     if (isSitter(email))
@@ -135,12 +134,12 @@ class LoginActivity : AppCompatActivity() {
                     else
                         startFragmentOwner()
                 } else {
-                    val name = objec.getString("first_name");
-                    val lastName = objec.getString("last_name");
+                    val name = obj.getString("first_name")
+                    val lastName = obj.getString("last_name")
                     val photo =
-                        "https://graph.facebook.com/" + (objec.getString("id")) + "/picture?width=500&height=500"
+                        "https://graph.facebook.com/" + (obj.getString("id")) + "/picture?width=500&height=500"
                     val birthday =
-                        SimpleDateFormat("dd/MM/yyyy").parse(objec.getString("birthday"))// O el formato es MM/dd/yyyy??, lo averiguaremos
+                        SimpleDateFormat("dd/MM/yyyy").parse(obj.getString("birthday"))// O el formato es MM/dd/yyyy??, lo averiguaremos
                     val user = User(
                         UUID.randomUUID().toString(),
                         name,
@@ -155,19 +154,13 @@ class LoginActivity : AppCompatActivity() {
                     startFragmentRoleUser(user)
                 }
 
-
-
-            } catch (e: JSONException) {
-                e.printStackTrace();
-            } catch (e: MalformedURLException) {
-                e.printStackTrace();
             }
         }
 
-        val parameters =  Bundle()
-        parameters.putString("fields", "id, first_name, last_name, email, birthday");
-        request.setParameters(parameters);
-        request.executeAsync();
+        val parameters = Bundle()
+        parameters.putString("fields", "id, first_name, last_name, email, birthday")
+        request.parameters = parameters
+        request.executeAsync()
 
     }
 
@@ -178,12 +171,12 @@ class LoginActivity : AppCompatActivity() {
         if (requestCode == RC_SIGN_IN) {
             val task: Task<GoogleSignInAccount> =
                 GoogleSignIn.getSignedInAccountFromIntent(data)
-            handleGoogleSignIn(task)
+            GlobalScope.launch(Main) { handleGoogleSignIn(task) }
         }
-        callbackFacebook.onActivityResult(requestCode, resultCode, data);
+        callbackFacebook.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun handleGoogleSignIn(completedTask: Task<GoogleSignInAccount>) {
+    private suspend fun handleGoogleSignIn(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
 
@@ -199,7 +192,7 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     val name = "" + account.givenName
                     val lastName = "" + account.familyName
-                    var photo = account.photoUrl.toString()
+                    val photo = account.photoUrl.toString()
 
 
                     val user = User(
@@ -218,55 +211,41 @@ class LoginActivity : AppCompatActivity() {
             }
 
         } catch (e: ApiException) {
-            showToast(getString(R.string.sign_in_google_error))
+            show(getString(R.string.sign_in_google_error))
         }
     }
 
-    private fun userAlreadyExists(email: String): Boolean {
-        var isOwner:Boolean = false
-        var isSitter:Boolean = false
-
-        val queryBusquedaOwner: Query =
-            FirebaseDatabase.getInstance().getReference().child("users").child("owners")
+    private suspend fun userAlreadyExists(email: String): Boolean = withContext(IO) {
+        val isOwner: Boolean =
+            FirebaseDatabase.getInstance().reference.child("users").child("owners")
                 .orderByChild("email")
-                .equalTo(email)
+                .equalTo(email).isRegister()
 
-        queryBusquedaOwner.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {}
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.childrenCount > 0) {
-                    isOwner = true
-                }
-            }
-
-        })
-        val queryBusquedaSitter: Query =
-            FirebaseDatabase.getInstance().getReference().child("users").child("sitters")
+        val isSitter: Boolean =
+            FirebaseDatabase.getInstance().reference.child("users").child("sitters")
                 .orderByChild("email")
-                .equalTo(email)
+                .equalTo(email).isRegister()
 
-        queryBusquedaSitter.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {}
+        println("sitterAfter$isSitter")
+        return@withContext isSitter or isOwner
+    }
 
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.childrenCount > 0) {
-                    isSitter = true
-                    println("sitterBefore"+isSitter)
+    private suspend fun Query.isRegister(): Boolean = suspendCoroutine {
+        val callback = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) = it.resume(false)
 
-                }
-            }
-
-        })
-        println("sitterAfter"+isSitter)
-        return isSitter or isOwner
+            override fun onDataChange(dataSnapshot: DataSnapshot) =
+                if (dataSnapshot.childrenCount > 0) it.resume(true)
+                else it.resume(false)
+        }
+        addListenerForSingleValueEvent(callback)
     }
 
     private fun isSitter(email: String): Boolean {
         var isSitter = false
 
         val queryBusquedaSitter: Query =
-            FirebaseDatabase.getInstance().getReference().child("users").child("sitters")
+            FirebaseDatabase.getInstance().reference.child("users").child("sitters")
                 .orderByChild("email")
                 .equalTo(email)
 
@@ -305,7 +284,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun showToast(text: String) = Toast.makeText(this, text, Toast.LENGTH_LONG).show()
 
     private fun startFragmentSitter() {
         val intent = Intent(this, SitterActivity::class.java)
