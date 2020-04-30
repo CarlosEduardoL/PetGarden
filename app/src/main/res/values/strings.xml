@@ -55,5 +55,10 @@
     <string name="pet_breed_question">¿Qué raza es?</string>
     <string name="pet_weight_question">¿Cuál es el peso de tu mascota (Kg)?</string>
     <string name="title_activity_maps_delete">Map</string>
+    <string name="current_password">Contraseña actual</string>
+    <string name="new_password">Nueva contraseña</string>
+    <string name="change_password">Cambiar contraseña</string>
+    <string name="wrong_password">Contraseña Incorrecta</string>
+    <string name="password_cannot_be_equals">La nueva contraseña no puede ser igual a la anterior</string>
 
 </resources>

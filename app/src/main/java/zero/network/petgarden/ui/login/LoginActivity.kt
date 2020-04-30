@@ -23,11 +23,10 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.ActivityLoginBinding
@@ -40,7 +39,6 @@ import zero.network.petgarden.ui.user.owner.OwnerActivity
 import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.show
 import zero.network.petgarden.util.toText
-import java.net.MalformedURLException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.coroutines.resume
@@ -74,7 +72,7 @@ class LoginActivity : AppCompatActivity() {
                 )
                     .addOnCompleteListener {
                         if (it.isSuccessful) {
-                            GlobalScope.launch(Main) {  chooseFragment(binding)}
+                            CoroutineScope(Main).launch {  chooseFragment(binding)}
                         } else {
                             show(getString(R.string.no_register_info))
                         }
@@ -98,7 +96,7 @@ class LoginActivity : AppCompatActivity() {
         val callback = object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult) {
                 println("entroSuccess")
-                GlobalScope.launch(Main){handleFacebookToken(result)}
+                CoroutineScope(Main).launch{handleFacebookToken(result)}
             }
 
             override fun onCancel() {
@@ -121,7 +119,7 @@ class LoginActivity : AppCompatActivity() {
         val request: GraphRequest = GraphRequest.newMeRequest(
             loginResult.accessToken
         ) { obj, _ ->
-            GlobalScope.launch(Main) {
+            CoroutineScope(Main).launch {
                 val email = obj.getString("email")
 
                 if (userAlreadyExists(email)) {
@@ -167,7 +165,7 @@ class LoginActivity : AppCompatActivity() {
         if (requestCode == RC_SIGN_IN) {
             val task: Task<GoogleSignInAccount> =
                 GoogleSignIn.getSignedInAccountFromIntent(data)
-            GlobalScope.launch(Main) { handleGoogleSignIn(task) }
+            CoroutineScope(Main).launch { handleGoogleSignIn(task) }
         }
         callbackFacebook.onActivityResult(requestCode, resultCode, data)
     }
@@ -238,13 +236,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private suspend fun isSitter(email: String): Boolean = withContext(IO){
-
-        val isSitter: Boolean =
-            FirebaseDatabase.getInstance().reference.child("users").child("sitters")
-                .orderByChild("email")
-                .equalTo(email).isRegister()
-
-        return@withContext  isSitter
+        FirebaseDatabase.getInstance().reference.child("users").child("sitters")
+            .orderByChild("email")
+            .equalTo(email).isRegister()
     }
 
 

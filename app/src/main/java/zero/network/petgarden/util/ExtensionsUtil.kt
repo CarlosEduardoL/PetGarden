@@ -18,7 +18,7 @@ fun Fragment.show(message: String) =
 
 
 // Short the setOnCLickListenerMethod
-fun View.onClick(action: (View) -> Unit) = this.setOnClickListener { action(it) }
+fun View.onClick(action: () -> Unit) = this.setOnClickListener { action() }
 
 /**
  * get extra information from intent
