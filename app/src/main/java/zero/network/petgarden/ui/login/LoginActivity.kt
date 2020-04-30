@@ -40,6 +40,8 @@ import zero.network.petgarden.databinding.ActivityLoginBinding
 import zero.network.petgarden.tools.initDatabase
 import zero.network.petgarden.ui.register.user.RegisterFacebookActivity
 import zero.network.petgarden.ui.register.user.RoleRegisterFragment
+import zero.network.petgarden.ui.user.owner.OwnerActivity
+import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.extra
 import java.net.MalformedURLException
 import java.text.SimpleDateFormat
@@ -205,7 +207,7 @@ class LoginActivity : AppCompatActivity() {
                         name,
                         lastName,
                         email,
-                        "",
+                        "123456",
                         Date(),
                         photo,
                         Location(0.0, 0.0)
@@ -221,8 +223,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun userAlreadyExists(email: String): Boolean {
-        var isOwner = false
-        var isSitter = false
+        var isOwner:Boolean = false
+        var isSitter:Boolean = false
 
         val queryBusquedaOwner: Query =
             FirebaseDatabase.getInstance().getReference().child("users").child("owners")
@@ -233,7 +235,7 @@ class LoginActivity : AppCompatActivity() {
             override fun onCancelled(p0: DatabaseError) {}
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.getChildrenCount() > 0L) {
+                if (dataSnapshot.childrenCount > 0) {
                     isOwner = true
                 }
             }
@@ -248,14 +250,16 @@ class LoginActivity : AppCompatActivity() {
             override fun onCancelled(p0: DatabaseError) {}
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.getChildrenCount() > 0L) {
+                if (dataSnapshot.childrenCount > 0) {
                     isSitter = true
+                    println("sitterBefore"+isSitter)
+
                 }
             }
 
         })
-
-        return isSitter || isOwner
+        println("sitterAfter"+isSitter)
+        return isSitter or isOwner
     }
 
     private fun isSitter(email: String): Boolean {
@@ -270,7 +274,7 @@ class LoginActivity : AppCompatActivity() {
             override fun onCancelled(p0: DatabaseError) {}
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.getChildrenCount() > 0L) {
+                if (dataSnapshot.childrenCount > 0) {
                     isSitter = true
                 }
             }
@@ -304,19 +308,16 @@ class LoginActivity : AppCompatActivity() {
     private fun showToast(text: String) = Toast.makeText(this, text, Toast.LENGTH_LONG).show()
 
     private fun startFragmentSitter() {
-        //Cambiar esto para que vaya hasta el mapa del sitter
-        val intent = Intent(this, RegisterActivity::class.java)
+        val intent = Intent(this, SitterActivity::class.java)
         startActivity(intent)
     }
 
     private fun startFragmentOwner() {
-        //Cambiar esto para que vaya hasta el mapa del owner
-        val intent = Intent(this, RegisterActivity::class.java)
+        val intent = Intent(this, OwnerActivity::class.java)
         startActivity(intent)
     }
 
     private fun startFragmentRoleUser(user: User) {
-        //Cambiar esto para que vaya hasta el fragment de roles
         val intent = Intent(this, RegisterFacebookActivity::class.java)
         intent.putExtra("user", user)
         startActivity(intent)
