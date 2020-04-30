@@ -31,8 +31,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     private GoogleMap mMap;
     private Marker posActual;
-    double lat=0.0;
-    double lng=0.0;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,7 +74,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 18));
         posActual = mMap.addMarker(  new MarkerOptions().position(pos).title("Yo").snippet("Mi ubicación")  );
 
-
     }
 
 
@@ -84,9 +82,9 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
         posActual.setPosition(  pos  );
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
-        Log.e(">>>", "Locación cambiada");
 
-
+        OwnerActivity activity = (OwnerActivity)getActivity();
+        activity.updateOwnerLocation(location);
     }
 
     @Override
@@ -103,4 +101,9 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     public void onProviderDisabled(String provider) {
 
     }
+
+    public void addLocations(){
+
+    }
+
 }
