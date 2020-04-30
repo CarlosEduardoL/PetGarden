@@ -31,6 +31,8 @@ import kotlinx.coroutines.withContext
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.ActivityLoginBinding
 import zero.network.petgarden.model.entity.Location
+import zero.network.petgarden.model.entity.Owner
+import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.tools.initDatabase
 import zero.network.petgarden.ui.register.user.RegisterActivity
@@ -51,6 +53,8 @@ class LoginActivity : AppCompatActivity() {
     private val callbackFacebook = CallbackManager.Factory.create()
 
     lateinit var binding: ActivityLoginBinding
+    private var sitter:Sitter= Sitter(User())
+    private var owner:Owner= Owner(User())
 
     @SuppressLint("WrongViewCast")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -178,10 +182,13 @@ class LoginActivity : AppCompatActivity() {
                 val email = "" + account.email
 
                 if (userAlreadyExists(email)) {
-                    if (isSitter(email))
+                    if (isSitter(email)) {
+                        initSitter(email)
                         startFragmentSitter()
-                    else
+                    }else {
+                        initOwner(email)
                         startFragmentOwner()
+                    }
 
                 } else {
                     val name = "" + account.givenName
@@ -207,6 +214,38 @@ class LoginActivity : AppCompatActivity() {
         } catch (e: ApiException) {
             show(getString(R.string.sign_in_google_error))
         }
+    }
+
+    private fun initSitter(email: String) {
+        val busqueda  =FirebaseDatabase.getInstance().reference.child("users")
+                        .child("sitters").orderByChild("email").equalTo(email)
+
+        busqueda.addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {}
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (result in dataSnapshot.getChildren()) {
+                     sitter = Sitter(result.getValue(User::class.java)!!)
+                    break
+                }
+            }
+        })
+    }
+
+    private fun initOwner(email: String) {
+        val busqueda  =FirebaseDatabase.getInstance().reference.child("users")
+            .child("owners").orderByChild("email").equalTo(email)
+
+        busqueda.addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {}
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (result in dataSnapshot.getChildren()) {
+                    owner = Owner(result.getValue(User::class.java)!!)
+                    break
+                }
+            }
+        })
     }
 
     private suspend fun userAlreadyExists(email: String): Boolean = withContext(IO) {
@@ -267,12 +306,16 @@ class LoginActivity : AppCompatActivity() {
 
     private fun startFragmentSitter() {
         val intent = Intent(this, SitterActivity::class.java)
-        println("fragmentSitter")
+        intent.putExtra("sitter", sitter)
+        println("fragmentSitter datos sitter"+sitter.name)
         startActivity(intent)
     }
 
     private fun startFragmentOwner() {
         val intent = Intent(this, OwnerActivity::class.java)
+        intent.putExtra("owner", owner)
+        println("fragmentSitter datos owner"+owner.name)
+
         startActivity(intent)
     }
 

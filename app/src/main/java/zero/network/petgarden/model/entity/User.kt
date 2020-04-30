@@ -12,7 +12,7 @@ data class User(
     override var password: String = "",
     override var birthDay: Date = Date(),
     override var imageURL: String? = null,
-    override var location: Location = Location(0.0,0.0),
+    override var location: Location = Location(1.88,2.99),
     override val pets: MutableList<Pet> = mutableListOf()
 ): Serializable, IUser
 
