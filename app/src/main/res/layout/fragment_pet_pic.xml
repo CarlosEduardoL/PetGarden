@@ -17,8 +17,9 @@
 
     <ImageView
         android:id="@+id/petPic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:visibility="gone"/>
 
     <ImageButton
         style="@style/AppButton"
@@ -31,6 +32,7 @@
         android:id="@+id/nextButton"
         style="@style/AppButton"
         android:visibility="gone"
+        android:text="@string/Next"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="64dp" />
 

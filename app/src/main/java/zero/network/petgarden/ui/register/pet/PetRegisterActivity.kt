@@ -6,12 +6,19 @@ import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import zero.network.petgarden.R
 import zero.network.petgarden.model.entity.Pet
+import zero.network.petgarden.model.entity.Pet.Companion.PET_FOLDER
+import zero.network.petgarden.tools.uploadImage
 import zero.network.petgarden.ui.element.ActionBarFragment
 import zero.network.petgarden.util.extra
 import zero.network.petgarden.util.show
@@ -55,8 +62,11 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener {
             breedFragment -> changeTo(ageFragment)
             ageFragment -> changeTo(weightFragment)
             weightFragment -> changeTo(picFragment)
-            picFragment -> {
+            picFragment -> GlobalScope.launch(Main) {
                 setResult(Activity.RESULT_OK, Intent().apply { putExtra(PET_KEY, pet) })
+                uploadImage(picFragment.imageDir(), PET_FOLDER)
+                FirebaseDatabase.getInstance().reference.child("pets").child(pet.id).setValue(pet)
+                    .await()
                 finish()
             }
         }
@@ -89,7 +99,7 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if (requestCode == REQUEST_PERMISSION_CODE && grantResults.all { it == PERMISSION_GRANTED }){
+        if (requestCode == REQUEST_PERMISSION_CODE && grantResults.all { it == PERMISSION_GRANTED }) {
             typeFragment = PetTypeFragment(this, pet)
             nameFragment = PetNameFragment(this, pet)
             breedFragment = PetBreedFragment(this, pet)
@@ -100,17 +110,18 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.body, typeFragment)
                 .commit()
-        }else {
+        } else {
             requestPermission()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == CAMERA_INTENT && resultCode == Activity.RESULT_OK){
-            onBackPressed()
-            val image = BitmapFactory.decodeFile(picFragment.imageDir().path)
-            val thumbnail = Bitmap.createScaledBitmap(image, image.width/4, image.height/4,false)
+        if (requestCode == CAMERA_INTENT && resultCode == Activity.RESULT_OK) {
+           supportFragmentManager.popBackStack()
+            picFragment =PetPicFragment(this,pet, BitmapFactory.decodeFile(picFragment.imageDir().path)
+                .let { Bitmap.createScaledBitmap(it, it.width / 4, it.height / 4, false) })
+            changeTo(picFragment)
         }
     }
 

@@ -1,5 +1,6 @@
 package zero.network.petgarden.model.entity
 
+import zero.network.petgarden.tools.downloadImage
 import java.io.Serializable
 import java.util.*
 
@@ -12,4 +13,11 @@ data class Pet(
     var weight: Int = 0,
     var about: String = "",
     var image: String = ""
-): Serializable
+): Serializable{
+
+    suspend fun loadImage() = downloadImage(id, PET_FOLDER)
+
+    companion object{
+        const val PET_FOLDER = "pet"
+    }
+}
