@@ -5,7 +5,8 @@ import zero.network.petgarden.model.entity.Pet
 import java.io.Serializable
 import java.util.*
 
-interface IUser: Serializable, Entity {
+interface IUser: Serializable {
+    val id: String
     var name: String
     var lastName: String
     var email: String

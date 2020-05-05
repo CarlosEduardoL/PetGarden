@@ -4,13 +4,14 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import zero.network.petgarden.model.behaivor.Entity
 import zero.network.petgarden.model.behaivor.IUser
 import java.io.Serializable
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-data class Owner(private val user: User = User()): IUser by user, Serializable {
+data class Owner(private val user: User = User()): IUser by user, Serializable, Entity {
 
     override fun folder() = FOLDER
 

@@ -6,8 +6,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.withContext
+import zero.network.petgarden.model.behaivor.Entity
 import zero.network.petgarden.model.behaivor.IPlanner
 import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.tools.downloadImage
@@ -16,7 +15,6 @@ import java.io.Serializable
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
-import kotlin.coroutines.suspendCoroutine
 
 data class Sitter(
     private val user: User = User(),
@@ -24,7 +22,7 @@ data class Sitter(
     var kindPets: String = "Nothing Especial",
     var additional: String = "Nothing Especial",
     private val planner: Planner = Planner()
-) : IUser by user, IPlanner by planner, Serializable {
+) : IUser by user, IPlanner by planner, Serializable, Entity {
 
     val availability: Duration?
         get() = planner.availabilities.min()

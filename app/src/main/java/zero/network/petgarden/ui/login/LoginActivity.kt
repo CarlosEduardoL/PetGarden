@@ -121,9 +121,9 @@ class LoginActivity : AppCompatActivity() {
         FirebaseAuth.getInstance().currentUser?.let {
             CoroutineScope(Main).launch {
                 if (isSitter(it.email!!)) {
-                    startUserView(Sitter.sitterByEmail(it.email!!), Sitter::class.java)
+                    startUserView(Sitter.sitterByEmail(it.email!!), SitterActivity::class.java)
                 } else {
-                    startUserView(Owner.ownerByEmail(it.email!!), Owner::class.java)
+                    startUserView(Owner.ownerByEmail(it.email!!), OwnerActivity::class.java)
                 }
             }
         }
@@ -270,7 +270,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private suspend fun isSitter(email: String): Boolean = withContext(IO) {
-        FirebaseDatabase.getInstance().reference.child("users").child("sitters")
+        FirebaseDatabase.getInstance().reference.child("sitters")
             .orderByChild("email")
             .equalTo(email).isRegister()
     }

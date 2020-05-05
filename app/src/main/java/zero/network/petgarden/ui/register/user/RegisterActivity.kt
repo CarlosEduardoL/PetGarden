@@ -83,10 +83,15 @@ class RegisterActivity : AppCompatActivity(),
                 .replace(R.id.body, roleFragment)
                 .addToBackStack(REGISTER_STACK)
                 .commit()
-            roleFragment -> supportFragmentManager.beginTransaction()
-                .replace(R.id.body, PictureFragment(this, state, getString(R.string.user_picture)))
-                .addToBackStack(REGISTER_STACK)
-                .commit()
+            roleFragment -> when (state) {
+                is Entity -> supportFragmentManager.beginTransaction()
+                    .replace(
+                        R.id.body,
+                        PictureFragment(this, state, getString(R.string.user_picture))
+                    )
+                    .addToBackStack(REGISTER_STACK)
+                    .commit()
+            }
         }
     }
 
@@ -94,7 +99,6 @@ class RegisterActivity : AppCompatActivity(),
         FirebaseAuth.getInstance()
             .createUserWithEmailAndPassword(iUser.email, iUser.password)
             .addOnSuccessListener {
-                iUser.saveInDB()
                 Intent(this, clazz).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     putExtra("user", iUser)
@@ -108,8 +112,9 @@ class RegisterActivity : AppCompatActivity(),
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && data !== null && requestCode == PET_CALLBACK){
-            val owner = Owner(user).apply { pets.add(data.extra(PET_KEY){return}) }
+        if (resultCode == Activity.RESULT_OK && data !== null && requestCode == PET_CALLBACK) {
+            val owner = Owner(user).apply { pets.add(data.extra(PET_KEY) { return }) }
+            owner.saveInDB()
             startUserView(owner, OwnerActivity::class.java)
         }
     }
@@ -122,10 +127,14 @@ class RegisterActivity : AppCompatActivity(),
                 startActivityForResult(this, PET_CALLBACK)
             }
 
-            is Sitter -> startUserView(entity, SitterActivity::class.java)
+            is Sitter -> {
+                entity.saveInDB()
+                startUserView(entity, SitterActivity::class.java)
+            }
             else -> println("Error")
         }
     }
+
     companion object {
         private const val PET_CALLBACK = 2900
         private const val REGISTER_STACK = "REGISTER_STACK"
