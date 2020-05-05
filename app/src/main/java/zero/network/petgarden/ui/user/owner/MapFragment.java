@@ -88,17 +88,18 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         activity = (OwnerActivity)getActivity();
         activity.updateOwnerLocation(locationActual);
 
-        addSittersMarkers((ArrayList)activity.getSitters());
+
     }
 
-    public void addSittersMarkers(ArrayList<Sitter> sitters){
+    public synchronized void addSittersMarkers(ArrayList<Sitter> sitters){
         LatLng pos = null;
 
         for(Sitter sitter: sitters){
 
             //Si la distancia es menor que n, ponga los marcadores en el mapa
-            if(true)
+
             pos = new LatLng(sitter.getLocation().getLat(),sitter.getLocation().getLongitude());
+            Log.e(">>>",""+sitter.getLocation().getLat());
             mMap.addMarker(new MarkerOptions().position(pos).title(sitter.getName()).snippet("Mi ubicación"));
         }
     }

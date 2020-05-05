@@ -31,6 +31,7 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
     FragmentManager fragmentManager;
     private Owner owner;
     private List<Sitter> sitters;
+    MapFragment fragmentMap;
 
 
     @Override
@@ -38,6 +39,7 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_owner);
         sitters = new ArrayList<>();
+
 
         loadDataFromActivity();
 
@@ -51,8 +53,11 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
     }
 
     private void loadDataFromActivity() {
-        Bundle extras = getIntent().getExtras();
-        owner =(Owner) extras.getSerializable("user");
+
+        //PONER A CARGAR LOS DATOS DEL EXTRA
+/*        Bundle extras = getIntent().getExtras();
+        owner =(Owner) extras.getSerializable("user");*/
+        owner = new Owner();
 
     }
 
@@ -64,8 +69,9 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
     public void showMap(){
         getSittersFromDB();
 
+
         if( ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            MapFragment fragmentMap = new MapFragment();
+            fragmentMap = new MapFragment();
 
             fragmentManager =getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -96,6 +102,7 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
 
     }
 
+
     public void getSittersFromDB(){
 
         //Obtener lista de sitters
@@ -112,6 +119,8 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
                     sitters.add(sitterChild);
                     Log.e(">>>","" +sitterChild.getId()+ ":"+sitterChild.getName());
                 }
+
+                fragmentMap.addSittersMarkers((ArrayList<Sitter>)sitters);
             }
 
             @Override
