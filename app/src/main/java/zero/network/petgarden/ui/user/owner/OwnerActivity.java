@@ -1,17 +1,17 @@
 package zero.network.petgarden.ui.user.owner;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Bundle;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.os.Bundle;
-import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,18 +20,17 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
 
 import zero.network.petgarden.R;
 import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Sitter;
-import zero.network.petgarden.model.entity.User;
 
-public class OwnerActivity extends AppCompatActivity{
+public class OwnerActivity extends AppCompatActivity implements OwnerView{
 
     FragmentManager fragmentManager;
     private Owner owner;
-    private ArrayList<Sitter> sitters;
+    private List<Sitter> sitters;
 
 
     @Override
@@ -132,11 +131,11 @@ public class OwnerActivity extends AppCompatActivity{
         this.owner = owner;
     }
 
-    public ArrayList<Sitter> getSitters() {
+    public List<Sitter> getSitters() {
         return sitters;
     }
 
-    public void setSitters(ArrayList<Sitter> sitters) {
+    public void setSitters(List<Sitter> sitters) {
         this.sitters = sitters;
     }
 }

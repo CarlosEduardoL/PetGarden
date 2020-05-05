@@ -1,14 +1,14 @@
 package zero.network.petgarden.ui.register.user
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_register_name.view.*
-
+import androidx.fragment.app.Fragment
 import zero.network.petgarden.R
+import zero.network.petgarden.databinding.FragmentRegisterNameBinding
 import zero.network.petgarden.model.entity.User
+import zero.network.petgarden.util.onClick
 import zero.network.petgarden.util.show
 import zero.network.petgarden.util.toText
 
@@ -23,9 +23,9 @@ class NameRegisterFragment(
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_register_name, container, false).apply {
+    ): View = FragmentRegisterNameBinding.inflate(inflater, container, false).apply {
         nameInput.setText(user.name)
-        nextButton.setOnClickListener {
+        nextButton.onClick {
             nameInput.text.toString().let {name ->
                 if (name.isNotEmpty()) {
                     user.name = name
@@ -40,6 +40,6 @@ class NameRegisterFragment(
                 }
             }
         }
-    }
+    }.root
 
 }
