@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import zero.network.petgarden.R;
@@ -30,19 +31,23 @@ public class OwnerActivity extends AppCompatActivity{
 
     FragmentManager fragmentManager;
     private Owner owner;
+    private ArrayList<Sitter> sitters;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_owner);
+        sitters = new ArrayList<>();
 
         loadDataFromActivity();
+
 
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.INTERNET
         }, 11);
+
 
     }
 
@@ -105,6 +110,7 @@ public class OwnerActivity extends AppCompatActivity{
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot child : dataSnapshot.getChildren()){
                     Sitter sitterChild= child.getValue(Sitter.class);
+                    sitters.add(sitterChild);
                     Log.e(">>>","" +sitterChild.getId()+ ":"+sitterChild.getName());
                 }
             }
@@ -118,4 +124,19 @@ public class OwnerActivity extends AppCompatActivity{
     }
 
 
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
+    public ArrayList<Sitter> getSitters() {
+        return sitters;
+    }
+
+    public void setSitters(ArrayList<Sitter> sitters) {
+        this.sitters = sitters;
+    }
 }

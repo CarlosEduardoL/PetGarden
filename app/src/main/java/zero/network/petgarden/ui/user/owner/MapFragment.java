@@ -31,6 +31,8 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     private GoogleMap mMap;
     private Marker posActual;
+    private Location locationActual;
+    private OwnerActivity activity;
 
 
     @Override
@@ -70,21 +72,26 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         //Llevar a la ultima localizacion conocida
         Location last = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        locationActual = last;
         LatLng pos = new LatLng(last.getLatitude(), last.getLongitude());
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 18));
         posActual = mMap.addMarker(  new MarkerOptions().position(pos).title("Yo").snippet("Mi ubicación")  );
 
+        //Actualizar la ubicación del dueño sólo al inicio
+        activity = (OwnerActivity)getActivity();
+        activity.updateOwnerLocation(locationActual);
     }
 
 
     @Override
     public void onLocationChanged(Location location) {
+        locationActual = location;
         LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
         posActual.setPosition(  pos  );
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
 
-        OwnerActivity activity = (OwnerActivity)getActivity();
-        activity.updateOwnerLocation(location);
+        //REMOVER. Se necesita llamar solamente cuando se cree la activity
+
     }
 
     @Override
@@ -106,4 +113,27 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     }
 
+    public GoogleMap getmMap() {
+        return mMap;
+    }
+
+    public void setmMap(GoogleMap mMap) {
+        this.mMap = mMap;
+    }
+
+    public Marker getPosActual() {
+        return posActual;
+    }
+
+    public void setPosActual(Marker posActual) {
+        this.posActual = posActual;
+    }
+
+    public Location getLocationActual() {
+        return locationActual;
+    }
+
+    public void setLocationActual(Location locationActual) {
+        this.locationActual = locationActual;
+    }
 }
