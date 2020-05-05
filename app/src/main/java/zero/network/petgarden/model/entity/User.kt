@@ -14,5 +14,9 @@ data class User(
     override var imageURL: String? = null,
     override var location: Location = Location(1.88,2.99),
     override val pets: MutableList<Pet> = mutableListOf()
-): Serializable, IUser
+): Serializable, IUser {
+    override fun folder(): String {
+        return "users"
+    }
+}
 

@@ -5,10 +5,11 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".ui.register.pet.PetPicFragment">
+    tools:context=".ui.register.PictureFragment">
 
     <TextView
         style="@style/RegisterTitle"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="80dp"
@@ -16,7 +17,7 @@
         android:textAlignment="center" />
 
     <ImageView
-        android:id="@+id/petPic"
+        android:id="@+id/picture"
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:visibility="gone"/>

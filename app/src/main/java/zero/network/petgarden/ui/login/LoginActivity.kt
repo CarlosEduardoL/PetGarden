@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.ActivityLoginBinding
+import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.model.entity.Location
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Sitter
@@ -54,8 +55,8 @@ class LoginActivity : AppCompatActivity() {
     private val callbackFacebook = CallbackManager.Factory.create()
 
     lateinit var binding: ActivityLoginBinding
-    private var sitter:Sitter= Sitter(User())
-    private var owner:Owner= Owner(User())
+    private var sitter: Sitter = Sitter(User())
+    private var owner: Owner = Owner(User())
 
     @SuppressLint("WrongViewCast")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,14 +75,13 @@ class LoginActivity : AppCompatActivity() {
                 fbAuth.signInWithEmailAndPassword(
                     binding.emailInput.toText(),
                     binding.passwordInput.toText()
-                )
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            CoroutineScope(Main).launch {  chooseFragment(binding)}
-                        } else {
-                            show(getString(R.string.no_register_info))
-                        }
+                ).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        CoroutineScope(Main).launch { chooseFragment(binding) }
+                    } else {
+                        show(getString(R.string.no_register_info))
                     }
+                }
         }
 
         //Google
@@ -101,7 +101,7 @@ class LoginActivity : AppCompatActivity() {
         val callback = object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult) {
                 println("entroSuccess")
-                CoroutineScope(Main).launch{handleFacebookToken(result)}
+                CoroutineScope(Main).launch { handleFacebookToken(result) }
             }
 
             override fun onCancel() {
@@ -118,6 +118,24 @@ class LoginActivity : AppCompatActivity() {
 
         ClasePruebas(this)
 
+        FirebaseAuth.getInstance().currentUser?.let {
+            CoroutineScope(Main).launch {
+                if (isSitter(it.email!!)) {
+                    startUserView(Sitter.sitterByEmail(it.email!!), Sitter::class.java)
+                } else {
+                    startUserView(Owner.ownerByEmail(it.email!!), Owner::class.java)
+                }
+            }
+        }
+
+    }
+
+    private fun <T> startUserView(iUser: IUser, clazz: Class<T>) {
+        Intent(this, clazz).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("user", iUser)
+            startActivity(this)
+        }
     }
 
     private suspend fun handleFacebookToken(loginResult: LoginResult) {
@@ -186,7 +204,7 @@ class LoginActivity : AppCompatActivity() {
                     if (isSitter(email)) {
                         initSitter(email)
                         startFragmentSitter()
-                    }else {
+                    } else {
                         initOwner(email)
                         startFragmentOwner()
                     }
@@ -217,36 +235,12 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun initSitter(email: String) {
-        val busqueda  =FirebaseDatabase.getInstance().reference.child("users")
-                        .child("sitters").orderByChild("email").equalTo(email)
-
-        busqueda.addListenerForSingleValueEvent(object: ValueEventListener{
-            override fun onCancelled(p0: DatabaseError) {}
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (result in dataSnapshot.getChildren()) {
-                     sitter = Sitter(result.getValue(User::class.java)!!)
-                    break
-                }
-            }
-        })
+    private suspend fun initSitter(email: String) {
+        sitter = Sitter.sitterByEmail(email)
     }
 
-    private fun initOwner(email: String) {
-        val busqueda  =FirebaseDatabase.getInstance().reference.child("users")
-            .child("owners").orderByChild("email").equalTo(email)
-
-        busqueda.addListenerForSingleValueEvent(object: ValueEventListener{
-            override fun onCancelled(p0: DatabaseError) {}
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (result in dataSnapshot.getChildren()) {
-                    owner = Owner(result.getValue(User::class.java)!!)
-                    break
-                }
-            }
-        })
+    private suspend fun initOwner(email: String) {
+        owner = Owner.ownerByEmail(email)
     }
 
     private suspend fun userAlreadyExists(email: String): Boolean = withContext(IO) {
@@ -275,7 +269,7 @@ class LoginActivity : AppCompatActivity() {
         addListenerForSingleValueEvent(callback)
     }
 
-    private suspend fun isSitter(email: String): Boolean = withContext(IO){
+    private suspend fun isSitter(email: String): Boolean = withContext(IO) {
         FirebaseDatabase.getInstance().reference.child("users").child("sitters")
             .orderByChild("email")
             .equalTo(email).isRegister()
@@ -307,15 +301,15 @@ class LoginActivity : AppCompatActivity() {
 
     private fun startFragmentSitter() {
         val intent = Intent(this, SitterActivity::class.java)
-        intent.putExtra("sitter", sitter)
-        println("fragmentSitter datos sitter"+sitter.name)
+        intent.putExtra("user", sitter)
+        println("fragmentSitter datos sitter" + sitter.name)
         startActivity(intent)
     }
 
     private fun startFragmentOwner() {
         val intent = Intent(this, OwnerActivity::class.java)
-        intent.putExtra("owner", owner)
-        println("fragmentSitter datos owner"+owner.name)
+        intent.putExtra("user", owner)
+        println("fragmentSitter datos owner" + owner.name)
 
         startActivity(intent)
     }

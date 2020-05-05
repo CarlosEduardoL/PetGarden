@@ -8,6 +8,7 @@ package zero.network.petgarden.util
 import android.util.Log
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
+import zero.network.petgarden.tools.appContext
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
@@ -72,7 +73,8 @@ suspend fun deleteRequest(url: String): String = withContext(IO) {
         ?: throw IOException("Error when try to connect to $url")
 }
 
-suspend fun saveURLImageOnFile(url: String, file: File) {
+suspend fun saveURLImageOnFile(url: String, imageName: String): File {
+    val file = File("${appContext.getExternalFilesDir(null)}/$imageName")
     withContext(IO) {
         val page = URL(url)
         val connection = page.openConnection() as HttpsURLConnection
@@ -87,6 +89,7 @@ suspend fun saveURLImageOnFile(url: String, file: File) {
         fos.close()
         connection.disconnect()
     }
+    return file
 }
 
 private fun InputStream.readString(): String {

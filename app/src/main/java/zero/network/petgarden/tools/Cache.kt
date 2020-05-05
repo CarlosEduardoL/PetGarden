@@ -6,21 +6,29 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.room.Room
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageMetadata
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import zero.network.petgarden.model.behaivor.Entity
+import zero.network.petgarden.model.entity.Owner
+import zero.network.petgarden.model.entity.Pet
+import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.ui.login.LoginActivity
 import zero.network.petgarden.util.saveURLImageOnFile
 import java.io.File
-import java.io.FileInputStream
 
 
 private lateinit var db: ImgRegDatabase
-private lateinit var appContext: Context
+lateinit var appContext: Context
+
+fun appRoot() = appContext.getExternalFilesDir(null)
+
 
 fun LoginActivity.initDatabase() {
     appContext = applicationContext
+    File(appRoot(), Pet.PET_FOLDER).let { if (!it.exists()) it.mkdir() }
+    File(appRoot(), Sitter.FOLDER).let { if (!it.exists()) it.mkdir() }
+    File(appRoot(),Owner.FOLDER).let { if (!it.exists()) it.mkdir() }
     db = Room.databaseBuilder(
         appContext,
         ImgRegDatabase::class.java,
@@ -28,21 +36,21 @@ fun LoginActivity.initDatabase() {
     ).build()
 }
 
-fun isCached(id: String) = db.imgRegDao().get(id) !== null
+fun Entity.isCached() = db.imgRegDao().get(id) !== null && File(appRoot(),"${folder()}/$id.png").exists()
 
 /**
  * Upload Image to [FirebaseStorage] and but conserve a local copy
  * and save the register in the [db]
- * @param image is always the id from the entity that save it
- * @param folder is the folder on [FirebaseStorage]
  */
-suspend fun uploadImage(image: File, folder: String) = withContext(IO) {
+suspend fun Entity.uploadImage(temp: File) = withContext(IO) {
+    val image = File(appRoot(),"${folder()}/$id.png")
+    if (temp.renameTo(image)) temp.delete()
     val fStorage = FirebaseStorage.getInstance().reference
     if (image.exists() && image.isFile) {
         val file = Uri.fromFile(image)
 
-        fStorage.child("img/$folder/${file.lastPathSegment}").putFile(file).await()
-        val metadata = fStorage.child("img/$folder/${file.lastPathSegment}").metadata.await()
+        fStorage.child("${folder()}/$id.png").putFile(file).await()
+        val metadata = fStorage.child("${folder()}/$id.png").metadata.await()
         val time = metadata.creationTimeMillis
         val imgReg = ImgReg(image.name, time)
         db.imgRegDao().insert(imgReg)
@@ -52,23 +60,21 @@ suspend fun uploadImage(image: File, folder: String) = withContext(IO) {
 /**
  * Download Image from [FirebaseStorage] if is necessary
  * if any copy exist locally, it's used
- * @param id is the entity [id] and image name
- * @param folder is the folder name and entity type
  * @return [Bitmap] with the wanted image
  */
-suspend fun downloadImage(id: String, folder: String): Bitmap = BitmapFactory.decodeFile(
+suspend fun Entity.downloadImage(): Bitmap = BitmapFactory.decodeFile(
     withContext(IO) {
         val reg = db.imgRegDao().get(id)
         val fStorage = FirebaseStorage.getInstance().reference
-        val file = File("${appContext.getExternalFilesDir(null)}/$id.png")
-        val metadata = fStorage.child("img/$folder/$id.png").metadata.await()
+        val file = File(appRoot(),"${folder()}/$id.png")
+        val metadata = fStorage.child("${folder()}/$id.png").metadata.await()
         if (reg !== null) {
             if (metadata.creationTimeMillis == reg.date && file.exists()) {
                 return@withContext file
             }
         }
-        val url = fStorage.child("img/$folder/$id.png").downloadUrl.await()
-        saveURLImageOnFile(url.toString(), file)
+        val url = fStorage.child("${folder()}/$id.png").downloadUrl.await()
+        saveURLImageOnFile(url.toString(), "$id.png")
         db.imgRegDao().insert(ImgReg(id, metadata.creationTimeMillis))
 
         return@withContext file

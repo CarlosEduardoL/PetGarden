@@ -1,12 +1,13 @@
 
 package zero.network.petgarden.util
 
-import android.app.Activity
 import android.content.Intent
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 // Get the string text from an EditText
@@ -30,5 +31,17 @@ inline fun<reified T> Intent.extra(key: String, onError: (error: String) -> Noth
         if (obj is T) obj
         else onError("the object with key $key is not type ${T::class.java}")
     }else onError("key $key doesn't exist")
+}
+
+/**
+ * Return date in specified format.
+ * @param dateFormat Date format
+ * @return String representing date in specified format
+ */
+fun Long.getDate(dateFormat: String): String {
+    // Create a calendar object that will convert the date and time value in milliseconds to date.
+    val calendar: Calendar = Calendar.getInstance()
+    calendar.timeInMillis = this
+    return SimpleDateFormat(dateFormat).format(calendar.time)
 }
 
