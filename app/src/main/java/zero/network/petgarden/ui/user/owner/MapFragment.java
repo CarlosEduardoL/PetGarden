@@ -23,14 +23,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 import zero.network.petgarden.R;
+import zero.network.petgarden.model.entity.Sitter;
 
 import static android.content.Context.LOCATION_SERVICE;
 
 public class MapFragment extends SupportMapFragment implements OnMapReadyCallback, LocationListener {
 
     private GoogleMap mMap;
-    private Marker posActual;
+    private Marker markerPosActual;
     private Location locationActual;
     private OwnerActivity activity;
 
@@ -60,11 +63,15 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
         mMap.setMyLocationEnabled(true);
+
+        initMapLocation();
+
+    }
+
+    @SuppressLint("MissingPermission")
+    public void initMapLocation(){
 
         LocationManager manager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
         //Solicitar actualizaciones de posicion
@@ -75,11 +82,25 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         locationActual = last;
         LatLng pos = new LatLng(last.getLatitude(), last.getLongitude());
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 18));
-        posActual = mMap.addMarker(  new MarkerOptions().position(pos).title("Yo").snippet("Mi ubicación")  );
+        markerPosActual = mMap.addMarker(  new MarkerOptions().position(pos).title("Yo").snippet("Mi ubicación")  );
 
         //Actualizar la ubicación del dueño sólo al inicio
         activity = (OwnerActivity)getActivity();
         activity.updateOwnerLocation(locationActual);
+
+        addSittersMarkers((ArrayList)activity.getSitters());
+    }
+
+    public void addSittersMarkers(ArrayList<Sitter> sitters){
+        LatLng pos = null;
+
+        for(Sitter sitter: sitters){
+
+            //Si la distancia es menor que n, ponga los marcadores en el mapa
+            if(true)
+            pos = new LatLng(sitter.getLocation().getLat(),sitter.getLocation().getLongitude());
+            mMap.addMarker(new MarkerOptions().position(pos).title(sitter.getName()).snippet("Mi ubicación"));
+        }
     }
 
 
@@ -87,7 +108,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     public void onLocationChanged(Location location) {
         locationActual = location;
         LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
-        posActual.setPosition(  pos  );
+        markerPosActual.setPosition(  pos  );
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
 
         //REMOVER. Se necesita llamar solamente cuando se cree la activity
@@ -121,12 +142,12 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         this.mMap = mMap;
     }
 
-    public Marker getPosActual() {
-        return posActual;
+    public Marker getMarkerPosActual() {
+        return markerPosActual;
     }
 
-    public void setPosActual(Marker posActual) {
-        this.posActual = posActual;
+    public void setMarkerPosActual(Marker markerPosActual) {
+        this.markerPosActual = markerPosActual;
     }
 
     public Location getLocationActual() {
