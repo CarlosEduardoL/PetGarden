@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".ui.user.owner.UserProfileFragment">
@@ -23,21 +24,21 @@
             tools:srcCompat="@tools:sample/avatars" />
 
         <ImageButton
-            android:id="@+id/cameraButton"
+            android:id="@+id/cameraBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.75"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/photoUser"
             app:layout_constraintVertical_bias="0.977"
-            android:background="@android:color/transparent"
             app:srcCompat="@drawable/camera_button" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/nameUserTxt"
+        android:id="@+id/nameUserTV"
         style="@style/emailUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,12 +51,24 @@
         android:layout_height="4dp" />
 
     <TextView
-        android:id="@+id/emailUserTxt"
+        android:id="@+id/emailUserTV"
         style="@style/emailUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:text="user@gmail.com" />
+
+    <Button
+        android:id="@+id/changePasswordBtn"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:background="#FFFFFF"
+        android:backgroundTint="#FFFFFF"
+        android:text="@string/change_password"
+        android:textAllCaps="false"
+        android:textColor="#1AB28E"
+        android:textSize="16dp"
+        android:textStyle="bold" />
 
     <Space
         android:layout_width="match_parent"
@@ -79,10 +92,10 @@
         android:layout_height="16dp" />
 
     <Button
-        android:id="@+id/updatePass"
+        android:id="@+id/addPet"
         style="@style/AppButton"
         android:layout_marginBottom="64dp"
-        android:text="Cambiar contrasena" />
+        android:text="Agregar Mascota" />
 
 
 </LinearLayout>

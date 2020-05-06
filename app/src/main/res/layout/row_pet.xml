@@ -36,7 +36,7 @@
             android:textSize="12dp" />
 
         <TextView
-            android:id="@+id/breedText"
+            android:id="@+id/breedTV"
             style="@style/infoPetText"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="4dp"
@@ -87,7 +87,7 @@
             android:textSize="12dp" />
 
         <TextView
-            android:id="@+id/breedText2"
+            android:id="@+id/recommendationsTV"
             style="@style/infoPetText"
             android:layout_width="92dp"
             android:layout_height="55dp"

@@ -24,7 +24,7 @@
             tools:srcCompat="@tools:sample/avatars" />
 
         <ImageButton
-            android:id="@+id/cameraButton"
+            android:id="@+id/cameraBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -38,7 +38,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/nameUserTxt"
+        android:id="@+id/nameUserTV"
         style="@style/emailUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
         android:layout_height="4dp" />
 
     <TextView
-        android:id="@+id/emailUserTxt"
+        android:id="@+id/emailUserTV"
         style="@style/emailUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
         android:layout_height="16dp" />
 
     <Button
-        android:id="@+id/updatePass"
+        android:id="@+id/addPet"
         style="@style/changePassword"
         android:layout_width="175dp"
         android:layout_marginBottom="24dp"

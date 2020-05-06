@@ -57,7 +57,7 @@
     <string name="title_activity_maps_delete">Map</string>
     <string name="current_password">Contraseña actual</string>
     <string name="new_password">Nueva contraseña</string>
-    <string name="change_password">Cambiar contraseña</string>
+    <string name="change_password"><u>Cambiar contraseña</u></string>
     <string name="wrong_password">Contraseña Incorrecta</string>
     <string name="password_cannot_be_equals">La nueva contraseña no puede ser igual a la anterior</string>
     <string name="search_message">Buscar cuidadores o lugares</string>

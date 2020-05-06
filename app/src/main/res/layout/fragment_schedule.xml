@@ -52,7 +52,7 @@
         android:layout_height="32dp" />
 
     <TextView
-        android:id="@+id/breedText"
+        android:id="@+id/breedTV"
         style="@style/headerScheduler"
         android:layout_gravity="center"
         android:layout_marginLeft="8dp"
