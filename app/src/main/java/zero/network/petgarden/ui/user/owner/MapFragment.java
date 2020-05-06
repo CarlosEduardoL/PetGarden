@@ -1,9 +1,14 @@
 package zero.network.petgarden.ui.user.owner;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -19,6 +24,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -100,8 +107,22 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
             pos = new LatLng(sitter.getLocation().getLat(),sitter.getLocation().getLongitude());
             Log.e(">>>",""+sitter.getLocation().getLat());
-            mMap.addMarker(new MarkerOptions().position(pos).title(sitter.getName()).snippet("Mi ubicación"));
+            MarkerOptions temp =new MarkerOptions()
+                    .position(pos).title(sitter.getName())
+                    .snippet("Mi ubicación")
+                    .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_sitter_map));
+
+            mMap.addMarker(temp);
         }
+    }
+
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
 
