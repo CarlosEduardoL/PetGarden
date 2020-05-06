@@ -103,16 +103,21 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         for(Sitter sitter: sitters){
 
-            //Si la distancia es menor que n, ponga los marcadores en el mapa
 
             pos = new LatLng(sitter.getLocation().getLat(),sitter.getLocation().getLongitude());
-            Log.e(">>>",""+sitter.getLocation().getLat());
-            MarkerOptions temp =new MarkerOptions()
-                    .position(pos).title(sitter.getName())
-                    .snippet("Mi ubicación")
-                    .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_sitter_map));
+            Location tempLocation = new Location("");
+            tempLocation.setLatitude(sitter.getLocation().getLat());
+            tempLocation.setLongitude(sitter.getLocation().getLongitude());
 
-            mMap.addMarker(temp);
+            //Si la distancia es menor que 4K, ponga los marcadores en el mapa
+            if(locationActual.distanceTo(tempLocation) <4000){
+                MarkerOptions temp =new MarkerOptions()
+                        .position(pos).title(sitter.getName())
+                        .snippet("Mi ubicación")
+                        .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_sitter_map));
+                mMap.addMarker(temp);
+            }
+
         }
     }
 

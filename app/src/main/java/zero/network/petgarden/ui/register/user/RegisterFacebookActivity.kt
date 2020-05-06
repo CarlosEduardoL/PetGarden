@@ -9,18 +9,14 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_role_register.*
 import zero.network.petgarden.R
-import zero.network.petgarden.databinding.ActivityLoginBinding
 import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Pet
-import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity
 import zero.network.petgarden.ui.user.owner.OwnerActivity
-import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.extra
 import zero.network.petgarden.util.show
-import zero.network.petgarden.util.toText
 
 
 class RegisterFacebookActivity(): AppCompatActivity() {

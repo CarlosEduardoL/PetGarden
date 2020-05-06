@@ -19,7 +19,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.register.user.RegisterGoogleActivity"></activity>
+        <activity android:name=".ui.user.sitter.SitterActivity"></activity>
+        <activity android:name=".ui.register.user.RegisterGoogleActivity" />
         <activity android:name=".ui.user.ChangePasswordActivity" />
         <activity android:name=".ui.register.user.RegisterFacebookActivity" />
         <!--
@@ -36,7 +37,6 @@
 
         <activity android:name=".ui.register.pet.PetBreedFragment" />
         <activity android:name=".ui.register.pet.PetRegisterActivity" />
-        <activity android:name=".ui.user.sitter.SitterActivity" />
         <activity android:name=".ui.user.owner.OwnerActivity" />
         <activity android:name=".ui.register.user.RoleRegisterFragment" />
         <activity android:name=".ui.register.user.RegisterActivity" />

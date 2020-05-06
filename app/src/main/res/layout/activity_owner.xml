@@ -19,8 +19,8 @@
             android:name="zero.network.petgarden.ui.user.owner.DockFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
- />
+            android:layout_gravity="center" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
