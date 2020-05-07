@@ -1,7 +1,6 @@
 package zero.network.petgarden.model.behaivor
 
 import zero.network.petgarden.model.entity.Location
-import zero.network.petgarden.model.entity.Pet
 import java.io.Serializable
 import java.util.*
 
@@ -14,5 +13,4 @@ interface IUser: Serializable {
     var birthDay: Date
     var imageURL: String?
     var location: Location
-    val pets: MutableList<Pet>
 }

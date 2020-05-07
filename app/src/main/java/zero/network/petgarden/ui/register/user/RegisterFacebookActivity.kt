@@ -9,6 +9,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_role_register.*
 import zero.network.petgarden.R
+import zero.network.petgarden.model.behaivor.CallBack
 import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Pet
@@ -61,11 +62,13 @@ class RegisterFacebookActivity(): AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && data !== null && requestCode ==PET_CALLBACK){
-            val owner = Owner(user).apply { pets.add(data.extra(PetRegisterActivity.PET_KEY){return}) }
+            val pet: Pet = data.extra(PetRegisterActivity.PET_KEY){return}
+            val owner = Owner(user)
+            owner.addPet(pet, CallBack<Boolean> { })
             FirebaseAuth.getInstance()
                 .createUserWithEmailAndPassword(owner.email, owner.password)
                 .addOnSuccessListener {
-                    database.child("users").child("owners").child(owner.id).setValue(owner)
+                    owner.saveInDB()
                     startUserView(owner, OwnerActivity::class.java)
                 }
                 .addOnFailureListener {

@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import zero.network.petgarden.R
+import zero.network.petgarden.model.behaivor.CallBack
 import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Pet
@@ -95,11 +96,11 @@ class RegisterGoogleActivity : AppCompatActivity(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && data !== null && requestCode == PET_CALLBACK){
-            val owner = Owner(user).apply { pets.add(data.extra(PET_KEY){return}) }
+            val owner = Owner(user).apply { addPet(data.extra(PET_KEY){return}, CallBack { }) }
             FirebaseAuth.getInstance()
                 .createUserWithEmailAndPassword(owner.email, owner.password)
                 .addOnSuccessListener {
-                    database.child("users").child("owners").child(owner.id).setValue(owner)
+                    owner.saveInDB()
                     startUserView(owner, OwnerActivity::class.java)
                 }
                 .addOnFailureListener {

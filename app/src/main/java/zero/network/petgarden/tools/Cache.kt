@@ -26,7 +26,7 @@ fun appRoot() = appContext.getExternalFilesDir(null)
 
 fun LoginActivity.initDatabase() {
     appContext = applicationContext
-    File(appRoot(), Pet.PET_FOLDER).let { if (!it.exists()) it.mkdir() }
+    File(appRoot(), Pet.FOLDER).let { if (!it.exists()) it.mkdir() }
     File(appRoot(), Sitter.FOLDER).let { if (!it.exists()) it.mkdir() }
     File(appRoot(),Owner.FOLDER).let { if (!it.exists()) it.mkdir() }
     db = Room.databaseBuilder(

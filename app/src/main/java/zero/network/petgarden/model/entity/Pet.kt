@@ -13,14 +13,16 @@ data class Pet(
     var years: Int = 0,
     var weight: Int = 0,
     var about: String = "",
-    var image: String = ""
+    var image: String = "",
+    var ownerID: String = "",
+    var sitterID: String? = null
 ): Serializable, Entity{
 
     suspend fun loadImage() = downloadImage()
 
-    override fun folder() = PET_FOLDER
+    override fun folder() = FOLDER
 
     companion object{
-        const val PET_FOLDER = "pets"
+        const val FOLDER = "pets"
     }
 }

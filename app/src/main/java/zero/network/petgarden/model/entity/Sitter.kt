@@ -21,6 +21,7 @@ data class Sitter(
     var rating: Double = 0.0,
     var kindPets: String = "Nothing Especial",
     var additional: String = "Nothing Especial",
+    val clients: MutableList<String> = mutableListOf(),
     private val planner: Planner = Planner()
 ) : IUser by user, IPlanner by planner, Serializable, Entity {
 
@@ -39,23 +40,6 @@ data class Sitter(
 
     companion object {
         const val FOLDER = "sitters"
-        suspend fun sitterByEmail(email: String): Sitter = suspendCoroutine{
-            val query  = FirebaseDatabase.getInstance().reference
-                .child(FOLDER).orderByChild("email").equalTo(email)
-
-            query.addListenerForSingleValueEvent(object: ValueEventListener {
-                override fun onCancelled(error: DatabaseError) {
-                    it.resumeWithException(error.toException())
-                }
-
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    for (result in dataSnapshot.children) {
-                        it.resume(result.getValue(Sitter::class.java)!!)
-                        break
-                    }
-                }
-            })
-        }
     }
 
 }

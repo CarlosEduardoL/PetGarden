@@ -8,6 +8,9 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
 import zero.network.petgarden.R
 import zero.network.petgarden.model.behaivor.Entity
 import zero.network.petgarden.model.behaivor.IUser
@@ -113,8 +116,12 @@ class RegisterActivity : AppCompatActivity(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && data !== null && requestCode == PET_CALLBACK) {
-            val owner = Owner(user).apply { pets.add(data.extra(PET_KEY) { return }) }
-            owner.saveInDB()
+            val owner = Owner(user)
+            val pet: Pet = data.extra(PET_KEY) { return }
+            CoroutineScope(Main).launch {
+                owner.addPet(pet)
+                owner.saveInDB()
+            }
             startUserView(owner, OwnerActivity::class.java)
         }
     }

@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import zero.network.petgarden.R
 import zero.network.petgarden.model.entity.Pet
 
-class PetsAdapter(private val fragment: UserProfileFragment): BaseAdapter() {
+class PetsAdapter(private val pets: List<Pet>): BaseAdapter() {
 
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -22,7 +22,7 @@ class PetsAdapter(private val fragment: UserProfileFragment): BaseAdapter() {
             parent!!.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view: View = inflater.inflate(R.layout.row_pet, null)
 
-        val pet:Pet =fragment.getOwner().pets.get(position)
+        val pet:Pet = pets[position]
 
         val breed = view.findViewById<TextView>(R.id.breedTV)
         val age = view.findViewById<TextView>(R.id.agePet)
@@ -37,15 +37,9 @@ class PetsAdapter(private val fragment: UserProfileFragment): BaseAdapter() {
         return view
     }
 
-    override fun getItem(position: Int): Any {
-        return fragment.getOwner().pets.get(position)
-    }
+    override fun getItem(position: Int): Any = pets[position]
 
-    override fun getItemId(position: Int): Long {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getItemId(position: Int): Long = position.toLong()
 
-    override fun getCount(): Int {
-        return fragment.getOwner().pets.size
-    }
+    override fun getCount(): Int = pets.size
 }

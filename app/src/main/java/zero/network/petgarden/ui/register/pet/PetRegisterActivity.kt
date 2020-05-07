@@ -105,7 +105,6 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener, PictureListener
 
     override fun onPictureCaptured(entity: Entity) {
         setResult(Activity.RESULT_OK, Intent().apply { putExtra(PET_KEY, pet) })
-        pet.saveInDB()
         finish()
     }
 

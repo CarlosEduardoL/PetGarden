@@ -19,6 +19,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,6 +134,7 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
     }
 
 
+    @NotNull
     public Owner getOwner() {
         return owner;
     }
@@ -140,6 +143,7 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
         this.owner = owner;
     }
 
+    @NotNull
     public List<Sitter> getSitters() {
         return sitters;
     }

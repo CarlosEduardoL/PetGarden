@@ -41,7 +41,9 @@ import zero.network.petgarden.ui.register.user.RegisterFacebookActivity
 import zero.network.petgarden.ui.register.user.RegisterGoogleActivity
 import zero.network.petgarden.ui.user.owner.OwnerActivity
 import zero.network.petgarden.ui.user.sitter.SitterActivity
+import zero.network.petgarden.util.ownerByEmail
 import zero.network.petgarden.util.show
+import zero.network.petgarden.util.sitterByEmail
 import zero.network.petgarden.util.toText
 import java.text.SimpleDateFormat
 import java.util.*
@@ -121,9 +123,9 @@ class LoginActivity : AppCompatActivity() {
         FirebaseAuth.getInstance().currentUser?.let {
             CoroutineScope(Main).launch {
                 if (isSitter(it.email!!)) {
-                    startUserView(Sitter.sitterByEmail(it.email!!), SitterActivity::class.java)
+                    startUserView(sitterByEmail(it.email!!), SitterActivity::class.java)
                 } else {
-                    startUserView(Owner.ownerByEmail(it.email!!), OwnerActivity::class.java)
+                    startUserView(ownerByEmail(it.email!!), OwnerActivity::class.java)
                 }
             }
         }
@@ -138,6 +140,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private suspend fun handleFacebookToken(loginResult: LoginResult) {
         val request: GraphRequest = GraphRequest.newMeRequest(
             loginResult.accessToken
@@ -151,19 +154,14 @@ class LoginActivity : AppCompatActivity() {
                     else
                         startFragmentOwner()
                 } else {
-                    val name = obj.getString("first_name")
-                    val lastName = obj.getString("last_name")
                     val photo =
                         "https://graph.facebook.com/" + (obj.getString("id")) + "/picture?width=500&height=500"
-                    val birthday =
-                        SimpleDateFormat("dd/MM/yyyy").parse(obj.getString("birthday"))// O el formato es MM/dd/yyyy??, lo averiguaremos
                     val user = User(
-                        UUID.randomUUID().toString(),
-                        name,
-                        lastName,
+                        obj.getString("first_name"),
+                        obj.getString("last_name"),
                         email,
                         "1234567",
-                        birthday,
+                        SimpleDateFormat("dd/MM/yyyy").parse(obj.getString("birthday"))!!,
                         photo,
                         Location(0.0, 0.0)
                     )
@@ -210,21 +208,13 @@ class LoginActivity : AppCompatActivity() {
                     }
 
                 } else {
-                    val name = "" + account.givenName
-                    val lastName = "" + account.familyName
+                    val name = account.givenName!!
+                    val lastName = account.familyName!!
                     val photo = account.photoUrl.toString()
 
 
-                    val user = User(
-                        UUID.randomUUID().toString(),
-                        name,
-                        lastName,
-                        email,
-                        "123456",
-                        Date(),
-                        photo,
-                        Location(0.0, 0.0)
-                    )
+                    val user =
+                        User(name, lastName, email, "123456", Date(), photo, Location(0.0, 0.0))
 
                     startFragmentBirthday(user)
                 }
@@ -236,11 +226,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private suspend fun initSitter(email: String) {
-        sitter = Sitter.sitterByEmail(email)
+        sitter = sitterByEmail(email)
     }
 
     private suspend fun initOwner(email: String) {
-        owner = Owner.ownerByEmail(email)
+        owner = ownerByEmail(email)
     }
 
     private suspend fun userAlreadyExists(email: String): Boolean = withContext(IO) {
