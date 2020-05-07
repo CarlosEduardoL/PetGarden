@@ -15,18 +15,22 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import zero.network.petgarden.R;
 import zero.network.petgarden.model.entity.Owner;
+import zero.network.petgarden.model.entity.Sitter;
 import zero.network.petgarden.ui.user.owner.MapFragment;
 
 public class SitterActivity extends AppCompatActivity {
 
+    private Sitter sitter;
     MapFragment fragmentMap;
     FragmentManager fragmentManager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sitter);
+
+        loadDataFromActivity();
+
     }
 
     private void loadDataFromActivity() {
@@ -59,4 +63,5 @@ public class SitterActivity extends AppCompatActivity {
     }
 
 
+    public Sitter getSitter(){return sitter;}
 }

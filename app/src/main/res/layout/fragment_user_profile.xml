@@ -7,7 +7,7 @@
     android:background="#FFFFFF"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".ui.user.owner.UserProfileFragment">
+    tools:context=".ui.user.owner.OwnerActivity">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,12 +15,13 @@
         android:layout_height="212dp">
 
         <ImageView
-            android:id="@+id/photoUser"
+            android:id="@+id/photoUserIV"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="105dp"
             tools:srcCompat="@tools:sample/avatars" />
 
         <ImageButton

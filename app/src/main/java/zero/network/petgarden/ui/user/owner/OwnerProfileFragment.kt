@@ -39,14 +39,14 @@ class UserProfileFragment : Fragment() {
     ): View = inflater.inflate(R.layout.fragment_user_profile, container, false).apply {
 
         CoroutineScope(Dispatchers.Main).launch {
-            photoUser.setImageBitmap(owner.image())
+            photoUserIV.setImageBitmap(owner.image())
         }
         CoroutineScope(Dispatchers.Main).launch{
             adapter = PetsAdapter(owner.pets().toList())
         }
         nameUserTV.text = owner.name
         emailUserTV.text = owner.email
-        //Hacer el if diciendo que se oculte el boton si hay user
+
         if (AccessToken.getCurrentAccessToken()!=null || GoogleSignIn.getLastSignedInAccount(context)!=null)
             changePasswordBtn.visibility = View.GONE
 
@@ -80,7 +80,7 @@ class UserProfileFragment : Fragment() {
             val file = File(getPath(context!!, uri!!))
 
             CoroutineScope(Dispatchers.Main).launch { owner.uploadImage(file)}
-            CoroutineScope(Dispatchers.Main).launch { photoUser.setImageBitmap(owner.image()) }
+            CoroutineScope(Dispatchers.Main).launch { photoUserIV.setImageBitmap(owner.image()) }
 
         } else if (resultCode == Activity.RESULT_OK && data !== null && requestCode == PET_CALLBACK) {
             owner.apply { addPet(data.extra(PetRegisterActivity.PET_KEY) { return }, CallBack { }) }

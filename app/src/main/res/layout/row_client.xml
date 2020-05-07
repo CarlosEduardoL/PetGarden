@@ -16,7 +16,7 @@
 
 
         <ImageView
-            android:id="@+id/photoSitterList"
+            android:id="@+id/photoOwnerList"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginStart="24dp"
@@ -28,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/nameSitterList"
+            android:id="@+id/nameOwnerList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -41,7 +41,7 @@
             app:layout_constraintTop_toTopOf="@+id/photoSitterList" />
 
         <TextView
-            android:id="@+id/schedule"
+            android:id="@+id/emailOwnerList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -52,7 +52,7 @@
             app:layout_constraintTop_toBottomOf="@+id/nameSitterList" />
 
         <View
-            android:id="@+id/sitterRow"
+            android:id="@+id/ownerRow"
             android:layout_width="409dp"
             android:layout_height="1dp"
             android:layout_marginTop="8dp"
@@ -79,7 +79,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imagePet"
+            android:id="@+id/imagePetList"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_gravity="center"
@@ -106,7 +106,7 @@
                 android:textSize="12dp" />
 
             <TextView
-                android:id="@+id/breedTV"
+                android:id="@+id/breedListTV"
                 style="@style/infoPetText"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="4dp"
@@ -126,7 +126,7 @@
                 android:textSize="12dp" />
 
             <TextView
-                android:id="@+id/agePet"
+                android:id="@+id/agePetList"
                 style="@style/infoPetText"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="4dp"
@@ -156,7 +156,7 @@
                 android:textSize="12dp" />
 
             <TextView
-                android:id="@+id/recommendationsTV"
+                android:id="@+id/recommendationsList"
                 style="@style/infoPetText"
                 android:layout_width="96dp"
                 android:layout_height="64dp"

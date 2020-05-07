@@ -113,6 +113,41 @@ private fun OutputStream.writeString(data: String) {
     writer.flush()
 }
 
+
+private fun POSTtoFCM(API_KEY: String, data: String?) {
+    try {
+        val page = URL("https://fcm.googleapis.com/fcm/send")
+        val connection =
+            page.openConnection() as HttpsURLConnection
+        connection.requestMethod = "POST"
+        connection.setRequestProperty("Content-Type", "application/json")
+        connection.setRequestProperty("Authorization", "key=$API_KEY")
+        connection.doInput = true
+        connection.doOutput = true
+
+        val os = connection.outputStream
+        val writer = BufferedWriter(OutputStreamWriter(os, "UTF-8"))
+        writer.write(data)
+        writer.flush()
+
+        val es = connection.inputStream
+        val baos = ByteArrayOutputStream()
+        val buffer = ByteArray(4096)
+        var bytesRead: Int
+        while (es.read(buffer).also { bytesRead = it } != -1) {
+            baos.write(buffer, 0, bytesRead)
+        }
+        es.close()
+        baos.close()
+        os.close()
+        connection.disconnect()
+        val response = String(baos.toByteArray(), Charsets.UTF_8)
+        Log.e(">>>", response)
+    } catch (ex: IOException) {
+        ex.printStackTrace()
+    }
+}
+
 // create HttpURLConnection
 private val String.connection
     get() = URL(this).openConnection() as HttpURLConnection
