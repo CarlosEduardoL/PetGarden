@@ -19,6 +19,7 @@ import zero.network.petgarden.ui.register.pet.PetRegisterActivity
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity.Companion.PET_KEY
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity.Companion.TITLE_KEY
 import zero.network.petgarden.ui.user.owner.OwnerActivity
+import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.extra
 import zero.network.petgarden.util.show
 

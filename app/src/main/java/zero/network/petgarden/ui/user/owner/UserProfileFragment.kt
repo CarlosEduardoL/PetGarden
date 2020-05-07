@@ -7,6 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.facebook.AccessToken
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import kotlinx.android.synthetic.main.fragment_user_profile.*
 import kotlinx.android.synthetic.main.fragment_user_profile.view.*
 import kotlinx.coroutines.CoroutineScope
@@ -37,6 +40,9 @@ class UserProfileFragment : Fragment() {
         CoroutineScope(Dispatchers.Main).launch { photoUser.setImageBitmap(owner.image()) }
         nameUserTV.setText(owner.name)
         emailUserTV.setText(owner.email)
+        //Hacer el if diciendo que se oculte el boton si hay user
+        if (AccessToken.getCurrentAccessToken()!=null || GoogleSignIn.getLastSignedInAccount(context)!=null)
+            changePasswordBtn.setVisibility(View.GONE)
 
         cameraBtn.setOnClickListener{
 

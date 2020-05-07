@@ -15,6 +15,7 @@ import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity
 import zero.network.petgarden.ui.user.owner.OwnerActivity
+import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.extra
 import zero.network.petgarden.util.show
 
