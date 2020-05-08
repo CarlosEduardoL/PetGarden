@@ -57,9 +57,9 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
     private void loadDataFromActivity() {
 
         //PONER A CARGAR LOS DATOS DEL EXTRA
-/*        Bundle extras = getIntent().getExtras();
-        owner =(Owner) extras.getSerializable("user");*/
-        owner = new Owner();
+        Bundle extras = getIntent().getExtras();
+        owner =(Owner) extras.getSerializable("user");
+        /*owner = new Owner();*/
 
     }
 
