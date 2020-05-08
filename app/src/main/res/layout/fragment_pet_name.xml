@@ -25,7 +25,7 @@
 
     <Button
         style="@style/AppButton"
-        android:id="@+id/nextButton"
+        android:id="@+id/acceptBtn"
         android:layout_marginBottom="64dp"
         android:text="@string/Next" />
 

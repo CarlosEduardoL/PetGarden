@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import zero.network.pet.filterFragment
+import zero.network.petgarden.R
 import zero.network.petgarden.databinding.FragmentListSitterBinding
 
 class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
@@ -28,7 +30,17 @@ class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
                 adapterSitters.sitters = sitters.filter { "${it.name} ${it.lastName}".contains(s,true) }
                 adapterSitters.notifyDataSetChanged()
             }
+
+            //sitters.filter{it.ranking> el numero que haya seleccionado el usuario}
         })
+
+        filterButton.setOnClickListener{
+            val filterFragment = filterFragment(adapterSitters, sitters)
+            val fragmentManager = activity!!.supportFragmentManager
+            val fragmentTransaction = fragmentManager!!.beginTransaction()
+            fragmentTransaction.add(R.id.activity_owner_container, filterFragment)
+            fragmentTransaction.commit()
+        }
 
     }.root
 }

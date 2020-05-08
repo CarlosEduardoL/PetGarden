@@ -30,7 +30,7 @@
         android:src="@drawable/camera_icon"/>
 
     <Button
-        android:id="@+id/nextButton"
+        android:id="@+id/acceptBtn"
         style="@style/AppButton"
         android:visibility="gone"
         android:text="@string/Next"
