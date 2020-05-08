@@ -1,4 +1,4 @@
-package zero.network.petgarden.ui.register.user
+package zero.network.petgarden.ui.register.user.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_register_birth.view.*
 import zero.network.petgarden.R
 import zero.network.petgarden.model.entity.User
+import zero.network.petgarden.ui.register.user.OnNextListener
 import zero.network.petgarden.util.onClick
 import zero.network.petgarden.util.show
 import java.util.*
@@ -27,7 +28,7 @@ class BirthRegisterFragment(
         savedInstanceState: Bundle?
     ): View = inflater.inflate(R.layout.fragment_register_birth, container, false).apply {
         val calendar = Calendar.getInstance()
-        calendar.time = user.birthDay;
+        calendar.time = user.birthDay
 
         birthInputDate.let {
             it.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))

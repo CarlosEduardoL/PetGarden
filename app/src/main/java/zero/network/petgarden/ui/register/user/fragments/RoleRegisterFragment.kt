@@ -1,4 +1,4 @@
-package zero.network.petgarden.ui.register.user
+package zero.network.petgarden.ui.register.user.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import zero.network.petgarden.R
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
+import zero.network.petgarden.ui.register.user.OnNextListener
 
 class RoleRegisterFragment(
     private val user: User,

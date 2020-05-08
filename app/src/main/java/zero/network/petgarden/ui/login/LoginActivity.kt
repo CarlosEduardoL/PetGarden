@@ -15,7 +15,6 @@ import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.GraphRequest
 import com.facebook.login.LoginResult
-import com.facebook.login.widget.LoginButton
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -30,23 +29,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.ActivityLoginBinding
-import zero.network.petgarden.model.behaivor.IUser
-import zero.network.petgarden.model.entity.Location
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.tools.initDatabase
-import zero.network.petgarden.ui.register.user.RegisterActivity
-import zero.network.petgarden.ui.register.user.RegisterFacebookActivity
-import zero.network.petgarden.ui.register.user.RegisterGoogleActivity
+import zero.network.petgarden.ui.register.user.activities.RegisterActivity
+import zero.network.petgarden.ui.register.user.activities.RegisterFacebookActivity
+import zero.network.petgarden.ui.register.user.activities.RegisterGoogleActivity
 import zero.network.petgarden.ui.user.owner.OwnerActivity
 import zero.network.petgarden.ui.user.sitter.SitterActivity
-import zero.network.petgarden.util.ownerByEmail
-import zero.network.petgarden.util.show
-import zero.network.petgarden.util.sitterByEmail
-import zero.network.petgarden.util.toText
-import java.text.SimpleDateFormat
-import java.util.*
+import zero.network.petgarden.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -57,8 +49,6 @@ class LoginActivity : AppCompatActivity() {
     private val callbackFacebook = CallbackManager.Factory.create()
 
     lateinit var binding: ActivityLoginBinding
-    private var sitter: Sitter = Sitter(User())
-    private var owner: Owner = Owner(User())
 
     @SuppressLint("WrongViewCast")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,51 +62,51 @@ class LoginActivity : AppCompatActivity() {
 
         val fbAuth = FirebaseAuth.getInstance()
 
-        binding.loginButton.setOnClickListener {
-            if (binding.emailInput.text.isNotEmpty() && binding.passwordInput.text.isNotEmpty())
-                fbAuth.signInWithEmailAndPassword(
-                    binding.emailInput.toText(),
-                    binding.passwordInput.toText()
-                ).addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        CoroutineScope(Main).launch { chooseFragment(binding) }
-                    } else {
-                        show(getString(R.string.no_register_info))
+        binding.apply {
+            loginButton.onClick {
+                if (emailInput.text.isNotEmpty() && passwordInput.text.isNotEmpty())
+                    fbAuth.signInWithEmailAndPassword(
+                        emailInput.toText(),
+                        passwordInput.toText()
+                    ).addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            CoroutineScope(Main).launch {
+                                if (isSitter(emailInput.toText())) {
+                                    startUserView(sitterByEmail(emailInput.toText()), SitterActivity::class.java)
+                                } else {
+                                    startUserView(ownerByEmail(emailInput.toText()), OwnerActivity::class.java)
+                                }
+                            }
+                        } else {
+                            show(getString(R.string.no_register_info))
+                        }
                     }
+            }
+
+            //Google
+            googleButton.onClick {
+                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail().requestProfile().build()
+
+                val mGoogleSignInClient = GoogleSignIn.getClient(this@LoginActivity, gso)
+
+                val signInIntent = mGoogleSignInClient.signInIntent
+                startActivityForResult(signInIntent, RC_SIGN_IN)
+            }
+
+            facebookButton.setPermissions("email", "user_birthday", "user_posts")
+            facebookButton.registerCallback(callbackFacebook, object : FacebookCallback<LoginResult> {
+                override fun onSuccess(result: LoginResult) {
+                    CoroutineScope(Main).launch { handleFacebookToken(result) }
                 }
+                override fun onCancel() {}
+                override fun onError(error: FacebookException?) {
+                    show(error!!.message!!)
+                }
+            })
         }
 
-        //Google
-        binding.googleButton.setOnClickListener {
 
-            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail().requestProfile().build()
-
-            val mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
-
-            val signInIntent = mGoogleSignInClient.signInIntent
-            startActivityForResult(signInIntent, RC_SIGN_IN)
-        }
-
-        val fbookButton = findViewById<LoginButton>(R.id.facebookButton)
-
-        val callback = object : FacebookCallback<LoginResult> {
-            override fun onSuccess(result: LoginResult) {
-                println("entroSuccess")
-                CoroutineScope(Main).launch { handleFacebookToken(result) }
-            }
-
-            override fun onCancel() {
-                println("entroCancel")
-            }
-
-            override fun onError(error: FacebookException?) {
-                println("entroError")
-            }
-        }
-
-        fbookButton.setPermissions("email", "user_birthday", "user_posts")
-        fbookButton.registerCallback(callbackFacebook, callback)
 
         ClasePruebas(this)
 
@@ -132,14 +122,6 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-    private fun <T> startUserView(iUser: IUser, clazz: Class<T>) {
-        Intent(this, clazz).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            putExtra("user", iUser)
-            startActivity(this)
-        }
-    }
-
     @SuppressLint("SimpleDateFormat")
     private suspend fun handleFacebookToken(loginResult: LoginResult) {
         val request: GraphRequest = GraphRequest.newMeRequest(
@@ -150,25 +132,12 @@ class LoginActivity : AppCompatActivity() {
 
                 if (userAlreadyExists(email)) {
                     if (isSitter(email))
-                        startFragmentSitter()
+                        startUserView(sitterByEmail(email), SitterActivity::class.java)
                     else
-                        startFragmentOwner()
+                        startUserView(ownerByEmail(email), OwnerActivity::class.java)
                 } else {
-                    val photo =
-                        "https://graph.facebook.com/" + (obj.getString("id")) + "/picture?width=500&height=500"
-                    val user = User(
-                        obj.getString("first_name"),
-                        obj.getString("last_name"),
-                        email,
-                        "1234567",
-                        SimpleDateFormat("dd/MM/yyyy").parse(obj.getString("birthday"))!!,
-                        photo,
-                        Location(0.0, 0.0)
-                    )
-
-                    startFragmentRoleUser(user)
+                    startFragmentRoleUser(obj.user)
                 }
-
             }
         }
 
@@ -184,53 +153,34 @@ class LoginActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == RC_SIGN_IN) {
-            val task: Task<GoogleSignInAccount> =
-                GoogleSignIn.getSignedInAccountFromIntent(data)
-            CoroutineScope(Main).launch { handleGoogleSignIn(task) }
+            CoroutineScope(Main).launch {
+                val task: Task<GoogleSignInAccount> =
+                    GoogleSignIn.getSignedInAccountFromIntent(data)
+                handleGoogleSignIn(task)
+            }
         }
         callbackFacebook.onActivityResult(requestCode, resultCode, data)
     }
 
     private suspend fun handleGoogleSignIn(completedTask: Task<GoogleSignInAccount>) {
         try {
-            val account = completedTask.getResult(ApiException::class.java)
+            val account = completedTask.getResult(ApiException::class.java)!!
 
-            if (account != null) {
-                val email = "" + account.email
+            val email = account.email!!
 
-                if (userAlreadyExists(email)) {
-                    if (isSitter(email)) {
-                        initSitter(email)
-                        startFragmentSitter()
-                    } else {
-                        initOwner(email)
-                        startFragmentOwner()
-                    }
-
+            if (userAlreadyExists(email)) {
+                if (isSitter(email)) {
+                    startUserView(sitterByEmail(email), SitterActivity::class.java)
                 } else {
-                    val name = account.givenName!!
-                    val lastName = account.familyName!!
-                    val photo = account.photoUrl.toString()
-
-
-                    val user =
-                        User(name, lastName, email, "123456", Date(), photo, Location(0.0, 0.0))
-
-                    startFragmentBirthday(user)
+                    startUserView(ownerByEmail(email), OwnerActivity::class.java)
                 }
+            } else {
+                startFragmentBirthday(account.user)
             }
 
         } catch (e: ApiException) {
             show(getString(R.string.sign_in_google_error))
         }
-    }
-
-    private suspend fun initSitter(email: String) {
-        sitter = sitterByEmail(email)
-    }
-
-    private suspend fun initOwner(email: String) {
-        owner = ownerByEmail(email)
     }
 
     private suspend fun userAlreadyExists(email: String): Boolean = withContext(IO) {
@@ -288,22 +238,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-
-    private fun startFragmentSitter() {
-        val intent = Intent(this, SitterActivity::class.java)
-        intent.putExtra("user", sitter)
-        println("fragmentSitter datos sitter" + sitter.name)
-        startActivity(intent)
-    }
-
-    private fun startFragmentOwner() {
-        val intent = Intent(this, OwnerActivity::class.java)
-        intent.putExtra("user", owner)
-        println("fragmentSitter datos owner" + owner.name)
-
-        startActivity(intent)
-    }
-
     private fun startFragmentRoleUser(user: User) {
         val intent = Intent(this, RegisterFacebookActivity::class.java)
         intent.putExtra("user", user)
@@ -314,14 +248,6 @@ class LoginActivity : AppCompatActivity() {
         val intent = Intent(this, RegisterGoogleActivity::class.java)
         intent.putExtra("user", user)
         startActivity(intent)
-    }
-
-
-    private suspend fun chooseFragment(binding: ActivityLoginBinding) {
-        if (isSitter(binding.emailInput.toText()))
-            startFragmentSitter()
-        else
-            startFragmentOwner()
     }
 
 }

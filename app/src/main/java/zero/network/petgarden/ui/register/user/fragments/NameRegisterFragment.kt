@@ -1,4 +1,4 @@
-package zero.network.petgarden.ui.register.user
+package zero.network.petgarden.ui.register.user.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.FragmentRegisterNameBinding
 import zero.network.petgarden.model.entity.User
+import zero.network.petgarden.ui.register.user.OnNextListener
 import zero.network.petgarden.util.onClick
 import zero.network.petgarden.util.show
 import zero.network.petgarden.util.toText

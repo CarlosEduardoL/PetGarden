@@ -20,9 +20,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.user.sitter.SitterActivity"></activity>
-        <activity android:name=".ui.register.user.RegisterGoogleActivity" />
-        <activity android:name=".ui.user.ChangePasswordActivity" />
-        <activity android:name=".ui.register.user.RegisterFacebookActivity" />
+        <activity android:name=".ui.register.user.activities.RegisterGoogleActivity" />
+        <activity android:name=".ui.register.user.activities.RegisterFacebookActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -38,8 +37,8 @@
         <activity android:name=".ui.register.pet.PetBreedFragment" />
         <activity android:name=".ui.register.pet.PetRegisterActivity" />
         <activity android:name=".ui.user.owner.OwnerActivity" />
-        <activity android:name=".ui.register.user.RoleRegisterFragment" />
-        <activity android:name=".ui.register.user.RegisterActivity" />
+        <activity android:name=".ui.register.user.fragments.RoleRegisterFragment" />
+        <activity android:name=".ui.register.user.activities.RegisterActivity" />
         <activity android:name=".ui.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -10,6 +10,7 @@ import zero.network.petgarden.model.behaivor.Entity
 import zero.network.petgarden.model.behaivor.IOwner
 import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.tools.downloadImage
+import zero.network.petgarden.tools.uploadImage
 import zero.network.petgarden.util.saveURLImageOnFile
 import java.io.Serializable
 import kotlin.coroutines.resume
@@ -26,8 +27,9 @@ data class Owner(
 
     suspend fun image(): Bitmap {
         imageURL?.let {
-            return BitmapFactory.decodeFile(saveURLImageOnFile(it, "$id.png").path)
-                .apply { Bitmap.createScaledBitmap(this, width/4, height/4,false) }
+            uploadImage(saveURLImageOnFile(it, "temp.png"))
+            imageURL = null
+            saveInDB()
         }
         return downloadImage()
     }

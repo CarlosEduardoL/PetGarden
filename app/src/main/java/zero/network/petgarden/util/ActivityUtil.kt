@@ -1,9 +1,11 @@
 package zero.network.petgarden.util
 
 import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import zero.network.petgarden.model.behaivor.IUser
 import java.io.File
 
 
@@ -26,6 +28,17 @@ inline fun<reified T> Activity.extra(key: String, onError: (error: String) -> No
 }
 
 /**
- *
+ * get the uri from [file]
  */
 fun Activity.fileToUri(file: File): Uri = FileProvider.getUriForFile(this, this.packageName, file)
+
+/**
+ *
+ */
+fun <T> Activity.startUserView(state: IUser, clazz: Class<T>) {
+    Intent(this, clazz).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        putExtra("user", state)
+        startActivity(this)
+    }
+}

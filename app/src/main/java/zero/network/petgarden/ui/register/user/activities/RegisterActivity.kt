@@ -1,4 +1,4 @@
-package zero.network.petgarden.ui.register.user
+package zero.network.petgarden.ui.register.user.activities
 
 import android.app.Activity
 import android.content.Intent
@@ -24,6 +24,8 @@ import zero.network.petgarden.ui.register.PictureListener
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity.Companion.PET_KEY
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity.Companion.TITLE_KEY
+import zero.network.petgarden.ui.register.user.*
+import zero.network.petgarden.ui.register.user.fragments.*
 import zero.network.petgarden.ui.user.owner.OwnerActivity
 import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.extra
@@ -55,11 +57,31 @@ class RegisterActivity : AppCompatActivity(),
 
         database = FirebaseDatabase.getInstance().reference
 
-        emailFragment = EmailRegisterFragment(user, this)
-        nameFragment = NameRegisterFragment(user, this)
-        passFragment = PasswordRegisterFragment(user, this)
-        birthFragment = BirthRegisterFragment(user, this)
-        roleFragment = RoleRegisterFragment(user, this)
+        emailFragment =
+            EmailRegisterFragment(
+                user,
+                this
+            )
+        nameFragment =
+            NameRegisterFragment(
+                user,
+                this
+            )
+        passFragment =
+            PasswordRegisterFragment(
+                user,
+                this
+            )
+        birthFragment =
+            BirthRegisterFragment(
+                user,
+                this
+            )
+        roleFragment =
+            RoleRegisterFragment(
+                user,
+                this
+            )
 
 
         supportFragmentManager.beginTransaction().apply {
@@ -131,7 +153,9 @@ class RegisterActivity : AppCompatActivity(),
             is Owner -> Intent(this, PetRegisterActivity::class.java).apply {
                 putExtra(TITLE_KEY, "Registrar Mascota")
                 putExtra(PET_KEY, Pet())
-                startActivityForResult(this, PET_CALLBACK)
+                startActivityForResult(this,
+                    PET_CALLBACK
+                )
             }
 
             is Sitter -> {
