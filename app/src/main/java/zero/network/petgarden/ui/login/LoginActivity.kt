@@ -24,6 +24,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
@@ -40,7 +41,6 @@ import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-import kotlin.time.seconds
 
 
 class LoginActivity : AppCompatActivity() {
@@ -48,19 +48,22 @@ class LoginActivity : AppCompatActivity() {
     private val RC_SIGN_IN = 1
     private val callbackFacebook = CallbackManager.Factory.create()
     private lateinit var auth: FirebaseAuth
+    private lateinit var loginScope: CoroutineScope
 
     lateinit var binding: ActivityLoginBinding
 
-    @SuppressLint("WrongViewCast")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        loginScope = CoroutineScope(Main)
         initDatabase()
-        checkLogin(CoroutineScope(Main).launch {
+        auth = FirebaseAuth.getInstance()
+
+        checkLogin(loginScope.launch {
             delay(3000)
-            val animation = AnimationUtils.loadAnimation(this@LoginActivity, android.R.anim.fade_out)
+            val animation =
+                AnimationUtils.loadAnimation(this@LoginActivity, android.R.anim.fade_out)
             binding.splashScreen.startAnimation(animation)
             binding.splashScreen.visibility = GONE
         })
@@ -77,11 +80,17 @@ class LoginActivity : AppCompatActivity() {
                         passwordInput.toText()
                     ).addOnCompleteListener {
                         if (it.isSuccessful) {
-                            CoroutineScope(Main).launch {
+                            loginScope.launch {
                                 if (isSitter(emailInput.toText())) {
-                                    startUserView(sitterByEmail(emailInput.toText()), SitterActivity::class.java)
+                                    startUserView(
+                                        sitterByEmail(emailInput.toText()),
+                                        SitterActivity::class.java
+                                    )
                                 } else {
-                                    startUserView(ownerByEmail(emailInput.toText()), OwnerActivity::class.java)
+                                    startUserView(
+                                        ownerByEmail(emailInput.toText()),
+                                        OwnerActivity::class.java
+                                    )
                                 }
                             }
                         } else {
@@ -94,9 +103,7 @@ class LoginActivity : AppCompatActivity() {
             googleButton.onClick {
                 val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestEmail().requestProfile().build()
-
                 val mGoogleSignInClient = GoogleSignIn.getClient(this@LoginActivity, gso)
-
                 val signInIntent = mGoogleSignInClient.signInIntent
                 startActivityForResult(signInIntent, RC_SIGN_IN)
             }
@@ -109,10 +116,10 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-    private fun checkLogin(job: Job){
+    private fun checkLogin(job: Job) {
         FirebaseAuth.getInstance().currentUser?.let {
-            CoroutineScope(Main).launch {
-                if(job.isActive)job.cancel()
+            loginScope.launch {
+                if (job.isActive) job.cancel()
                 if (isSitter(it.email!!)) {
                     startUserView(sitterByEmail(it.email!!), SitterActivity::class.java)
                 } else {
@@ -122,25 +129,26 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun ActivityLoginBinding.setUpFacebook(){
+    private fun ActivityLoginBinding.setUpFacebook() {
         facebookButton.setPermissions("email", "user_birthday")
         facebookButton.registerCallback(callbackFacebook, object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult) {
-                CoroutineScope(Main).launch { handleFacebookToken(result) }
+                loginScope.launch { handleFacebookToken(result) }
             }
+
             override fun onCancel() {}
-            override fun onError(error: FacebookException) { show(error.message!!) }
+            override fun onError(error: FacebookException) {
+                show(error.message!!)
+            }
         })
     }
 
     @SuppressLint("SimpleDateFormat")
     private suspend fun handleFacebookToken(loginResult: LoginResult) {
         val credential = FacebookAuthProvider.getCredential(loginResult.accessToken.token)
-
-        val request: GraphRequest = GraphRequest.newMeRequest(
-            loginResult.accessToken
-        ) { obj, _ ->
-            CoroutineScope(Main).launch {
+        auth.signInWithCredential(credential)
+        val request: GraphRequest = GraphRequest.newMeRequest(loginResult.accessToken) { obj, _ ->
+            loginScope.launch {
                 val email = obj.getString("email")
                 if (userAlreadyExists(email)) {
                     if (isSitter(email))
@@ -165,9 +173,8 @@ class LoginActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == RC_SIGN_IN) {
-            CoroutineScope(Main).launch {
-                val task: Task<GoogleSignInAccount> =
-                    GoogleSignIn.getSignedInAccountFromIntent(data)
+            loginScope.launch {
+                val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
                 handleGoogleSignIn(task)
             }
         }
@@ -187,6 +194,8 @@ class LoginActivity : AppCompatActivity() {
                     startUserView(ownerByEmail(email), OwnerActivity::class.java)
                 }
             } else {
+                val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                auth.signInWithCredential(credential)
                 startFragmentBirthday(account.user)
             }
 
