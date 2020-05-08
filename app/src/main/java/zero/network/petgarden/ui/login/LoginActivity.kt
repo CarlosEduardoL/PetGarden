@@ -9,6 +9,8 @@ import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
+import android.view.View.GONE
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -20,17 +22,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.ActivityLoginBinding
-import zero.network.petgarden.model.entity.Owner
-import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.tools.initDatabase
 import zero.network.petgarden.ui.register.user.activities.RegisterActivity
@@ -41,12 +40,14 @@ import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import kotlin.time.seconds
 
 
 class LoginActivity : AppCompatActivity() {
 
     private val RC_SIGN_IN = 1
     private val callbackFacebook = CallbackManager.Factory.create()
+    private lateinit var auth: FirebaseAuth
 
     lateinit var binding: ActivityLoginBinding
 
@@ -57,15 +58,21 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initDatabase()
+        checkLogin(CoroutineScope(Main).launch {
+            delay(3000)
+            val animation = AnimationUtils.loadAnimation(this@LoginActivity, android.R.anim.fade_out)
+            binding.splashScreen.startAnimation(animation)
+            binding.splashScreen.visibility = GONE
+        })
 
         setRegisterButton()
 
-        val fbAuth = FirebaseAuth.getInstance()
+        auth = FirebaseAuth.getInstance()
 
         binding.apply {
             loginButton.onClick {
                 if (emailInput.text.isNotEmpty() && passwordInput.text.isNotEmpty())
-                    fbAuth.signInWithEmailAndPassword(
+                    auth.signInWithEmailAndPassword(
                         emailInput.toText(),
                         passwordInput.toText()
                     ).addOnCompleteListener {
@@ -94,24 +101,18 @@ class LoginActivity : AppCompatActivity() {
                 startActivityForResult(signInIntent, RC_SIGN_IN)
             }
 
-            facebookButton.setPermissions("email", "user_birthday", "user_posts")
-            facebookButton.registerCallback(callbackFacebook, object : FacebookCallback<LoginResult> {
-                override fun onSuccess(result: LoginResult) {
-                    CoroutineScope(Main).launch { handleFacebookToken(result) }
-                }
-                override fun onCancel() {}
-                override fun onError(error: FacebookException?) {
-                    show(error!!.message!!)
-                }
-            })
+
+            setUpFacebook()
         }
-
-
 
         ClasePruebas(this)
 
+    }
+
+    private fun checkLogin(job: Job){
         FirebaseAuth.getInstance().currentUser?.let {
             CoroutineScope(Main).launch {
+                if(job.isActive)job.cancel()
                 if (isSitter(it.email!!)) {
                     startUserView(sitterByEmail(it.email!!), SitterActivity::class.java)
                 } else {
@@ -119,17 +120,28 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
+    }
 
+    private fun ActivityLoginBinding.setUpFacebook(){
+        facebookButton.setPermissions("email", "user_birthday")
+        facebookButton.registerCallback(callbackFacebook, object : FacebookCallback<LoginResult> {
+            override fun onSuccess(result: LoginResult) {
+                CoroutineScope(Main).launch { handleFacebookToken(result) }
+            }
+            override fun onCancel() {}
+            override fun onError(error: FacebookException) { show(error.message!!) }
+        })
     }
 
     @SuppressLint("SimpleDateFormat")
     private suspend fun handleFacebookToken(loginResult: LoginResult) {
+        val credential = FacebookAuthProvider.getCredential(loginResult.accessToken.token)
+
         val request: GraphRequest = GraphRequest.newMeRequest(
             loginResult.accessToken
         ) { obj, _ ->
             CoroutineScope(Main).launch {
                 val email = obj.getString("email")
-
                 if (userAlreadyExists(email)) {
                     if (isSitter(email))
                         startUserView(sitterByEmail(email), SitterActivity::class.java)
