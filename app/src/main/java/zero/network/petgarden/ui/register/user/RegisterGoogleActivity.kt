@@ -34,8 +34,7 @@ class RegisterGoogleActivity : AppCompatActivity(),
     private lateinit var roleFragment: RoleRegisterFragment
 
     private lateinit var database: DatabaseReference
-
-    private val user = User()
+    private lateinit var user:User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +45,8 @@ class RegisterGoogleActivity : AppCompatActivity(),
         }
 
         database = FirebaseDatabase.getInstance().reference
+        user = intent.extras!!.get("user") as User
+
 
         birthFragment = BirthRegisterFragment(user, this)
         roleFragment = RoleRegisterFragment(user, this)
@@ -74,7 +75,7 @@ class RegisterGoogleActivity : AppCompatActivity(),
                 is Sitter -> FirebaseAuth.getInstance()
                     .createUserWithEmailAndPassword(state.email, state.password)
                     .addOnSuccessListener {
-                        database.child("users").child("sitters").child(state.id).setValue(state)
+                        database.child("sitters").child(state.id).setValue(state)
                         startUserView(state, SitterActivity::class.java)
                     }
                     .addOnFailureListener {

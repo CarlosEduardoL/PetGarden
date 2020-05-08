@@ -27,7 +27,7 @@ class RegisterFacebookActivity(): AppCompatActivity() {
         private const val PET_CALLBACK = 2900
     }
 
-    private var user: User = User()
+    private lateinit var user:User
     private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +42,7 @@ class RegisterFacebookActivity(): AppCompatActivity() {
             FirebaseAuth.getInstance()
                 .createUserWithEmailAndPassword(user.email, user.password)
                 .addOnSuccessListener {
-                    database.child("users").child("sitters").child(user.id).setValue(user)
+                    database.child("sitters").child(user.id).setValue(user)
                     startUserView(user, SitterActivity::class.java)
                 }
                 .addOnFailureListener {

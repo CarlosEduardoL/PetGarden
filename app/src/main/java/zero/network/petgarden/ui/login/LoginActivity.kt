@@ -235,12 +235,12 @@ class LoginActivity : AppCompatActivity() {
 
     private suspend fun userAlreadyExists(email: String): Boolean = withContext(IO) {
         val isOwner: Boolean =
-            FirebaseDatabase.getInstance().reference.child("users").child("owners")
+            FirebaseDatabase.getInstance().reference.child("owners")
                 .orderByChild("email")
                 .equalTo(email).isRegister()
 
         val isSitter: Boolean =
-            FirebaseDatabase.getInstance().reference.child("users").child("sitters")
+            FirebaseDatabase.getInstance().reference.child("sitters")
                 .orderByChild("email")
                 .equalTo(email).isRegister()
 
