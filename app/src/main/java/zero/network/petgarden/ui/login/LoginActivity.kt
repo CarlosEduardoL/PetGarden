@@ -116,11 +116,13 @@ class LoginActivity : AppCompatActivity() {
 
     private fun checkLogin(job: Job) {
         FirebaseAuth.getInstance().currentUser?.let {
-            loginScope.launch {
-                if (job.isActive) job.cancel()
+            CoroutineScope(Main).launch {
+                if (job.isActive) { job.cancel() }
+                println("-------------------------------${it.email!!}-------------------------------------")
                 if (isSitter(it.email!!)) {
                     startUserView(sitterByEmail(it.email!!), SitterActivity::class.java)
                 } else {
+                    println("-------------------------------${ownerByEmail(it.email!!)}-------------------------------------")
                     startUserView(ownerByEmail(it.email!!), OwnerActivity::class.java)
                 }
             }
@@ -223,8 +225,8 @@ class LoginActivity : AppCompatActivity() {
         addListenerForSingleValueEvent(callback)
     }
 
-    private suspend fun isSitter(email: String): Boolean = withContext(IO) {
-        FirebaseDatabase.getInstance().reference.child("sitters")
+    private suspend fun isSitter(email: String): Boolean  {
+        return FirebaseDatabase.getInstance().reference.child("sitters")
             .orderByChild("email")
             .equalTo(email).isRegister()
     }

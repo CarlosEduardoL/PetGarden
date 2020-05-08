@@ -19,7 +19,7 @@ import kotlin.coroutines.suspendCoroutine
 
 suspend fun ownerByEmail(email: String): Owner = suspendCoroutine{
     val query  = FirebaseDatabase.getInstance().reference
-        .child(Sitter.FOLDER).orderByChild("email").equalTo(email)
+        .child(Owner.FOLDER).orderByChild("email").equalTo(email)
 
     query.addListenerForSingleValueEvent(object: ValueEventListener {
         override fun onCancelled(error: DatabaseError) {
