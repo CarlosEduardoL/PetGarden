@@ -79,30 +79,28 @@ class LoginActivity : AppCompatActivity() {
                         emailInput.toText(),
                         passwordInput.toText()
                     ).addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            loginScope.launch {
-                                if (isSitter(emailInput.toText())) {
-                                    startUserView(
-                                        sitterByEmail(emailInput.toText()),
-                                        SitterActivity::class.java
-                                    )
-                                } else {
-                                    startUserView(
-                                        ownerByEmail(emailInput.toText()),
-                                        OwnerActivity::class.java
-                                    )
-                                }
+                        if (it.isSuccessful) loginScope.launch {
+                            if (isSitter(emailInput.toText())) {
+                                startUserView(
+                                    sitterByEmail(emailInput.toText()),
+                                    SitterActivity::class.java
+                                )
+                            } else {
+                                startUserView(
+                                    ownerByEmail(emailInput.toText()),
+                                    OwnerActivity::class.java
+                                )
                             }
-                        } else {
-                            show(getString(R.string.no_register_info))
                         }
+                        else show(getString(R.string.no_register_info))
+
                     }
             }
 
             //Google
             googleButton.onClick {
                 val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestEmail().requestProfile().build()
+                    .requestEmail().requestProfile().requestIdToken(getString(R.string.default_web_client_id)).build()
                 val mGoogleSignInClient = GoogleSignIn.getClient(this@LoginActivity, gso)
                 val signInIntent = mGoogleSignInClient.signInIntent
                 startActivityForResult(signInIntent, RC_SIGN_IN)
@@ -160,33 +158,16 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
-
         val parameters = Bundle()
         parameters.putString("fields", "id, first_name, last_name, email, birthday")
         request.parameters = parameters
         request.executeAsync()
-
-    }
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == RC_SIGN_IN) {
-            loginScope.launch {
-                val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
-                handleGoogleSignIn(task)
-            }
-        }
-        callbackFacebook.onActivityResult(requestCode, resultCode, data)
     }
 
     private suspend fun handleGoogleSignIn(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)!!
-
             val email = account.email!!
-
             if (userAlreadyExists(email)) {
                 if (isSitter(email)) {
                     startUserView(sitterByEmail(email), SitterActivity::class.java)
@@ -198,10 +179,22 @@ class LoginActivity : AppCompatActivity() {
                 auth.signInWithCredential(credential)
                 startFragmentBirthday(account.user)
             }
-
         } catch (e: ApiException) {
             show(getString(R.string.sign_in_google_error))
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == RC_SIGN_IN) {
+            loginScope.launch {
+                val task: Task<GoogleSignInAccount> =
+                    GoogleSignIn.getSignedInAccountFromIntent(data)
+                handleGoogleSignIn(task)
+            }
+        }
+        callbackFacebook.onActivityResult(requestCode, resultCode, data)
     }
 
     private suspend fun userAlreadyExists(email: String): Boolean = withContext(IO) {
@@ -241,16 +234,11 @@ class LoginActivity : AppCompatActivity() {
         val content = getString(R.string.register)
         val lastWord = content.split(" ").last()
         val ss = SpannableString(content).apply {
-            setSpan(
-                object : ClickableSpan() {
+            setSpan(object : ClickableSpan() {
                     override fun onClick(widget: View) {
                         startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
                     }
-                },
-                content.indexOf(lastWord),
-                content.indexOf(lastWord) + lastWord.length,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+                }, content.indexOf(lastWord), content.indexOf(lastWord) + lastWord.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         binding.registerButton.apply {
             text = ss
