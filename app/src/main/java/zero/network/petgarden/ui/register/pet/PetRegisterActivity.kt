@@ -1,12 +1,9 @@
 package zero.network.petgarden.ui.register.pet
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import zero.network.petgarden.R
 import zero.network.petgarden.model.behaivor.Entity
@@ -45,7 +42,16 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener, PictureListener
 
         pet = extra(PET_KEY) { onError(it); return }
 
-        requestPermission()
+        typeFragment = PetTypeFragment(this, pet)
+        nameFragment = PetNameFragment(this, pet)
+        breedFragment = PetBreedFragment(this, pet)
+        ageFragment = PetAgeFragment(this, pet)
+        weightFragment = PetWeightFragment(this, pet)
+        picFragment = PictureFragment(this, pet, getString(R.string.pet_picture))
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.body, typeFragment)
+            .commit()
 
     }
 
@@ -71,38 +77,6 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener, PictureListener
         supportFragmentManager.beginTransaction().replace(R.id.body, fragment)
             .addToBackStack(REGISTER_STACK).commit()
 
-    private fun requestPermission() {
-        ActivityCompat.requestPermissions(
-            this, arrayOf(
-                Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ), REQUEST_PERMISSION_CODE
-        )
-
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == REQUEST_PERMISSION_CODE && grantResults.all { it == PERMISSION_GRANTED }) {
-            typeFragment = PetTypeFragment(this, pet)
-            nameFragment = PetNameFragment(this, pet)
-            breedFragment = PetBreedFragment(this, pet)
-            ageFragment = PetAgeFragment(this, pet)
-            weightFragment = PetWeightFragment(this, pet)
-            picFragment = PictureFragment(this, pet, getString(R.string.pet_picture))
-
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.body, typeFragment)
-                .commit()
-        } else {
-            requestPermission()
-        }
-    }
-
     override fun onPictureCaptured(entity: Entity) {
         setResult(Activity.RESULT_OK, Intent().apply { putExtra(PET_KEY, pet) })
         finish()
@@ -112,7 +86,6 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener, PictureListener
         const val PET_KEY = "PET"
         const val TITLE_KEY = "TITLE"
         private const val REGISTER_STACK = "REGISTER_STACK"
-        private const val REQUEST_PERMISSION_CODE = 0
 
     }
 }

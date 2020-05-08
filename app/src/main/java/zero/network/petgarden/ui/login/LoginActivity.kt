@@ -1,7 +1,9 @@
 package zero.network.petgarden.ui.login
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.text.SpannableString
@@ -12,6 +14,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -31,11 +34,11 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.ActivityLoginBinding
-import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.tools.initDatabase
+import zero.network.petgarden.ui.register.PictureFragment
+import zero.network.petgarden.ui.register.pet.*
+import zero.network.petgarden.ui.register.user.FragmentStart
 import zero.network.petgarden.ui.register.user.activities.RegisterActivity
-import zero.network.petgarden.ui.register.user.activities.RegisterFacebookActivity
-import zero.network.petgarden.ui.register.user.activities.RegisterGoogleActivity
 import zero.network.petgarden.ui.user.owner.OwnerActivity
 import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.*
@@ -45,7 +48,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class LoginActivity : AppCompatActivity() {
 
-    private val RC_SIGN_IN = 1
+
     private val callbackFacebook = CallbackManager.Factory.create()
     private lateinit var auth: FirebaseAuth
     private lateinit var loginScope: CoroutineScope
@@ -68,68 +71,90 @@ class LoginActivity : AppCompatActivity() {
             binding.splashScreen.visibility = GONE
         })
 
-        setRegisterButton()
-
-        auth = FirebaseAuth.getInstance()
-
-        binding.apply {
-            loginButton.onClick {
-                if (emailInput.text.isNotEmpty() && passwordInput.text.isNotEmpty())
-                    auth.signInWithEmailAndPassword(
-                        emailInput.toText(),
-                        passwordInput.toText()
-                    ).addOnCompleteListener {
-                        if (it.isSuccessful) loginScope.launch {
-                            if (isSitter(emailInput.toText())) {
-                                startUserView(
-                                    sitterByEmail(emailInput.toText()),
-                                    SitterActivity::class.java
-                                )
-                            } else {
-                                startUserView(
-                                    ownerByEmail(emailInput.toText()),
-                                    OwnerActivity::class.java
-                                )
-                            }
-                        }
-                        else show(getString(R.string.no_register_info))
-
-                    }
-            }
-
-            //Google
-            googleButton.onClick {
-                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestEmail().requestProfile().requestIdToken(getString(R.string.default_web_client_id)).build()
-                val mGoogleSignInClient = GoogleSignIn.getClient(this@LoginActivity, gso)
-                val signInIntent = mGoogleSignInClient.signInIntent
-                startActivityForResult(signInIntent, RC_SIGN_IN)
-            }
-
-
-            setUpFacebook()
-        }
+        requestPermission()
 
         ClasePruebas(this)
 
     }
 
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(
+            this, arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ), REQUEST_PERMISSION_CODE
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == REQUEST_PERMISSION_CODE && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+            setRegisterButton()
+            setUpLogin()
+            setUpGoogle()
+            setUpFacebook()
+        } else {
+            requestPermission()
+        }
+    }
+
+    private fun setUpLogin() = binding.apply {
+        loginButton.onClick {
+            if (emailInput.text.isNotEmpty() && passwordInput.text.isNotEmpty())
+                auth.signInWithEmailAndPassword(
+                    emailInput.toText(),
+                    passwordInput.toText()
+                ).addOnCompleteListener {
+                    if (it.isSuccessful) loginScope.launch {
+                        if (isSitter(emailInput.toText())) {
+                            startUserView(
+                                sitterByEmail(emailInput.toText()),
+                                SitterActivity::class.java
+                            )
+                        } else {
+                            startUserView(
+                                ownerByEmail(emailInput.toText()),
+                                OwnerActivity::class.java
+                            )
+                        }
+                    }
+                    else show(getString(R.string.no_register_info))
+
+                }
+        }
+    }
+
+    private fun setUpGoogle() = binding.apply {
+        googleButton.onClick {
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail().requestProfile()
+                .requestIdToken(getString(R.string.default_web_client_id)).build()
+            val mGoogleSignInClient = GoogleSignIn.getClient(this@LoginActivity, gso)
+            val signInIntent = mGoogleSignInClient.signInIntent
+            startActivityForResult(signInIntent, RC_SIGN_IN)
+        }
+    }
+
     private fun checkLogin(job: Job) {
         FirebaseAuth.getInstance().currentUser?.let {
             CoroutineScope(Main).launch {
-                if (job.isActive) { job.cancel() }
-                println("-------------------------------${it.email!!}-------------------------------------")
-                if (isSitter(it.email!!)) {
-                    startUserView(sitterByEmail(it.email!!), SitterActivity::class.java)
-                } else {
-                    println("-------------------------------${ownerByEmail(it.email!!)}-------------------------------------")
-                    startUserView(ownerByEmail(it.email!!), OwnerActivity::class.java)
+                if (job.isActive) {
+                    job.cancel()
                 }
+                if (isSitter(it.email!!))
+                    startUserView(sitterByEmail(it.email!!), SitterActivity::class.java)
+                else
+                    startUserView(ownerByEmail(it.email!!), OwnerActivity::class.java)
+
             }
         }
     }
 
-    private fun ActivityLoginBinding.setUpFacebook() {
+    private fun setUpFacebook() = binding.apply {
         facebookButton.setPermissions("email", "user_birthday")
         facebookButton.registerCallback(callbackFacebook, object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult) {
@@ -156,7 +181,7 @@ class LoginActivity : AppCompatActivity() {
                     else
                         startUserView(ownerByEmail(email), OwnerActivity::class.java)
                 } else {
-                    startFragmentRoleUser(obj.user)
+                    startRegisterView(obj.user, FragmentStart.Role)
                 }
             }
         }
@@ -179,7 +204,7 @@ class LoginActivity : AppCompatActivity() {
             } else {
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
                 auth.signInWithCredential(credential)
-                startFragmentBirthday(account.user)
+                startRegisterView(account.user, FragmentStart.BirthDay)
             }
         } catch (e: ApiException) {
             show(getString(R.string.sign_in_google_error))
@@ -225,7 +250,7 @@ class LoginActivity : AppCompatActivity() {
         addListenerForSingleValueEvent(callback)
     }
 
-    private suspend fun isSitter(email: String): Boolean  {
+    private suspend fun isSitter(email: String): Boolean {
         return FirebaseDatabase.getInstance().reference.child("sitters")
             .orderByChild("email")
             .equalTo(email).isRegister()
@@ -236,11 +261,16 @@ class LoginActivity : AppCompatActivity() {
         val content = getString(R.string.register)
         val lastWord = content.split(" ").last()
         val ss = SpannableString(content).apply {
-            setSpan(object : ClickableSpan() {
+            setSpan(
+                object : ClickableSpan() {
                     override fun onClick(widget: View) {
-                        startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
+                        startActivity(intent(RegisterActivity::class.java))
                     }
-                }, content.indexOf(lastWord), content.indexOf(lastWord) + lastWord.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                },
+                content.indexOf(lastWord),
+                content.indexOf(lastWord) + lastWord.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
         binding.registerButton.apply {
             text = ss
@@ -249,16 +279,9 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun startFragmentRoleUser(user: User) {
-        val intent = Intent(this, RegisterFacebookActivity::class.java)
-        intent.putExtra("user", user)
-        startActivity(intent)
-    }
-
-    private fun startFragmentBirthday(user: User) {
-        val intent = Intent(this, RegisterGoogleActivity::class.java)
-        intent.putExtra("user", user)
-        startActivity(intent)
+    companion object {
+        private const val RC_SIGN_IN = 1
+        private const val REQUEST_PERMISSION_CODE = 0
     }
 
 }

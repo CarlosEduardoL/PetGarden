@@ -13,7 +13,6 @@ data class Pet(
     var years: Int = 0,
     var weight: Int = 0,
     var about: String = "",
-    var image: String = "",
     var ownerID: String = "",
     var sitterID: String? = null
 ): Serializable, Entity{

@@ -30,6 +30,7 @@ import zero.network.petgarden.ui.user.owner.OwnerActivity
 import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.extra
 import zero.network.petgarden.util.show
+import zero.network.petgarden.util.startUserView
 
 /**
  * @author CarlosEduardoL
@@ -45,7 +46,8 @@ class RegisterActivity : AppCompatActivity(),
 
     private lateinit var database: DatabaseReference
 
-    private val user = User()
+    private lateinit var user: User
+    private lateinit var start: FragmentStart
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,37 +59,28 @@ class RegisterActivity : AppCompatActivity(),
 
         database = FirebaseDatabase.getInstance().reference
 
-        emailFragment =
-            EmailRegisterFragment(
-                user,
-                this
-            )
-        nameFragment =
-            NameRegisterFragment(
-                user,
-                this
-            )
-        passFragment =
-            PasswordRegisterFragment(
-                user,
-                this
-            )
-        birthFragment =
-            BirthRegisterFragment(
-                user,
-                this
-            )
-        roleFragment =
-            RoleRegisterFragment(
-                user,
-                this
-            )
+        user = extra("user") { finish();return }
 
+        emailFragment = EmailRegisterFragment(user, this)
+        nameFragment = NameRegisterFragment(user, this)
+        passFragment = PasswordRegisterFragment(user, this)
+        birthFragment = BirthRegisterFragment(user, this)
+        roleFragment = RoleRegisterFragment(user, this)
 
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.body, nameFragment)
-            commit()
-        }
+        start = extra<FragmentStart>("start") { finish();return }
+
+        supportFragmentManager.beginTransaction()
+            .replace(
+                R.id.body, when (start) {
+                    FragmentStart.Name -> nameFragment
+                    FragmentStart.Email -> emailFragment
+                    FragmentStart.Password -> passFragment
+                    FragmentStart.BirthDay -> birthFragment
+                    FragmentStart.Role -> roleFragment
+                }
+            )
+            .commit()
+
     }
 
     override fun next(fragment: Fragment, state: IUser) {
@@ -120,19 +113,18 @@ class RegisterActivity : AppCompatActivity(),
         }
     }
 
-    private fun <T> startUserView(iUser: IUser, clazz: Class<T>) {
-        FirebaseAuth.getInstance()
-            .createUserWithEmailAndPassword(iUser.email, iUser.password)
-            .addOnSuccessListener {
-                Intent(this, clazz).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    putExtra("user", iUser)
-                    startActivity(this)
+    private fun <T> finishRegister(iUser: IUser, clazz: Class<T>) {
+        if (start == FragmentStart.Name)
+            FirebaseAuth.getInstance()
+                .createUserWithEmailAndPassword(iUser.email, iUser.password)
+                .addOnSuccessListener {
+                    startUserView(iUser, clazz)
                 }
-            }
-            .addOnFailureListener {
-                show(it.message ?: "Unexpected Error, please retry")
-            }
+                .addOnFailureListener {
+                    show(it.message ?: "Unexpected Error, please retry")
+                }
+        else startUserView(iUser, clazz)
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -144,7 +136,7 @@ class RegisterActivity : AppCompatActivity(),
                 owner.addPet(pet)
                 owner.saveInDB()
             }
-            startUserView(owner, OwnerActivity::class.java)
+            finishRegister(owner, OwnerActivity::class.java)
         }
     }
 
@@ -153,14 +145,15 @@ class RegisterActivity : AppCompatActivity(),
             is Owner -> Intent(this, PetRegisterActivity::class.java).apply {
                 putExtra(TITLE_KEY, "Registrar Mascota")
                 putExtra(PET_KEY, Pet())
-                startActivityForResult(this,
+                startActivityForResult(
+                    this,
                     PET_CALLBACK
                 )
             }
 
             is Sitter -> {
                 entity.saveInDB()
-                startUserView(entity, SitterActivity::class.java)
+                finishRegister(entity, SitterActivity::class.java)
             }
             else -> println("Error")
         }
