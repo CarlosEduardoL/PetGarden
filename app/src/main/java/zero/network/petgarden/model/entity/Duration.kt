@@ -1,6 +1,6 @@
 package zero.network.petgarden.model.entity
 
-class Duration (
+class   Duration (
     val start: Long,
     val end: Long,
     val cost: Int
