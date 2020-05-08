@@ -14,8 +14,7 @@ import zero.network.petgarden.util.getDate
 class SittersAdapter(var sitters: List<Sitter>) :
     RecyclerView.Adapter<SittersAdapter.SitterViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SitterViewHolder =
-        SitterViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SitterViewHolder = SitterViewHolder(
             RowSitterBinding.inflate(LayoutInflater.from(parent.context))
         )
 
@@ -37,7 +36,7 @@ class SittersAdapter(var sitters: List<Sitter>) :
             view.MyRating.rating = sitter.rating.toFloat()
             view.nameSitterList.text = "${sitter.name} ${sitter.lastName}"
             sitter.availability?.let {
-                view.schedule.text = "${it.start.getDate("hh:mm:ss")} to ${it.end.getDate("hh:mm:ss")}"
+                view.schedule.text = "${it.start.getDate("hh:mm:ss")} a ${it.end.getDate("hh:mm:ss")}"
                 view.price.text = "$${it.cost}"
             }
         }
