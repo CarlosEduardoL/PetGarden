@@ -34,6 +34,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.ActivityLoginBinding
+import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.tools.initDatabase
 import zero.network.petgarden.ui.register.PictureFragment
 import zero.network.petgarden.ui.register.pet.*
@@ -264,7 +265,7 @@ class LoginActivity : AppCompatActivity() {
             setSpan(
                 object : ClickableSpan() {
                     override fun onClick(widget: View) {
-                        startActivity(intent(RegisterActivity::class.java))
+                        startRegisterView(User())
                     }
                 },
                 content.indexOf(lastWord),
