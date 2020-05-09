@@ -6,10 +6,12 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import zero.network.petgarden.model.behaivor.IUser
+import zero.network.petgarden.tools.logError
 import zero.network.petgarden.ui.register.user.FragmentStart
 import zero.network.petgarden.ui.register.user.activities.RegisterActivity
 import java.io.File
 import java.io.Serializable
+import java.lang.Exception
 
 
 /**
@@ -21,14 +23,15 @@ fun Activity.show(message: String) =
 /**
  * get extra information from intent
  */
-inline fun <reified T> Activity.extra(key: String, onError: (error: String) -> Nothing): T {
-    val ext = intent.extras ?: onError("No extras")
+inline fun <reified T> Activity.extra(key: String): T {
+    val ext = intent.extras ?: throw Exception("No extras")
     return if (ext.containsKey(key)) {
         val obj = ext[key]
         if (obj is T) obj
-        else onError("the object with key $key is not type ${T::class.java}")
-    } else onError("key $key doesn't exist")
+        else throw Exception("the object with key $key is not type ${T::class.java}")
+    } else throw Exception("key $key doesn't exist")
 }
+
 
 /**
  * get the uri from [file]
@@ -44,9 +47,10 @@ fun <T> Activity.startUserView(user: IUser, clazz: Class<T>) = startActivity(
     }
 )
 
-fun Activity.startRegisterView(user: IUser, start: FragmentStart = FragmentStart.Name) = startActivity(
-    intent(RegisterActivity::class.java, "user" to user).apply { putExtra("start", start) }
-)
+fun Activity.startRegisterView(user: IUser, start: FragmentStart = FragmentStart.Name) =
+    startActivity(
+        intent(RegisterActivity::class.java, "user" to user).apply { putExtra("start", start) }
+    )
 
 /**
  * @return a new Intent with activity context

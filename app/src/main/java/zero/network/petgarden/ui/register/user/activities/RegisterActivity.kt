@@ -59,7 +59,7 @@ class RegisterActivity : AppCompatActivity(),
 
         database = FirebaseDatabase.getInstance().reference
 
-        user = extra("user") { finish();return }
+        user = extra("user")
 
         emailFragment = EmailRegisterFragment(user, this)
         nameFragment = NameRegisterFragment(user, this)
@@ -67,7 +67,7 @@ class RegisterActivity : AppCompatActivity(),
         birthFragment = BirthRegisterFragment(user, this)
         roleFragment = RoleRegisterFragment(user, this)
 
-        start = extra<FragmentStart>("start") { finish();return }
+        start = extra<FragmentStart>("start")
 
         supportFragmentManager.beginTransaction()
             .replace(

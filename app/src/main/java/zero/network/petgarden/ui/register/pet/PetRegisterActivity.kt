@@ -34,13 +34,13 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener, PictureListener
             .replace(
                 R.id.header,
                 ActionBarFragment(
-                    extra(TITLE_KEY) { onError(it); return },
+                    extra(TITLE_KEY),
                     true
                 ) { onBackPressed() })
             .commit()
 
 
-        pet = extra(PET_KEY) { onError(it); return }
+        pet = extra(PET_KEY)
 
         typeFragment = PetTypeFragment(this, pet)
         nameFragment = PetNameFragment(this, pet)
