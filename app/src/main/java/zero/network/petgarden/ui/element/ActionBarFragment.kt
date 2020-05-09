@@ -8,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.fragment_action_bar.view.*
-import zero.network.petgarden.R
+import zero.network.petgarden.databinding.FragmentActionBarBinding
+import zero.network.petgarden.model.behaivor.CallBack
 import zero.network.petgarden.ui.login.LoginActivity
 
 
@@ -18,22 +18,29 @@ import zero.network.petgarden.ui.login.LoginActivity
  */
 class ActionBarFragment(
     private val title: String,
-    private val backButton: Boolean = false,
-    private val closeButton: Boolean = false,
-    private val onBack: () -> Unit
+    private val isBackButton: Boolean = false,
+    private val isCloseButton: Boolean = false,
+    private val onBack: () -> Unit = {}
 ) : Fragment() {
+
+    @JvmOverloads constructor(
+        title: String,
+        isBackButton: Boolean = false,
+        isCloseButton: Boolean = false,
+        onBack: CallBack<Boolean> = CallBack {}
+    ) : this(title, isBackButton, isCloseButton, { onBack.onResult(isBackButton) })
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_action_bar, container, false).apply {
+    ): View = FragmentActionBarBinding.inflate(layoutInflater, container, false).apply {
         titleText.text = title
         backButton.apply {
-            if (!this@ActionBarFragment.backButton) visibility = View.GONE
-            setOnClickListener{ onBack() }
+            if (!isBackButton) visibility = View.GONE
+            setOnClickListener { onBack() }
         }
         exitButton.apply {
-            if (!this@ActionBarFragment.closeButton) visibility = View.GONE
+            if (!isCloseButton) visibility = View.GONE
             setOnClickListener {
                 FirebaseAuth.getInstance().signOut()
 
@@ -43,6 +50,6 @@ class ActionBarFragment(
                 }
             }
         }
-    }
+    }.root
 
 }
