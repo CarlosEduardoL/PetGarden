@@ -1,11 +1,7 @@
 package zero.network.petgarden.model.entity
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import zero.network.petgarden.model.behaivor.Entity
 import zero.network.petgarden.model.behaivor.IPlanner
 import zero.network.petgarden.model.behaivor.ISitter
@@ -13,10 +9,8 @@ import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.tools.downloadImage
 import zero.network.petgarden.tools.uploadImage
 import zero.network.petgarden.util.saveURLImageOnFile
+import zero.network.petgarden.util.wait
 import java.io.Serializable
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 data class Sitter(
     private val user: User = User(),
@@ -37,7 +31,7 @@ data class Sitter(
         _clients?.let {
             return it
         }
-        downloadPets()
+        downloadOwners()
         return clients()
     }
 
@@ -58,29 +52,13 @@ data class Sitter(
     private suspend fun downloadPets(){
         val query = FirebaseDatabase.getInstance().reference
             .child(Pet.FOLDER).orderByChild("sitterID").equalTo(id)
-        _pets = suspendCoroutine { continuation ->
-            query.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onCancelled(e: DatabaseError) =
-                    continuation.resumeWithException(e.toException())
-                override fun onDataChange(data: DataSnapshot) = continuation.resume(mutableSetOf<Pet>().apply{
-                    addAll(data.children.map { it.getValue(Pet::class.java)!! })
-                })
-            })
-        }!!
+        _pets = query.wait().children.map { it.getValue(Pet::class.java)!! }.toMutableSet()
     }
 
     private suspend fun downloadOwners(){
         val query = FirebaseDatabase.getInstance().reference
             .child(Owner.FOLDER).orderByChild("sitterList").equalTo(id)
-        _clients = suspendCoroutine { continuation ->
-            query.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onCancelled(e: DatabaseError) =
-                    continuation.resumeWithException(e.toException())
-                override fun onDataChange(data: DataSnapshot) = continuation.resume(mutableSetOf<Owner>().apply{
-                    addAll(data.children.map { it.getValue(Owner::class.java)!! })
-                })
-            })
-        }!!
+        _clients = query.wait().children.map { it.getValue(Owner::class.java)!! }.toMutableSet()
     }
 
     suspend fun image(): Bitmap {

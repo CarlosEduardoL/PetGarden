@@ -6,8 +6,15 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.Query
+import com.google.firebase.database.ValueEventListener
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 
 // Get the string text from an EditText
@@ -44,4 +51,3 @@ fun Long.getDate(dateFormat: String): String {
     calendar.timeInMillis = this
     return SimpleDateFormat(dateFormat).format(calendar.time)
 }
-

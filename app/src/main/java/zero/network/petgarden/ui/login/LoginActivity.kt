@@ -28,23 +28,21 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.database.*
-import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.ActivityLoginBinding
+import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.tools.initDatabase
-import zero.network.petgarden.ui.register.PictureFragment
-import zero.network.petgarden.ui.register.pet.*
 import zero.network.petgarden.ui.register.user.FragmentStart
-import zero.network.petgarden.ui.register.user.activities.RegisterActivity
 import zero.network.petgarden.ui.user.owner.OwnerActivity
 import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.*
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 
 class LoginActivity : AppCompatActivity() {
@@ -94,7 +92,7 @@ class LoginActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         if (requestCode == REQUEST_PERMISSION_CODE && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-            setRegisterButton()
+            setUpRegisterButton()
             setUpLogin()
             setUpGoogle()
             setUpFacebook()
@@ -103,29 +101,49 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_SIGN_IN) {
+            loginScope.launch {
+                val task: Task<GoogleSignInAccount> =
+                    GoogleSignIn.getSignedInAccountFromIntent(data)
+                handleGoogleSignIn(task)
+            }
+        }
+        callbackFacebook.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun checkLogin(job: Job) {
+        FirebaseAuth.getInstance().currentUser?.let {
+            CoroutineScope(Main).launch {
+                if (job.isActive) {
+                    job.cancel()
+                }
+                sitterByEmail(it.email!!)?.let {
+                    startUserView(it, SitterActivity::class.java)
+                }
+                ownerByEmail(it.email!!)?.let {
+                    startUserView(it, OwnerActivity::class.java)
+                }
+
+            }
+        }
+    }
+
     private fun setUpLogin() = binding.apply {
         loginButton.onClick {
-            if (emailInput.text.isNotEmpty() && passwordInput.text.isNotEmpty())
+            if (emailInput.text.isNotEmpty() && passwordInput.text.isNotEmpty()) loginScope.launch {
                 auth.signInWithEmailAndPassword(
                     emailInput.toText(),
                     passwordInput.toText()
-                ).addOnCompleteListener {
-                    if (it.isSuccessful) loginScope.launch {
-                        if (isSitter(emailInput.toText())) {
-                            startUserView(
-                                sitterByEmail(emailInput.toText()),
-                                SitterActivity::class.java
-                            )
-                        } else {
-                            startUserView(
-                                ownerByEmail(emailInput.toText()),
-                                OwnerActivity::class.java
-                            )
-                        }
-                    }
-                    else show(getString(R.string.no_register_info))
-
+                ).await()
+                sitterByEmail(emailInput.toText())?.let {
+                    startUserView(it, SitterActivity::class.java)
                 }
+                ownerByEmail(emailInput.toText())?.let {
+                    startUserView(it, OwnerActivity::class.java)
+                }
+            }
         }
     }
 
@@ -137,21 +155,6 @@ class LoginActivity : AppCompatActivity() {
             val mGoogleSignInClient = GoogleSignIn.getClient(this@LoginActivity, gso)
             val signInIntent = mGoogleSignInClient.signInIntent
             startActivityForResult(signInIntent, RC_SIGN_IN)
-        }
-    }
-
-    private fun checkLogin(job: Job) {
-        FirebaseAuth.getInstance().currentUser?.let {
-            CoroutineScope(Main).launch {
-                if (job.isActive) {
-                    job.cancel()
-                }
-                if (isSitter(it.email!!))
-                    startUserView(sitterByEmail(it.email!!), SitterActivity::class.java)
-                else
-                    startUserView(ownerByEmail(it.email!!), OwnerActivity::class.java)
-
-            }
         }
     }
 
@@ -169,96 +172,7 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
-    @SuppressLint("SimpleDateFormat")
-    private suspend fun handleFacebookToken(loginResult: LoginResult) {
-        val credential = FacebookAuthProvider.getCredential(loginResult.accessToken.token)
-        auth.signInWithCredential(credential)
-        val request: GraphRequest = GraphRequest.newMeRequest(loginResult.accessToken) { obj, _ ->
-            loginScope.launch {
-                val email = obj.getString("email")
-                if (userAlreadyExists(email)) {
-                    if (isSitter(email))
-                        startUserView(sitterByEmail(email), SitterActivity::class.java)
-                    else
-                        startUserView(ownerByEmail(email), OwnerActivity::class.java)
-                } else {
-                    startRegisterView(obj.user, FragmentStart.Role)
-                }
-            }
-        }
-        val parameters = Bundle()
-        parameters.putString("fields", "id, first_name, last_name, email, birthday")
-        request.parameters = parameters
-        request.executeAsync()
-    }
-
-    private suspend fun handleGoogleSignIn(completedTask: Task<GoogleSignInAccount>) {
-        try {
-            val account = completedTask.getResult(ApiException::class.java)!!
-            val email = account.email!!
-            if (userAlreadyExists(email)) {
-                if (isSitter(email)) {
-                    startUserView(sitterByEmail(email), SitterActivity::class.java)
-                } else {
-                    startUserView(ownerByEmail(email), OwnerActivity::class.java)
-                }
-            } else {
-                val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                auth.signInWithCredential(credential)
-                startRegisterView(account.user, FragmentStart.BirthDay)
-            }
-        } catch (e: ApiException) {
-            show(getString(R.string.sign_in_google_error))
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == RC_SIGN_IN) {
-            loginScope.launch {
-                val task: Task<GoogleSignInAccount> =
-                    GoogleSignIn.getSignedInAccountFromIntent(data)
-                handleGoogleSignIn(task)
-            }
-        }
-        callbackFacebook.onActivityResult(requestCode, resultCode, data)
-    }
-
-    private suspend fun userAlreadyExists(email: String): Boolean = withContext(IO) {
-        val isOwner: Boolean =
-            FirebaseDatabase.getInstance().reference.child("owners")
-                .orderByChild("email")
-                .equalTo(email).isRegister()
-
-        val isSitter: Boolean =
-            FirebaseDatabase.getInstance().reference.child("sitters")
-                .orderByChild("email")
-                .equalTo(email).isRegister()
-
-        println("sitterAfter$isSitter")
-        return@withContext isSitter or isOwner
-    }
-
-    private suspend fun Query.isRegister(): Boolean = suspendCoroutine {
-        val callback = object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) = it.resume(false)
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) =
-                if (dataSnapshot.childrenCount > 0) it.resume(true)
-                else it.resume(false)
-        }
-        addListenerForSingleValueEvent(callback)
-    }
-
-    private suspend fun isSitter(email: String): Boolean {
-        return FirebaseDatabase.getInstance().reference.child("sitters")
-            .orderByChild("email")
-            .equalTo(email).isRegister()
-    }
-
-
-    private fun setRegisterButton() {
+    private fun setUpRegisterButton() {
         val content = getString(R.string.register)
         val lastWord = content.split(" ").last()
         val ss = SpannableString(content).apply {
@@ -277,6 +191,49 @@ class LoginActivity : AppCompatActivity() {
             text = ss
             movementMethod = LinkMovementMethod.getInstance()
             highlightColor = Color.TRANSPARENT
+        }
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private suspend fun handleFacebookToken(loginResult: LoginResult) {
+        val credential = FacebookAuthProvider.getCredential(loginResult.accessToken.token)
+        auth.signInWithCredential(credential)
+        val request: GraphRequest = GraphRequest.newMeRequest(loginResult.accessToken) { obj, _ ->
+            loginScope.launch {
+                val email = obj.getString("email")
+                userByEmail(email)?.let {
+                    when (it) {
+                        is Sitter -> startUserView(it, SitterActivity::class.java)
+                        else -> startUserView(it, OwnerActivity::class.java)
+                    }
+                    return@launch
+                }
+                startRegisterView(obj.user, FragmentStart.Role)
+            }
+        }
+        val parameters = Bundle()
+        parameters.putString("fields", "id, first_name, last_name, email, birthday")
+        request.parameters = parameters
+        request.executeAsync()
+    }
+
+    private suspend fun handleGoogleSignIn(completedTask: Task<GoogleSignInAccount>) {
+        try {
+            val account = completedTask.getResult(ApiException::class.java)!!
+            val email = account.email!!
+            userByEmail(email)?.let {
+                when (it) {
+                    is Sitter -> startUserView(it, SitterActivity::class.java)
+                    else -> startUserView(it, OwnerActivity::class.java)
+                }
+                return
+            }
+            val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+            auth.signInWithCredential(credential)
+            startRegisterView(account.user, FragmentStart.BirthDay)
+
+        } catch (e: ApiException) {
+            show(getString(R.string.sign_in_google_error))
         }
     }
 

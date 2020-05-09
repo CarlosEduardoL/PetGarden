@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import zero.network.petgarden.databinding.FragmentActionBarBinding
 import zero.network.petgarden.model.behaivor.CallBack
 import zero.network.petgarden.ui.login.LoginActivity
+import zero.network.petgarden.util.onClick
 
 
 /**
@@ -30,20 +31,22 @@ class ActionBarFragment(
         onBack: CallBack<Boolean> = CallBack {}
     ) : this(title, isBackButton, isCloseButton, { onBack.onResult(isBackButton) })
 
+    private lateinit var binding: FragmentActionBarBinding
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentActionBarBinding.inflate(layoutInflater, container, false).apply {
+        binding = this
         titleText.text = title
         backButton.apply {
             if (!isBackButton) visibility = View.GONE
-            setOnClickListener { onBack() }
+            onClick { onBack() }
         }
         exitButton.apply {
             if (!isCloseButton) visibility = View.GONE
-            setOnClickListener {
+            onClick {
                 FirebaseAuth.getInstance().signOut()
-
                 Intent(activity, LoginActivity::class.java).apply {
                     addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK or FLAG_ACTIVITY_CLEAR_TOP)
                     activity?.startActivity(this)
@@ -51,5 +54,11 @@ class ActionBarFragment(
             }
         }
     }.root
+
+    fun update(title: String = this.title, isBackButton: Boolean = this.isBackButton, isCloseButton: Boolean = this.isCloseButton)= binding.apply {
+        titleText.text = title
+        if (!isBackButton) backButton.visibility = View.GONE
+        if (!isCloseButton) exitButton.visibility = View.GONE
+    }
 
 }

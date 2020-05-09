@@ -12,6 +12,7 @@ import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.tools.downloadImage
 import zero.network.petgarden.tools.uploadImage
 import zero.network.petgarden.util.saveURLImageOnFile
+import zero.network.petgarden.util.wait
 import java.io.Serializable
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -69,29 +70,13 @@ data class Owner(
     private suspend fun downloadPets(){
         val query = FirebaseDatabase.getInstance().reference
             .child(Pet.FOLDER).orderByChild("ownerID").equalTo(id)
-        _pets = suspendCoroutine { continuation ->
-            query.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onCancelled(e: DatabaseError) =
-                    continuation.resumeWithException(e.toException())
-                override fun onDataChange(data: DataSnapshot) = continuation.resume(mutableSetOf<Pet>().apply{
-                    addAll(data.children.map { it.getValue(Pet::class.java)!! })
-                })
-            })
-        }!!
+        _pets = query.wait().children.map { it.getValue(Pet::class.java)!! }.toMutableSet()
     }
 
     private suspend fun downloadSitters(){
         val query = FirebaseDatabase.getInstance().reference
-            .child(Sitter.FOLDER).orderByChild("clients").equalTo(id)
-        _sitter = suspendCoroutine { continuation ->
-            query.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onCancelled(e: DatabaseError) =
-                    continuation.resumeWithException(e.toException())
-                override fun onDataChange(data: DataSnapshot) = continuation.resume(mutableSetOf<Sitter>().apply{
-                    addAll(data.children.map { it.getValue(Sitter::class.java)!! })
-                })
-            })
-        }!!
+            .child(Sitter.FOLDER).orderByChild("clients").orderByValue().equalTo(id)
+        _sitter = query.wait().children.map { it.getValue(Sitter::class.java)!! }.toMutableSet()
     }
 
     companion object {

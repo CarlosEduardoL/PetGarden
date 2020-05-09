@@ -1,62 +1,58 @@
 package zero.network.petgarden.util
 
-import com.facebook.GraphResponse
+import android.annotation.SuppressLint
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
 import org.json.JSONObject
+import zero.network.petgarden.model.behaivor.CallBack
+import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.model.entity.Location
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
-suspend fun ownerByEmail(email: String): Owner = suspendCoroutine{
-    val query  = FirebaseDatabase.getInstance().reference
+suspend fun ownerByEmail(email: String): Owner? {
+    val query = FirebaseDatabase.getInstance().reference
         .child(Owner.FOLDER).orderByChild("email").equalTo(email)
-
-    query.addListenerForSingleValueEvent(object: ValueEventListener {
-        override fun onCancelled(error: DatabaseError) {
-            it.resumeWithException(error.toException())
-        }
-
-        override fun onDataChange(dataSnapshot: DataSnapshot) {
-            for (result in dataSnapshot.children) {
-                it.resume(result.getValue(Owner::class.java)!!)
-                break
-            }
-        }
-    })
+    return query.wait().children.firstOrNull()?.getValue(Owner::class.java)
 }
 
-suspend fun sitterByEmail(email: String): Sitter = suspendCoroutine{
-    val query  = FirebaseDatabase.getInstance().reference
+suspend fun sitterByEmail(email: String): Sitter? {
+    val query = FirebaseDatabase.getInstance().reference
         .child(Sitter.FOLDER).orderByChild("email").equalTo(email)
+    return query.wait().children.firstOrNull()?.getValue(Sitter::class.java)
+}
 
-    query.addListenerForSingleValueEvent(object: ValueEventListener {
-        override fun onCancelled(error: DatabaseError) {
-            it.resumeWithException(error.toException())
-        }
+suspend fun userByEmail(email: String): IUser? {
+    return sitterByEmail(email)?: ownerByEmail(email)
+}
 
-        override fun onDataChange(dataSnapshot: DataSnapshot) {
-            for (result in dataSnapshot.children) {
-                it.resume(result.getValue(Sitter::class.java)!!)
-                break
-            }
-        }
-    })
+suspend fun allSitters(): List<Sitter> = FirebaseDatabase.getInstance()
+    .reference.child("sitters").wait()
+    .children.map { it.getValue(Sitter::class.java)!! }
+
+fun allSitters(callBack: CallBack<List<Sitter>>) = CoroutineScope(Main).launch {
+    callBack.onResult(allSitters())
 }
 
 val GoogleSignInAccount.user
-    get() = User(givenName!!, familyName!!, email!!, "123456", Date(), photoUrl.toString(), Location(0.0, 0.0))
+    get() = User(
+        givenName!!,
+        familyName!!,
+        email!!,
+        "123456",
+        Date(),
+        photoUrl.toString(),
+        Location(0.0, 0.0)
+    )
 
 val JSONObject.user
+    @SuppressLint("SimpleDateFormat")
     get() = User(
         getString("first_name"),
         getString("last_name"),
@@ -64,4 +60,4 @@ val JSONObject.user
         "",
         SimpleDateFormat("dd/MM/yyyy").parse(getString("birthday"))!!,
         "https://graph.facebook.com/${getString("id")}/picture?width=500&height=500"
-        )
+    )
