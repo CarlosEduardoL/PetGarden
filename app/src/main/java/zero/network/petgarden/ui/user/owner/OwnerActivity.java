@@ -33,6 +33,7 @@ import zero.network.petgarden.databinding.FragmentDockBinding;
 import zero.network.petgarden.model.entity.Location;
 import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Sitter;
+import zero.network.petgarden.ui.element.ActionBarFragment;
 
 public class OwnerActivity extends AppCompatActivity implements OwnerView, NavigationView.OnNavigationItemSelectedListener {
 
@@ -55,6 +56,11 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView, Navig
 
         //binding.fragmentDock
         //dock.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
+
+        //SEGUIR AQUI, CONSULTAR COMO HACER LA BARRA DE ARRIBA
+        /*ActionBarFragment topBarFragment = new ActionBarFragment("",false);*/
+
+
         DockFragment dockFragment = new DockFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.dock_container,dockFragment, null);
@@ -122,7 +128,6 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView, Navig
         //Obtener lista de sitters
         Query query =FirebaseDatabase.getInstance()
                 .getReference()
-                .child("users")
                 .child("sitters");
         Log.e(">>>Query:",query.toString());
         query.addValueEventListener(new ValueEventListener() {
