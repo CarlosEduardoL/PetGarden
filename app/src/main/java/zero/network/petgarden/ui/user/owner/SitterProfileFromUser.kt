@@ -1,12 +1,10 @@
 package zero.network.petgarden.ui.user.owner
 
-import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_sitter_profile_from_user.*
@@ -16,12 +14,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import zero.network.petgarden.R
 import zero.network.petgarden.model.entity.Duration
+import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.Task
+import zero.network.petgarden.tools.OnPetClickListener
 import zero.network.petgarden.util.show
 import java.util.*
 
-class SitterProfileFromUser(private val sitter:Sitter, view: OwnerView) : Fragment(), OwnerView by view{
+class SitterProfileFromUser(private val sitter:Sitter, view: OwnerView) : Fragment(), OnPetClickListener, OwnerView by view{
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -61,7 +61,10 @@ class SitterProfileFromUser(private val sitter:Sitter, view: OwnerView) : Fragme
         endTime.setIs24HourView(true)
 
         next_button.setOnClickListener{
-            if (sitter.availability!=null)
+            if (sitter.availability!=null){
+                //contracting
+                show("El cuidador seleccionado ha sido contratado")
+            }
             //contracting(
 
 
@@ -86,21 +89,21 @@ class SitterProfileFromUser(private val sitter:Sitter, view: OwnerView) : Fragme
 
     @RequiresApi(Build.VERSION_CODES.M)
     private suspend fun contracting(){
-        var numPets = 0
-        numPets = owner.pets().size
+        var numPets = owner.pets().size
+
+        val start = HourToTimeInMilis(startTime.hour, startTime.minute)
+        val end = HourToTimeInMilis(endTime.hour, endTime.minute)
+        val duration = Duration(start, end, sitter.availability!!.cost)
 
         if(numPets==1) {
-            val start = HourToTimeInMilis(startTime.hour, startTime.minute)
-            val end = HourToTimeInMilis(endTime.hour, endTime.minute)
-            val duration = Duration(start, end, sitter.availability!!.cost)
-
             val task = Task(owner.pets().first().id, duration)
+            sitter.addTask(task)
+        }else {
+           val selectFragment =  SelectPetFragment(this, owner.pets().toList())
+            val fragmentTransaction = fragmentManager!!.beginTransaction()
+            fragmentTransaction.add(R.id.activity_owner_container, selectFragment, null)
+            fragmentTransaction.commit()
         }
-            //Abra el dialog y que elija que mascota quiere contratar.
-
-
-        //val task = Task()
-      //  sitter.addTask()
     }
 
 
@@ -111,5 +114,15 @@ class SitterProfileFromUser(private val sitter:Sitter, view: OwnerView) : Fragme
         }
 
         return date.timeInMillis
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onPetClick(pet: Pet) {
+        val start = HourToTimeInMilis(startTime.hour, startTime.minute)
+        val end = HourToTimeInMilis(endTime.hour, endTime.minute)
+        val duration = Duration(start, end, sitter.availability!!.cost)
+        var task:Task = Task("", Duration(1,1,1))
+        CoroutineScope(Dispatchers.Main).launch { task = Task(owner.pets().first().id, duration) }
+        sitter.addTask(task)
     }
 }
