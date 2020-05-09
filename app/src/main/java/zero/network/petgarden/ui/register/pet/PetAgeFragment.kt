@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_age_of_pet.view.*
-import zero.network.petgarden.R
 import zero.network.petgarden.databinding.FragmentAgeOfPetBinding
 import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.util.onClick

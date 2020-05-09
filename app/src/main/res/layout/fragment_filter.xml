@@ -109,7 +109,7 @@
         android:layout_marginBottom="32dp" />
 
     <Button
-        android:id="@+id/acceptBtn"
+        android:id="@+id/next_button"
         style="@style/AppButton"
         android:layout_marginTop="32dp"
         android:text="Aceptar" />

@@ -4,7 +4,6 @@ import androidx.annotation.RequiresApi
 import zero.network.petgarden.model.entity.Duration
 import zero.network.petgarden.ui.user.owner.SittersAdapter
 import kotlin.math.roundToInt
-import kotlin.time.hours
 
 import android.os.Build
 import android.os.Bundle
@@ -15,16 +14,9 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_filter.*
 import zero.network.petgarden.R
 import zero.network.petgarden.model.entity.Sitter
-import zero.network.petgarden.util.onClick
-import zero.network.petgarden.util.show
-import zero.network.petgarden.util.toText
 import java.util.*
 
 class filterFragment(var adapter: SittersAdapter, var sitters:List<Sitter>) : Fragment() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(
@@ -41,7 +33,7 @@ class filterFragment(var adapter: SittersAdapter, var sitters:List<Sitter>) : Fr
 
         initTimePicker(fromHour, fromMins, toHour, toMins)
 
-        acceptBtn.setOnClickListener() {
+        next_button.setOnClickListener {
             fromPriceET.text.toString().let { minTxt ->
                 if (minTxt.isNotEmpty()) {
                     min = minTxt.toInt()

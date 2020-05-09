@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_register_email.view.*
 import zero.network.petgarden.R
+import zero.network.petgarden.databinding.FragmentRegisterEmailBinding
 import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.ui.register.user.OnNextListener
 import zero.network.petgarden.util.show
@@ -23,7 +24,7 @@ class EmailRegisterFragment(
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_register_email, container, false).apply{
+    ): View = FragmentRegisterEmailBinding.inflate(inflater, container, false).apply{
 
         emailInput.setText(user.email)
 
@@ -41,6 +42,6 @@ class EmailRegisterFragment(
                 }
             }
         }
-    }
+    }.root
 
 }

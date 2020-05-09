@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_password_register.view.*
 
 import zero.network.petgarden.R
+import zero.network.petgarden.databinding.FragmentPasswordRegisterBinding
 import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.ui.register.user.OnNextListener
 import zero.network.petgarden.util.show
@@ -25,7 +26,7 @@ class PasswordRegisterFragment(
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_password_register, container, false).apply {
+    ): View? = FragmentPasswordRegisterBinding.inflate(inflater, container, false).apply {
 
         passInput.setText(user.password)
         passConfirmInput.setText(user.password)
@@ -45,6 +46,6 @@ class PasswordRegisterFragment(
                 }
             }
         }
-    }
+    }.root
 
 }
