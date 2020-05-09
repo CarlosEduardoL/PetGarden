@@ -6,6 +6,10 @@ import kotlinx.coroutines.launch
 import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.model.entity.Sitter
 
+/**
+ * @author CarlosEduardoL
+ * Interface that allows kotlin suspend methods from owner called in java environment
+ */
 interface IOwner {
 
     /**
@@ -20,9 +24,8 @@ interface IOwner {
         callBack.onResult(pets())
     }
 
-
     /**
-     * Add a new pet to the owner
+     * Add a new [Pet] to the owner
      * if the pet is already added returns false
      */
     suspend fun addPet(pet: Pet): Boolean

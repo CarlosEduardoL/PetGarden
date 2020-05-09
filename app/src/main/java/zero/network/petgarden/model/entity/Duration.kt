@@ -1,10 +1,17 @@
 package zero.network.petgarden.model.entity
 
-class   Duration (
+/**
+ * @author CarlosEduardoL
+ */
+class Duration (
     val start: Long,
     val end: Long,
     val cost: Int
 ): Comparable<Duration> {
+
+    /**
+     * extract a duration from another, return this duration - the param [duration]
+     */
     fun extractSlice(duration: Duration): List<Duration>{
         return if (duration.end == end && duration.start == start){
             emptyList()
@@ -20,8 +27,14 @@ class   Duration (
         }
     }
 
+    /**
+     * check if [this] duration contains the duration [d]
+     */
     fun contains(d: Duration) = d.start > start && d.end < end
 
+    /**
+     * check if [this] collide with [d]
+     */
     fun collide(d: Duration): Boolean {
         return d.start <= start && d.end >= start
                 || d.start >= start && d.end <= end

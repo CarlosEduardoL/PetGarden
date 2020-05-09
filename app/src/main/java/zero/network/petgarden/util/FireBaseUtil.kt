@@ -8,8 +8,8 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-suspend fun Query.wait() = suspendCoroutine<DataSnapshot>{
-    object : ValueEventListener {
+suspend fun Query.wait() = suspendCoroutine<DataSnapshot> {
+    val listener = object : ValueEventListener {
         override fun onCancelled(error: DatabaseError) {
             it.resumeWithException(error.toException())
         }
@@ -17,4 +17,5 @@ suspend fun Query.wait() = suspendCoroutine<DataSnapshot>{
             it.resume(result)
         }
     }
+    addListenerForSingleValueEvent(listener)
 }

@@ -1,11 +1,7 @@
 package zero.network.petgarden.model.entity
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import zero.network.petgarden.model.behaivor.Entity
 import zero.network.petgarden.model.behaivor.IOwner
 import zero.network.petgarden.model.behaivor.IUser
@@ -14,16 +10,16 @@ import zero.network.petgarden.tools.uploadImage
 import zero.network.petgarden.util.saveURLImageOnFile
 import zero.network.petgarden.util.wait
 import java.io.Serializable
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
+/**
+ * @author CarlosEduardoL
+ */
 data class Owner(
     private val user: User = User(),
     val sitterList: MutableList<String> = mutableListOf()
-): IUser by user, Serializable, Entity, IOwner {
+) : IUser by user, Serializable, Entity, IOwner {
 
-    private var _pets : MutableSet<Pet>? = null
+    private var _pets: MutableSet<Pet>? = null
     private var _sitter: MutableSet<Sitter>? = null
 
     suspend fun image(): Bitmap {
@@ -45,12 +41,12 @@ data class Owner(
         return pets()
     }
 
-    override suspend fun addPet(pet: Pet): Boolean{
+    override suspend fun addPet(pet: Pet): Boolean {
         pet.ownerID = id
         _pets?.let {
-            return if(it.add(pet)){
+            return if (it.add(pet)) {
                 pet.saveInDB(); true
-            }else false
+            } else false
         }
         downloadPets()
         return addPet(pet)
@@ -67,16 +63,16 @@ data class Owner(
         return petXSitters()
     }
 
-    private suspend fun downloadPets(){
+    private suspend fun downloadPets() {
         val query = FirebaseDatabase.getInstance().reference
             .child(Pet.FOLDER).orderByChild("ownerID").equalTo(id)
         _pets = query.wait().children.map { it.getValue(Pet::class.java)!! }.toMutableSet()
     }
 
-    private suspend fun downloadSitters(){
-        val query = FirebaseDatabase.getInstance().reference
+    private suspend fun downloadSitters() {
+        _sitter = FirebaseDatabase.getInstance().reference
             .child(Sitter.FOLDER).orderByChild("clients").orderByValue().equalTo(id)
-        _sitter = query.wait().children.map { it.getValue(Sitter::class.java)!! }.toMutableSet()
+            .wait().children.map { it.getValue(Sitter::class.java)!! }.toMutableSet()
     }
 
     companion object {

@@ -36,6 +36,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.ActivityLoginBinding
+import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.tools.initDatabase
@@ -218,13 +219,17 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private suspend fun handleGoogleSignIn(completedTask: Task<GoogleSignInAccount>) {
+        println("-----------------------------------------------------------------")
         try {
             val account = completedTask.getResult(ApiException::class.java)!!
             val email = account.email!!
+            println("-------------------------------${userByEmail(email)}---------------------------------------------")
             userByEmail(email)?.let {
+                println("--------------------$it------------------------------")
                 when (it) {
                     is Sitter -> startUserView(it, SitterActivity::class.java)
-                    else -> startUserView(it, OwnerActivity::class.java)
+                    is Owner -> startUserView(it, OwnerActivity::class.java)
+                    else -> show(getString(R.string.sign_in_google_error))
                 }
                 return
             }

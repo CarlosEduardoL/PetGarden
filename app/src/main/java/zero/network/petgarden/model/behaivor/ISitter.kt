@@ -6,6 +6,10 @@ import kotlinx.coroutines.launch
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Pet
 
+/**
+ * @author CarlosEduardoL
+ * Interface that allows kotlin suspend methods from sitter called in java environment
+ */
 interface ISitter {
 
     suspend fun clients(): Set<Owner>
