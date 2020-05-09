@@ -2,9 +2,10 @@ package zero.network.petgarden.ui.user.owner;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.location.Location;
+import android.os.Binder;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -25,21 +28,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 import zero.network.petgarden.R;
+import zero.network.petgarden.databinding.ActivityOwnerBinding;
+import zero.network.petgarden.databinding.FragmentDockBinding;
+import zero.network.petgarden.model.entity.Location;
 import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Sitter;
 
-public class OwnerActivity extends AppCompatActivity implements OwnerView{
+public class OwnerActivity extends AppCompatActivity implements OwnerView, NavigationView.OnNavigationItemSelectedListener {
 
     FragmentManager fragmentManager;
     private Owner owner;
     private List<Sitter> sitters;
     MapFragment fragmentMap;
+    ListSitterFragment sittersFragment;
+
+
+    private ActivityOwnerBinding binding;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_owner);
+        binding = ActivityOwnerBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+
+        //binding.fragmentDock
+        //dock.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
+        DockFragment dockFragment = new DockFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.dock_container,dockFragment, null);
+        transaction.commit();
+
+
         sitters = new ArrayList<>();
 
 
@@ -50,6 +71,8 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.INTERNET
         }, 11);
+
+
 
 
     }
@@ -86,20 +109,9 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
 
     public void updateOwnerLocation(Location location){
 
-        /*User temp = new User();
-        temp.setName("Santiago");
-        temp.setPassword("mypass123");
-        temp.setBirthDay(new Date(2000,9,11));
-        temp.setEmail("chasquicrack@gmail.com");
-        temp.setLastName("Chasqui");
-        temp.setLocation(new Location(3,-76));*/
-
-        FirebaseDatabase.getInstance().getReference()
-                .child("users")
-                .child("owners")
-                .child(owner.getId())
-                .child("location")
-                .setValue(location);
+        // owner
+        owner.setLocation(location);
+        owner.saveInDB();
 
 
     }
@@ -150,5 +162,23 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
 
     public void setSitters(List<Sitter> sitters) {
         this.sitters = sitters;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_map:
+
+
+            case R.id.nav_sitter:
+                sittersFragment = new ListSitterFragment(this);
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.add(R.id.activity_owner_container,sittersFragment, null);
+                fragmentTransaction.commit();
+            case R.id.nav_profile:
+
+        }
+
+        return false;
     }
 }

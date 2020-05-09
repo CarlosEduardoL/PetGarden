@@ -12,14 +12,16 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:elevation="10dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:id="@+id/dock_container">
 
-        <fragment
+        <!--Poner en código-->
+<!--        <fragment
             android:id="@+id/fragment_dock"
             android:name="zero.network.petgarden.ui.user.owner.DockFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center" />
+            android:layout_gravity="center" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
