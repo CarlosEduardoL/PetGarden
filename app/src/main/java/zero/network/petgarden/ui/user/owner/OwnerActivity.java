@@ -103,7 +103,6 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView, Navig
 
         if( ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fragmentMap = new MapFragment();
-
             fragmentManager =getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.activity_owner_container,fragmentMap, null);

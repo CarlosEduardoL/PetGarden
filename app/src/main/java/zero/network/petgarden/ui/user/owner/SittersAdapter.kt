@@ -12,10 +12,11 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.RowSitterBinding
+import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.util.getDate
 
-class SittersAdapter(var sitters: List<Sitter>) :
+class SittersAdapter(var sitters: List<Sitter>, owner: Owner) :
     RecyclerView.Adapter<SittersAdapter.SitterViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SitterViewHolder = SitterViewHolder(
@@ -46,8 +47,8 @@ class SittersAdapter(var sitters: List<Sitter>) :
 
 
             itemView.setOnClickListener(View.OnClickListener { v: View ->
-                val fragmentProfile = SitterProfileFromUser(sitter)
-                val fragmentManager = (itemView.context as FragmentActivity).supportFragmentManager
+                val fragmentProfile = SitterProfileFromUser(sitter, (itemView.context as OwnerActivity))
+                val fragmentManager = (itemView.context as OwnerActivity).supportFragmentManager
                 val fragmentTransaction: FragmentTransaction =
                     fragmentManager.beginTransaction()
                 fragmentTransaction.add(R.id.activity_owner_container, fragmentProfile, null)

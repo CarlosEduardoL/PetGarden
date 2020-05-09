@@ -97,10 +97,14 @@ class filterFragment(var adapter: SittersAdapter, var sitters:List<Sitter>) : Fr
 
     private fun initTimePicker(fromHour: Int, fromMins: Int, toHour: Int, toMins: Int){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            fromTP.apply { hour = fromHour
+            fromTP.apply {
+                setIs24HourView(true)
+                hour = fromHour
                 minute = fromMins }
 
-            toTP.apply { hour = toHour
+            toTP.apply {
+                setIs24HourView(true)
+                hour = toHour
                 minute = toMins
             }
         }
