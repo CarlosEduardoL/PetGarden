@@ -87,9 +87,11 @@ class filterFragment(var adapter: SittersAdapter, var sitters:List<Sitter>) : Fr
                 sitters.filter { it.availability!=null }
                     .filter { it.availability!!.cost in min..max }
                     .filter { it.availability!!.contains(Duration(fromDate.timeInMillis, toDate.timeInMillis, 0))}
+                    .filter{  it.rating.roundToInt()>0 }
+
         }
         adapter.notifyDataSetChanged()
-
+        activity!!.supportFragmentManager.popBackStack()
     }
 
 

@@ -14,6 +14,7 @@ import zero.network.petgarden.databinding.FragmentListSitterBinding
 
 class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
+    private lateinit var filterFragment: filterFragment
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,11 +32,11 @@ class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
                 adapterSitters.notifyDataSetChanged()
             }
 
-            //sitters.filter{it.ranking> el numero que haya seleccionado el usuario}
         })
 
         filterButton.setOnClickListener{
-            val filterFragment = filterFragment(adapterSitters, sitters)
+            if(filterFragment==null) filterFragment = filterFragment(adapterSitters, sitters)
+
             val fragmentManager = activity!!.supportFragmentManager
             val fragmentTransaction = fragmentManager!!.beginTransaction()
             fragmentTransaction.add(R.id.activity_owner_container, filterFragment)

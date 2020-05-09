@@ -2,11 +2,15 @@ package zero.network.petgarden.ui.user.owner
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import zero.network.petgarden.R
 import zero.network.petgarden.databinding.RowSitterBinding
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.util.getDate
@@ -39,6 +43,16 @@ class SittersAdapter(var sitters: List<Sitter>) :
                 view.schedule.text = "${it.start.getDate("hh:mm:ss")} a ${it.end.getDate("hh:mm:ss")}"
                 view.price.text = "$${it.cost}"
             }
+
+
+            itemView.setOnClickListener(View.OnClickListener { v: View ->
+                val fragmentProfile = SitterProfileFromUser(sitter)
+                val fragmentManager = (itemView.context as FragmentActivity).supportFragmentManager
+                val fragmentTransaction: FragmentTransaction =
+                    fragmentManager.beginTransaction()
+                fragmentTransaction.add(R.id.activity_owner_container, fragmentProfile, null)
+                fragmentTransaction.commit()
+            })
         }
     }
 

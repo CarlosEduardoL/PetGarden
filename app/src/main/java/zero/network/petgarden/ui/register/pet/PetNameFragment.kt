@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.android.synthetic.main.fragment_register_birth.*
 import zero.network.petgarden.databinding.FragmentPetNameBinding
 import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.util.onClick
