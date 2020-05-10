@@ -61,4 +61,10 @@ class ActionBarFragment(
         if (!isCloseButton) exitButton.visibility = View.GONE
     }
 
+    fun setVisibility(visibility:Boolean){
+        if(visibility) binding.root.visibility = View.VISIBLE
+        else binding.root.visibility = View.GONE
+    }
+
+
 }

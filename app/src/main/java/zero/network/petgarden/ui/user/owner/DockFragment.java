@@ -50,17 +50,22 @@ public class DockFragment extends Fragment implements BottomNavigationView.OnNav
         switch (item.getItemId()) {
             case R.id.nav_map:
                 fragment = new MapFragment();
-                title ="Mapa";
+                ownerView.getTopBar().setVisibility(false);
+                ownerView.getTopBar().update("Mapa",false,false);
                 break;
             case R.id.nav_sitter:
                 Log.e("XXX","Sitters Selected");
                 title = "Cuidadores";
                 fragment = new ListSitterFragment(ownerView);
+                ownerView.getTopBar().setVisibility(true);
+                ownerView.getTopBar().update("Cuidadores",true,false);
                 break;
             case R.id.nav_profile:
                 Log.e("XXX","Nav Selected");
                 title = "Perfil";
                 fragment = new OwnerProfileFragment();
+                ownerView.getTopBar().setVisibility(true);
+                ownerView.getTopBar().update("Perfil",true,true);
                 break;
         }
 

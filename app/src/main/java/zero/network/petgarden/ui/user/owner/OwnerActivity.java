@@ -42,6 +42,7 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
     private List<Sitter> sitters;
     MapFragment fragmentMap;
     ListSitterFragment sittersFragment;
+    private ActionBarFragment topBarFragment;
 
 
     private ActivityOwnerBinding binding;
@@ -74,7 +75,7 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
     }
 
     private void loadInitialFragments(){
-        ActionBarFragment topBarFragment = new ActionBarFragment("",false);
+        topBarFragment = new ActionBarFragment("",false);
         FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
         transaction1.replace(R.id.topBar,topBarFragment, null);
         transaction1.commit();
@@ -173,5 +174,11 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
         this.sitters = sitters;
     }
 
+
+    @NotNull
+    @Override
+    public ActionBarFragment getTopBar() {
+        return topBarFragment;
+    }
 
 }
