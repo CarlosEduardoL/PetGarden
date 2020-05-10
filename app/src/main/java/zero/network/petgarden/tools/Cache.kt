@@ -77,21 +77,21 @@ suspend fun Entity.uploadImage(temp: File) = withContext(IO) {
  * @return [Bitmap] with the wanted image
  */
 suspend fun Entity.downloadImage(): Bitmap = BitmapFactory.decodeFile(
-    withContext(IO) {
-        val reg = db.imgRegDao().get(id)
-        val fStorage = FirebaseStorage.getInstance().reference
-        val file = File(appRoot(),"${folder()}/$id.png")
-        val metadata = fStorage.child("${folder()}/$id.png").metadata.await()
-        if (reg !== null) {
-            if (metadata.creationTimeMillis == reg.date && file.exists()) {
-                return@withContext file
-            }
-        }
-        val url = fStorage.child("${folder()}/$id.png").downloadUrl.await()
-        saveURLImageOnFile(url.toString(), "$id.png")
-        db.imgRegDao().insert(ImgReg(id, metadata.creationTimeMillis))
-
-        return@withContext file
-    }.path
+         downloadImageFile().path
 ).let { Bitmap.createScaledBitmap(it, it.width/4, it.height/4,false) }
 
+private suspend fun Entity.downloadImageFile(): File = withContext(IO){
+    val reg = db.imgRegDao().get(id)
+    val fStorage = FirebaseStorage.getInstance().reference
+    val file = File(appRoot(),"${folder()}/$id.png")
+    val metadata = fStorage.child("${folder()}/$id.png").metadata.await()
+    if (reg !== null) {
+        if (metadata.creationTimeMillis == reg.date && file.exists()) {
+            return@withContext file
+        }
+    }
+    val url = fStorage.child("${folder()}/$id.png").downloadUrl.await()
+    saveURLImageOnFile(url.toString(), "${folder()}/$id.png")
+    db.imgRegDao().insert(ImgReg(id, metadata.creationTimeMillis))
+    return@withContext file
+}

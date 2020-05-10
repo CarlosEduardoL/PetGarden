@@ -37,11 +37,11 @@ class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
         CoroutineScope(Dispatchers.Main).launch{
             petsAdapter = PetsAdapter(owner.pets().toList())
+            listPets.apply {
+                adapter = petsAdapter
+            }
         }
 
-        listPets.apply {
-            adapter = petsAdapter
-        }
 
         CoroutineScope(Dispatchers.Main).launch {
             photoUserIV.setImageBitmap(owner.image())
@@ -63,7 +63,7 @@ class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
         changePasswordBtn.setOnClickListener{
             val changePasswordFragment = ChangePasswordFragment()
             val fragmentManager = activity!!.supportFragmentManager
-            val fragmentTransaction = fragmentManager!!.beginTransaction()
+            val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.add(R.id.activity_owner_container, changePasswordFragment)
             fragmentTransaction.commit()
 
