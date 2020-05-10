@@ -31,9 +31,6 @@ public class DockFragment extends Fragment implements BottomNavigationView.OnNav
         this.ownerView = ownerView;
     }
 
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -52,7 +49,8 @@ public class DockFragment extends Fragment implements BottomNavigationView.OnNav
 
         switch (item.getItemId()) {
             case R.id.nav_map:
-
+                fragment = new MapFragment();
+                title ="Mapa";
                 break;
             case R.id.nav_sitter:
                 Log.e("XXX","Sitters Selected");
@@ -72,6 +70,6 @@ public class DockFragment extends Fragment implements BottomNavigationView.OnNav
         ft.commit();
     }
 
-        return false;
+        return true;
     }
 }

@@ -54,10 +54,26 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
         setContentView(binding.getRoot());
 
 
-        //binding.fragmentDock
-        //dock.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
+        loadInitialFragments();
 
-        //SEGUIR AQUI, CONSULTAR COMO HACER LA BARRA DE ARRIBA
+
+        sitters = new ArrayList<>();
+
+
+        loadDataFromActivity();
+
+        //Check Permissions
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.INTERNET
+        }, 11);
+
+
+
+
+    }
+
+    private void loadInitialFragments(){
         ActionBarFragment topBarFragment = new ActionBarFragment("",false);
         FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
         transaction1.replace(R.id.topBar,topBarFragment, null);
@@ -69,23 +85,8 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
         transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.dock_container,dockFragment, null);
         transaction.commit();
-
-
-        sitters = new ArrayList<>();
-
-
-        loadDataFromActivity();
-
-
-        ActivityCompat.requestPermissions(this, new String[]{
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.INTERNET
-        }, 11);
-
-
-
-
     }
+
 
     private void loadDataFromActivity() {
 
@@ -128,7 +129,7 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
 
     public void getSittersFromDB(){
 
-        //Obtener lista de sitters
+        //Obtener lista de sitters mediante la clase
         Query query =FirebaseDatabase.getInstance()
                 .getReference()
                 .child("sitters");

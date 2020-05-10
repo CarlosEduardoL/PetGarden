@@ -43,6 +43,8 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     private Marker markerPosActual;
     private Location locationActual;
     private OwnerActivity activity;
+    private boolean firstEntry;
+    private LocationManager manager;
 
 
     @Override
@@ -70,6 +72,14 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
+        manager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+
+        //Llevar marker de posicion actual con zoom la primer vez
+        Location last = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        LatLng act = new LatLng(last.getLatitude(), last.getLongitude());
+        googleMap.addMarker(new MarkerOptions().position(act)
+                .title("Marker in Sydney"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(act,18));
 
         mMap.setMyLocationEnabled(true);
 
@@ -80,16 +90,19 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     @SuppressLint("MissingPermission")
     public void initMapLocation(){
 
-        LocationManager manager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-        //Solicitar actualizaciones de posicion
-        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 2, this);
+
+
 
         //Llevar a la ultima localizacion conocida
         Location last = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         locationActual = last;
         LatLng pos = new LatLng(last.getLatitude(), last.getLongitude());
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 18));
         markerPosActual = mMap.addMarker(  new MarkerOptions().position(pos).title("Yo").snippet("Mi ubicación")  );
+        firstEntry = true;
+
+
+        //Solicitar actualizaciones de posicion
+        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 2, this);
 
         //Actualizar la ubicación del dueño sólo al inicio
         activity = (OwnerActivity)getActivity();
@@ -97,7 +110,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     }
 
-    public synchronized void addSittersMarkers(ArrayList<Sitter> sitters){
+    public void addSittersMarkers(ArrayList<Sitter> sitters){
         LatLng pos = null;
 
         for(Sitter sitter: sitters){
@@ -137,7 +150,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         markerPosActual.setPosition(  pos  );
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
 
-        //REMOVER. Se necesita llamar solamente cuando se cree la activity
 
     }
 
