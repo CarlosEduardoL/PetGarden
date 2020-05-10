@@ -6,19 +6,34 @@
     tools:context=".ui.user.sitter.SitterActivity"
     android:id="@+id/activity_sitter_container">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/topBarSitter"
+            android:layout_alignParentTop="true"
+            android:elevation="10dp"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/actualFragmentContainerSitter"/>
+
+
+
+    </LinearLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:elevation="10dp"
-        android:gravity="center">
-
-        <fragment
-            android:id="@+id/fragment_dock"
-            android:name="zero.network.petgarden.ui.user.sitter.DockSitterFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center" />
+        android:gravity="center"
+        android:id="@+id/dock_container_sitter">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
