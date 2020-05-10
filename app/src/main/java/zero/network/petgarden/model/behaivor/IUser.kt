@@ -11,7 +11,6 @@ import zero.network.petgarden.model.entity.Sitter
  * All the variables that the users [Owner] and [Sitter] share
  */
 interface IUser: Serializable {
-    val id: String
     var name: String
     var lastName: String
     var email: String

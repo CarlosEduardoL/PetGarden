@@ -16,6 +16,7 @@ import java.io.Serializable
  */
 data class Owner(
     private val user: User = User(),
+    override var id: String = "",
     val sitterList: MutableList<String> = mutableListOf()
 ) : IUser by user, Serializable, Entity, IOwner {
 

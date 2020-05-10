@@ -14,6 +14,7 @@ import java.io.Serializable
 
 data class Sitter(
     private val user: User = User(),
+    override var id: String = "",
     var rating: Double = 0.0,
     var kindPets: String = "Nothing Especial",
     var additional: String = "Nothing Especial",

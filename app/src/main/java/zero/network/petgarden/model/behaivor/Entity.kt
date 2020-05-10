@@ -11,7 +11,7 @@ interface Entity {
     /**
      * Is the uuid of the entity
      */
-    val id: String
+    var id: String
 
     /**
      * is the DB branch where the entity will be saved

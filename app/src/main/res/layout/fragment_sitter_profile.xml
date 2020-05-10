@@ -1,88 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    tools:context=".ui.user.sitter.SitterProfileFragment">
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_height="match_parent">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="212dp">
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        tools:context=".ui.user.sitter.SitterProfileFragment">
 
-        <ImageView
-            android:id="@+id/photoSitterIV"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
 
-        <ImageButton
-            android:id="@+id/cameraBtn"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="32dp"
+            android:layout_height="212dp">
+
+            <ImageView
+                android:id="@+id/photoSitterIV"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <ImageButton
+                android:id="@+id/cameraBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.75"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/photoUserIV"
+                app:layout_constraintVertical_bias="0.977"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/camera_button" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/nameSitterTV"
+            style="@style/emailUser"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.75"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/photoUserIV"
-            app:layout_constraintVertical_bias="0.977"
-            android:background="@android:color/transparent"
-            app:srcCompat="@drawable/camera_button" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:gravity="center_horizontal"
+            android:text="Name user"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/nameSitterTV"
-        style="@style/emailUser"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="Name user"
-        android:textStyle="bold" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="4dp" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="4dp" />
+        <TextView
+            android:id="@+id/emailSitterTV"
+            style="@style/emailUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="user@gmail.com" />
+        <Button
+            android:id="@+id/changePasswordBtn"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:background="#FFFFFF"
+            android:backgroundTint="#FFFFFF"
+            android:text="@string/change_password"
+            android:textAllCaps="false"
+            android:textColor="#1AB28E"
+            android:textSize="16dp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/emailSitterTV"
-        style="@style/emailUser"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="user@gmail.com" />
-    <Button
-        android:id="@+id/changePasswordBtn"
-        android:layout_width="match_parent"
-        android:layout_height="32dp"
-        android:background="#FFFFFF"
-        android:backgroundTint="#FFFFFF"
-        android:text="@string/change_password"
-        android:textAllCaps="false"
-        android:textColor="#1AB28E"
-        android:textSize="16dp"
-        android:textStyle="bold" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="16dp" />
+        <EditText
+            android:id="@+id/requestChangePass"
+            style="@style/sectionSeparator"
+            android:text="Clientes" />
 
-    <EditText
-        android:id="@+id/requestChangePass"
-        style="@style/sectionSeparator"
-        android:text="Clientes" />
-
-    <ExpandableListView
-        android:id="@+id/listClients"
-        android:layout_width="match_parent"
-        android:layout_height="320dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"></ExpandableListView>
-
-</LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listClients"
+            android:layout_marginHorizontal="24dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+</ScrollView>

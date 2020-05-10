@@ -10,13 +10,11 @@ import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import kotlinx.android.synthetic.main.fragment_sitter_profile.*
-import kotlinx.android.synthetic.main.fragment_sitter_profile.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import zero.network.petgarden.R
-import zero.network.petgarden.model.entity.Owner
-import zero.network.petgarden.model.entity.Pet
+import zero.network.petgarden.databinding.FragmentSitterProfileBinding
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.tools.uploadImage
 import zero.network.petgarden.ui.user.owner.ChangePasswordFragment
@@ -27,23 +25,25 @@ class SitterProfileFragment : Fragment() {
 
     private val activity:SitterActivity = getActivity() as SitterActivity
     private val sitter = activity.sitter
-    private lateinit var adapter:CustomersAdapter
+    private lateinit var adapter: CustomersAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_sitter_profile, container, false).apply {
+    ): View = FragmentSitterProfileBinding.inflate(inflater, container, false).apply {
 
-        var ownersPets: Map<Owner, Set<Pet>>  = HashMap<Owner, Set<Pet>>()
-        CoroutineScope(Dispatchers.Main).launch { ownersPets = sitter.clientsXPets()}
-        adapter = CustomersAdapter(ownersPets, context)
+
+        CoroutineScope(Dispatchers.Main).launch {
+            adapter = CustomersAdapter(sitter.clientsXPets(), context!!)
+        }
+
 
         CoroutineScope(Dispatchers.Main).launch { photoSitterIV.setImageBitmap(sitter.image()) }
-        nameSitterTV.setText(sitter.name)
-        emailSitterTV.setText(sitter.email)
+        nameSitterTV.text = sitter.name
+        emailSitterTV.text = sitter.email
 
         if (AccessToken.getCurrentAccessToken()!=null || GoogleSignIn.getLastSignedInAccount(context)!=null)
-            changePasswordBtn.setVisibility(View.GONE)
+            changePasswordBtn.visibility = View.GONE
 
         cameraBtn.setOnClickListener{
 
@@ -59,13 +59,13 @@ class SitterProfileFragment : Fragment() {
             fragmentTransaction.add(R.id.activity_owner_container, changePasswordFragment)
             fragmentTransaction.commit()
         }
-    }
+    }.root
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == GALLERY_CALLBACK && resultCode == Activity.RESULT_OK) {
             val uri = data!!.data
-            val file = File(getPath(context!!, uri!!))
+            val file = File(getPath(context!!, uri!!)!!)
 
             CoroutineScope(Dispatchers.Main).launch { sitter.uploadImage(file)}
             CoroutineScope(Dispatchers.Main).launch { photoSitterIV.setImageBitmap(sitter.image()) }

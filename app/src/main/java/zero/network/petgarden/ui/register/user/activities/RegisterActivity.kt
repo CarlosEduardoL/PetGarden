@@ -8,10 +8,8 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
 import zero.network.petgarden.R
+import zero.network.petgarden.model.behaivor.CallBack
 import zero.network.petgarden.model.behaivor.Entity
 import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.model.entity.Owner
@@ -24,7 +22,8 @@ import zero.network.petgarden.ui.register.PictureListener
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity.Companion.PET_KEY
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity.Companion.TITLE_KEY
-import zero.network.petgarden.ui.register.user.*
+import zero.network.petgarden.ui.register.user.FragmentStart
+import zero.network.petgarden.ui.register.user.OnNextListener
 import zero.network.petgarden.ui.register.user.fragments.*
 import zero.network.petgarden.ui.user.owner.OwnerActivity
 import zero.network.petgarden.ui.user.sitter.SitterActivity
@@ -48,6 +47,7 @@ class RegisterActivity : AppCompatActivity(),
 
     private lateinit var user: User
     private lateinit var start: FragmentStart
+    private var finished = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +67,7 @@ class RegisterActivity : AppCompatActivity(),
         birthFragment = BirthRegisterFragment(user, this)
         roleFragment = RoleRegisterFragment(user, this)
 
-        start = extra<FragmentStart>("start")
+        start = extra("start")
 
         supportFragmentManager.beginTransaction()
             .replace(
@@ -113,18 +113,20 @@ class RegisterActivity : AppCompatActivity(),
         }
     }
 
-    private fun <T> finishRegister(iUser: IUser, clazz: Class<T>) {
-        if (start == FragmentStart.Name)
+    private fun <T> finishRegister(user: Entity, clazz: Class<T>) {
+        if (user is IUser)
+            FirebaseAuth.getInstance().currentUser?.let {
+                user.id = it.uid
+                user.saveInDB()
+                finished = true
+                startUserView(user, clazz)
+                return
+            } ?:
             FirebaseAuth.getInstance()
-                .createUserWithEmailAndPassword(iUser.email, iUser.password)
-                .addOnSuccessListener {
-                    startUserView(iUser, clazz)
-                }
-                .addOnFailureListener {
-                    show(it.message ?: "Unexpected Error, please retry")
-                }
-        else startUserView(iUser, clazz)
-
+                .createUserWithEmailAndPassword(user.email, user.password)
+                .addOnSuccessListener { finishRegister(user, clazz) }
+                .addOnFailureListener { show(it.message ?: "Unexpected Error, please retry") }
+        else throw Exception("Cast Exception")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -132,10 +134,7 @@ class RegisterActivity : AppCompatActivity(),
         if (resultCode == Activity.RESULT_OK && data !== null && requestCode == PET_CALLBACK) {
             val owner = Owner(user)
             val pet: Pet = data.extra(PET_KEY) { return }
-            CoroutineScope(Main).launch {
-                owner.addPet(pet)
-                owner.saveInDB()
-            }
+            owner.addPet(pet, CallBack {})
             finishRegister(owner, OwnerActivity::class.java)
         }
     }
@@ -152,11 +151,17 @@ class RegisterActivity : AppCompatActivity(),
             }
 
             is Sitter -> {
-                entity.saveInDB()
                 finishRegister(entity, SitterActivity::class.java)
             }
             else -> println("Error")
         }
+    }
+
+    override fun onDestroy() {
+        if(!finished)FirebaseAuth.getInstance().currentUser?.let {
+            it.delete()
+        }
+        super.onDestroy()
     }
 
     companion object {
