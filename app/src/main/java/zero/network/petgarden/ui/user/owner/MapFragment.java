@@ -31,8 +31,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import zero.network.petgarden.R;
+import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Sitter;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -42,10 +44,13 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     private GoogleMap mMap;
     private Marker markerPosActual;
     private Location locationActual;
-    private OwnerActivity activity;
+    private OwnerView ownerView;
     private boolean firstEntry;
     private LocationManager manager;
 
+    public MapFragment(OwnerView owner){
+        ownerView = owner;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,7 +80,15 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         manager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
         //Llevar marker de posicion actual con zoom la primer vez
-        Location last = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location last = null;
+        if (manager != null) {
+            last = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        }else{
+
+            last = new Location("");
+            last.setLongitude(ownerView.getOwner().getLocation().getLongitude());
+            last.setLatitude(ownerView.getOwner().getLocation().getLat());
+        }
         LatLng act = new LatLng(last.getLatitude(), last.getLongitude());
         googleMap.addMarker(new MarkerOptions().position(act)
                 .title("Marker in Sydney"));
@@ -103,12 +116,12 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 2, this);
 
         //Actualizar la ubicación del dueño sólo al inicio
-        activity = (OwnerActivity)getActivity();
-        activity.updateOwnerLocation(new zero.network.petgarden.model.entity.Location(locationActual.getLatitude(),locationActual.getLongitude()));
+        ownerView.getOwner().setLocation(new zero.network.petgarden.model.entity.Location(locationActual.getLatitude(),locationActual.getLongitude()));
+        ownerView.getOwner().saveInDB();
 
     }
 
-    public void addSittersMarkers(ArrayList<Sitter> sitters){
+    public void addSittersMarkers(List<Sitter> sitters){
         LatLng pos = null;
 
         for(Sitter sitter: sitters){

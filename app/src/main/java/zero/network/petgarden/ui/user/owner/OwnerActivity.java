@@ -34,6 +34,7 @@ import zero.network.petgarden.model.entity.Location;
 import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Sitter;
 import zero.network.petgarden.ui.element.ActionBarFragment;
+import zero.network.petgarden.util.EntityUtilKt;
 
 public class OwnerActivity extends AppCompatActivity implements OwnerView{
 
@@ -108,7 +109,7 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
 
 
         if( ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fragmentMap = new MapFragment();
+            fragmentMap = new MapFragment(this);
             fragmentManager =getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.actualFragmentContainer,fragmentMap, null);
@@ -118,40 +119,19 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
 
     }
 
-    public void updateOwnerLocation(Location location){
-
-        // owner
-        owner.setLocation(location);
-        owner.saveInDB();
-
-
-    }
 
 
     public void getSittersFromDB(){
 
-        //Obtener lista de sitters mediante la clase
-        Query query =FirebaseDatabase.getInstance()
-                .getReference()
-                .child("sitters");
-        Log.e(">>>Query:",query.toString());
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot child : dataSnapshot.getChildren()){
-                    Sitter sitterChild= child.getValue(Sitter.class);
-                    sitters.add(sitterChild);
-                    Log.e(">>>","" +sitterChild.getId()+ ":"+sitterChild.getName());
+        EntityUtilKt.allSitters(
+                (tempSitters)->{
+                    sitters = tempSitters;
+
+                    fragmentMap.addSittersMarkers(sitters);
                 }
+        );
 
-                fragmentMap.addSittersMarkers((ArrayList<Sitter>)sitters);
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
     }
 

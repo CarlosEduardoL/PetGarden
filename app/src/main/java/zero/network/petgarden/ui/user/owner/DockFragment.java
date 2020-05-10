@@ -49,7 +49,7 @@ public class DockFragment extends Fragment implements BottomNavigationView.OnNav
 
         switch (item.getItemId()) {
             case R.id.nav_map:
-                fragment = new MapFragment();
+                fragment = new MapFragment(ownerView);
                 ownerView.getTopBar().setVisibility(false);
                 ownerView.getTopBar().update("Mapa",false,false);
                 break;
