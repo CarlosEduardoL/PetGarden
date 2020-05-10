@@ -16,6 +16,9 @@ import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.ui.login.LoginActivity
 import zero.network.petgarden.util.saveURLImageOnFile
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 
 
 private lateinit var db: ImgRegDatabase
@@ -37,6 +40,19 @@ fun LoginActivity.initDatabase() {
 }
 
 fun Entity.isCached() = db.imgRegDao().get(id) !== null && File(appRoot(),"${folder()}/$id.png").exists()
+
+@Throws(IOException::class)
+fun copy(src: File, dst: File) {
+    FileInputStream(src).use { `in` ->
+        FileOutputStream(dst).use { out ->
+            val buf = ByteArray(1024)
+            var len: Int
+            while (`in`.read(buf).also { len = it } > 0) {
+                out.write(buf, 0, len)
+            }
+        }
+    }
+}
 
 /**
  * Upload Image to [FirebaseStorage] and but conserve a local copy

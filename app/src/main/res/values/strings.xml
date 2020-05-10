@@ -63,5 +63,7 @@
     <string name="search_message">Buscar cuidadores por nombre</string>
     <string name="filter">Filtar</string>
     <string name="user_picture">¡Tomate una foto!</string>
+    <string name="takePhoto">Tomar una foto</string>
+    <string name="chooseFromGallery">Seleccionar una de la Galeria</string>
 
 </resources>

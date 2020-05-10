@@ -105,9 +105,19 @@ class RegisterActivity : AppCompatActivity(),
             emailFragment -> changeView(passFragment)
             passFragment -> changeView(birthFragment)
             birthFragment -> changeView(roleFragment)
-            roleFragment -> if (state is Entity) changeView(
-                PictureFragment(this, state, getString(R.string.user_picture))
-            )
+            roleFragment -> if (state is Entity) {
+                val authUser = FirebaseAuth.getInstance().currentUser
+                if (authUser != null) {
+                    state.id = authUser.uid
+                    changeView(PictureFragment(this, state, getString(R.string.user_picture)))
+                } else FirebaseAuth.getInstance()
+                    .createUserWithEmailAndPassword(user.email, user.password)
+                    .addOnSuccessListener {
+                        state.id = it.user!!.uid
+                        changeView(PictureFragment(this, state, getString(R.string.user_picture)))
+                    }
+                    .addOnFailureListener { show(it.message ?: "Unexpected Error, please retry") }
+            }
         }
     }
 
@@ -115,18 +125,11 @@ class RegisterActivity : AppCompatActivity(),
         .replace(R.id.body, fragment).addToBackStack(REGISTER_STACK).commit()
 
     private fun <T> finishRegister(user: Entity, clazz: Class<T>) {
-        if (user is IUser)
-            FirebaseAuth.getInstance().currentUser?.let {
-                user.id = it.uid
-                user.saveInDB()
-                finished = true
-                startUserView(user, clazz)
-                return
-            } ?: FirebaseAuth.getInstance()
-                .createUserWithEmailAndPassword(user.email, user.password)
-                .addOnSuccessListener { finishRegister(user, clazz) }
-                .addOnFailureListener { show(it.message ?: "Unexpected Error, please retry") }
-        else throw Exception("Cast Exception")
+        if (user is IUser) {
+            user.saveInDB()
+            finished = true
+            startUserView(user, clazz)
+        } else throw Exception("Cast Exception")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
