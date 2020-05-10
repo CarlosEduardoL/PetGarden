@@ -6,7 +6,7 @@ import java.io.Serializable
 import java.util.*
 
 data class Pet(
-    override val id: String = UUID.randomUUID().toString(),
+    override var id: String = UUID.randomUUID().toString(),
     var type: String = "",
     var name: String = "",
     var breed: String = "",

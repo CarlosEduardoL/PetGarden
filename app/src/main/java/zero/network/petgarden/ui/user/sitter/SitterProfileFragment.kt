@@ -67,8 +67,10 @@ class SitterProfileFragment : Fragment() {
             val uri = data!!.data
             val file = File(getPath(context!!, uri!!)!!)
 
-            CoroutineScope(Dispatchers.Main).launch { sitter.uploadImage(file)}
-            CoroutineScope(Dispatchers.Main).launch { photoSitterIV.setImageBitmap(sitter.image()) }
+            CoroutineScope(Dispatchers.Main).launch {
+                sitter.uploadImage(file)
+                photoSitterIV.setImageBitmap(sitter.image())
+            }
         }
     }
 
