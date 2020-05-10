@@ -16,7 +16,7 @@ import java.io.Serializable
  */
 data class Owner(
     private val user: User = User(),
-    override var id: String = "",
+    override var id: String = "Default Value",
     val sitterList: MutableList<String> = mutableListOf()
 ) : IUser by user, Serializable, Entity, IOwner {
 
@@ -30,11 +30,6 @@ data class Owner(
             saveInDB()
         }
         return downloadImage()
-    }
-
-    override fun saveInDB() {
-        _pets?.forEach { it.ownerID = id; it.saveInDB() }
-        super.saveInDB()
     }
 
     override fun folder() = FOLDER

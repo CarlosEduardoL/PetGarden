@@ -5,11 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_password_register.view.*
 
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.FragmentPasswordRegisterBinding
 import zero.network.petgarden.model.entity.User
+import zero.network.petgarden.ui.register.PictureFragment
 import zero.network.petgarden.ui.register.user.OnNextListener
 import zero.network.petgarden.util.show
 import zero.network.petgarden.util.toText
@@ -32,18 +34,21 @@ class PasswordRegisterFragment(
         passConfirmInput.setText(user.password)
 
         nextButton.setOnClickListener {
-            passInput.toText().let {
-                if (it == passConfirmInput.toText()){
-                    if (it.isEmpty()){
-                        show(getString(R.string.field_error))
-                    }else {
-                        user.password = it
-                        println("Pase xD")
+            if (passInput.toText().isEmpty() || passConfirmInput.toText().isEmpty())
+                show(getString(R.string.field_error))
+            else if (passInput.toText() != passConfirmInput.toText())
+                show(getString(R.string.pass_confirm_message))
+            else{
+                user.password = passInput.toText()
+                val authUser = FirebaseAuth.getInstance().currentUser
+                if (authUser != null) {
+                    listener.next(this@PasswordRegisterFragment, user)
+                } else FirebaseAuth.getInstance()
+                    .createUserWithEmailAndPassword(user.email, user.password)
+                    .addOnSuccessListener {
                         listener.next(this@PasswordRegisterFragment, user)
                     }
-                }else {
-                    show(getString(R.string.pass_confirm_message))
-                }
+                    .addOnFailureListener { show(it.message ?: "Unexpected Error, please retry") }
             }
         }
     }.root

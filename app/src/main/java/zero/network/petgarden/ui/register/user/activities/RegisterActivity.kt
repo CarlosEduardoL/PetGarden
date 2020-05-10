@@ -18,6 +18,7 @@ import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
+import zero.network.petgarden.tools.logMessage
 import zero.network.petgarden.ui.element.ActionBarFragment
 import zero.network.petgarden.ui.register.PictureFragment
 import zero.network.petgarden.ui.register.PictureListener
@@ -30,7 +31,6 @@ import zero.network.petgarden.ui.register.user.fragments.*
 import zero.network.petgarden.ui.user.owner.OwnerActivity
 import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.extra
-import zero.network.petgarden.util.show
 import zero.network.petgarden.util.startUserView
 import zero.network.petgarden.model.entity.Location as Location2
 
@@ -99,24 +99,17 @@ class RegisterActivity : AppCompatActivity(),
             ?: Location2(10.0, 10.0)
     }
 
-    override fun next(fragment: Fragment, state: IUser) {
+    override fun next(fragment: Fragment, user: IUser) {
         when (fragment) {
             nameFragment -> changeView(emailFragment)
             emailFragment -> changeView(passFragment)
             passFragment -> changeView(birthFragment)
             birthFragment -> changeView(roleFragment)
-            roleFragment -> if (state is Entity) {
-                val authUser = FirebaseAuth.getInstance().currentUser
-                if (authUser != null) {
-                    state.id = authUser.uid
-                    changeView(PictureFragment(this, state, getString(R.string.user_picture)))
-                } else FirebaseAuth.getInstance()
-                    .createUserWithEmailAndPassword(user.email, user.password)
-                    .addOnSuccessListener {
-                        state.id = it.user!!.uid
-                        changeView(PictureFragment(this, state, getString(R.string.user_picture)))
-                    }
-                    .addOnFailureListener { show(it.message ?: "Unexpected Error, please retry") }
+            roleFragment -> if (user is Entity) {
+                FirebaseAuth.getInstance().currentUser?.let {
+                    user.id = it.uid
+                    changeView(PictureFragment(this, user, getString(R.string.user_picture)))
+                }?:throw Exception("Unexpected Error")
             }
         }
     }
@@ -136,8 +129,11 @@ class RegisterActivity : AppCompatActivity(),
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && data !== null && requestCode == PET_CALLBACK) {
             val owner = Owner(user)
+            FirebaseAuth.getInstance().currentUser?.let {
+                owner.id = it.uid
+            }?:throw Exception("Unexpected Error")
             val pet: Pet = data.extra(PET_KEY) { return }
-            owner.addPet(pet, CallBack {})
+            owner.addPet(pet, CallBack { println(pet.ownerID)})
             finishRegister(owner, OwnerActivity::class.java)
         }
     }
