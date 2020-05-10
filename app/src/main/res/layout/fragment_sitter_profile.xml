@@ -76,13 +76,13 @@
     <EditText
         android:id="@+id/requestChangePass"
         style="@style/sectionSeparator"
-        android:text="Mascotas" />
+        android:text="Clientes" />
 
-    <ListView
+    <ExpandableListView
         android:id="@+id/listClients"
         android:layout_width="match_parent"
         android:layout_height="320dp"
         android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"></ListView>
+        android:layout_marginRight="32dp"></ExpandableListView>
 
 </LinearLayout>

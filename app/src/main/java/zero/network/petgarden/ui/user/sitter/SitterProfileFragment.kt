@@ -27,7 +27,7 @@ class SitterProfileFragment : Fragment() {
 
     private val activity:SitterActivity = getActivity() as SitterActivity
     private val sitter = activity.sitter
-    private lateinit var adapter:ClientsAdapter
+    private lateinit var adapter:CustomersAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,7 +36,7 @@ class SitterProfileFragment : Fragment() {
 
         var ownersPets: Map<Owner, Set<Pet>>  = HashMap<Owner, Set<Pet>>()
         CoroutineScope(Dispatchers.Main).launch { ownersPets = sitter.clientsXPets()}
-        adapter = ClientsAdapter(ownersPets)
+        adapter = CustomersAdapter(ownersPets, context)
 
         CoroutineScope(Dispatchers.Main).launch { photoSitterIV.setImageBitmap(sitter.image()) }
         nameSitterTV.setText(sitter.name)
