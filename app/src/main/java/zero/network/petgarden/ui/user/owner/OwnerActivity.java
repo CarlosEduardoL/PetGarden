@@ -35,7 +35,7 @@ import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Sitter;
 import zero.network.petgarden.ui.element.ActionBarFragment;
 
-public class OwnerActivity extends AppCompatActivity implements OwnerView, NavigationView.OnNavigationItemSelectedListener {
+public class OwnerActivity extends AppCompatActivity implements OwnerView{
 
     FragmentManager fragmentManager;
     private Owner owner;
@@ -58,11 +58,15 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView, Navig
         //dock.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
 
         //SEGUIR AQUI, CONSULTAR COMO HACER LA BARRA DE ARRIBA
-        /*ActionBarFragment topBarFragment = new ActionBarFragment("",false);*/
+        ActionBarFragment topBarFragment = new ActionBarFragment("",false);
+        FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
+        transaction1.replace(R.id.topBar,topBarFragment, null);
+        transaction1.commit();
 
 
-        DockFragment dockFragment = new DockFragment();
+        DockFragment dockFragment = new DockFragment(this);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.dock_container,dockFragment, null);
         transaction.commit();
 
@@ -105,7 +109,7 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView, Navig
             fragmentMap = new MapFragment();
             fragmentManager =getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.activity_owner_container,fragmentMap, null);
+            fragmentTransaction.add(R.id.actualFragmentContainer,fragmentMap, null);
             fragmentTransaction.commit();
         }
 
@@ -168,21 +172,5 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView, Navig
         this.sitters = sitters;
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.nav_map:
 
-
-            case R.id.nav_sitter:
-                sittersFragment = new ListSitterFragment(this);
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.add(R.id.activity_owner_container,sittersFragment, null);
-                fragmentTransaction.commit();
-            case R.id.nav_profile:
-
-        }
-
-        return false;
-    }
 }

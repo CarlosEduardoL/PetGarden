@@ -7,12 +7,26 @@
     tools:context=".ui.user.owner.OwnerActivity"
     android:id="@+id/activity_owner_container">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/topBar"
-        android:layout_alignParentTop="true"
-        android:elevation="10dp"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/topBar"
+            android:layout_alignParentTop="true"
+            android:elevation="10dp"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/actualFragmentContainer"/>
+
+
+
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,9 +36,8 @@
         android:gravity="center"
         android:id="@+id/dock_container">
 
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
 

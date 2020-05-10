@@ -26,7 +26,7 @@ import zero.network.petgarden.util.getPath
 import zero.network.petgarden.util.show
 import java.io.File
 
-class UserProfileFragment : Fragment() {
+class OwnerProfileFragment : Fragment() {
 
     private val activity:OwnerActivity = getActivity() as OwnerActivity
     private val owner:Owner = activity.owner
