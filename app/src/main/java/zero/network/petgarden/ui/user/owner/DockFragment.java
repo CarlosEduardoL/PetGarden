@@ -63,7 +63,7 @@ public class DockFragment extends Fragment implements BottomNavigationView.OnNav
             case R.id.nav_profile:
                 Log.e("XXX","Nav Selected");
                 title = "Perfil";
-                fragment = new OwnerProfileFragment();
+                fragment = new OwnerProfileFragment(ownerView);
                 ownerView.getTopBar().setVisibility(true);
                 ownerView.getTopBar().update("Perfil",true,true);
                 break;
