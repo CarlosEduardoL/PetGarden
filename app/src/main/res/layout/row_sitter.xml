@@ -38,9 +38,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="4dp"
+        android:layout_marginEnd="80dp"
         android:text="Disponibilidad horaria: 4:00 PM a 8:00 PM"
         android:textColor="#000000"
         android:textSize="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/photoSitterList"
         app:layout_constraintTop_toBottomOf="@+id/nameSitterList" />
 
@@ -53,22 +55,30 @@
         android:text="Precio: $2.500/hora"
         android:textColor="#000000"
         android:textSize="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/photoSitterList"
-        app:layout_constraintTop_toBottomOf="@+id/schedule" />
+        app:layout_constraintTop_toBottomOf="@+id/schedule"
+        app:layout_constraintVertical_bias="0.0" />
 
     <RatingBar
         android:id="@+id/MyRating"
         style="?android:attr/ratingBarStyleSmall"
         android:layout_width="80dp"
         android:layout_height="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="48dp"
         android:layout_marginEnd="16dp"
         android:isIndicator="true"
         android:numStars="5"
         android:rating="2.5"
         android:stepSize="0.1"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/nameSitterList"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.214" />
 
     <View
         android:id="@+id/sitterRow"
