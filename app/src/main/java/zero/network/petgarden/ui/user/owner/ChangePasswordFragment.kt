@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.fragment_change_password.*
 import kotlinx.android.synthetic.main.fragment_change_password.emailUserTV
 import kotlinx.android.synthetic.main.fragment_change_password.nameUserTV
 import kotlinx.android.synthetic.main.fragment_change_password.updatePass
-import kotlinx.android.synthetic.main.fragment_user_profile.view.*
+import kotlinx.android.synthetic.main.fragment_owner_profile.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

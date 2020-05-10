@@ -16,9 +16,10 @@
 
         <ImageView
             android:id="@+id/photoUserIV"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
             android:layout_gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -31,10 +32,10 @@
             android:background="@android:color/transparent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.75"
+            app:layout_constraintHorizontal_bias="0.736"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/photoUserIV"
-            app:layout_constraintVertical_bias="0.977"
+            app:layout_constraintVertical_bias="0.975"
             app:srcCompat="@drawable/camera_button" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

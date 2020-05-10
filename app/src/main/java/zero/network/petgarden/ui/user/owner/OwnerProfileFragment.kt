@@ -7,17 +7,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.facebook.AccessToken
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import kotlinx.android.synthetic.main.fragment_user_profile.*
-import kotlinx.android.synthetic.main.fragment_user_profile.view.*
+import kotlinx.android.synthetic.main.fragment_owner_profile.*
+import kotlinx.android.synthetic.main.fragment_owner_profile.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import zero.network.petgarden.R
+import zero.network.petgarden.databinding.FragmentOwnerProfileBinding
 import zero.network.petgarden.model.behaivor.CallBack
-import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.tools.uploadImage
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity
@@ -26,24 +26,27 @@ import zero.network.petgarden.util.getPath
 import zero.network.petgarden.util.show
 import java.io.File
 
-class OwnerProfileFragment : Fragment() {
+class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
-    private val activity:OwnerActivity = getActivity() as OwnerActivity
-    private val owner:Owner = activity.owner
-    private lateinit var adapter: PetsAdapter
-
+    private lateinit var petsAdapter: PetsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_user_profile, container, false).apply {
+    ):  View = FragmentOwnerProfileBinding.inflate(inflater, container, false).apply {
+
+        CoroutineScope(Dispatchers.Main).launch{
+            petsAdapter = PetsAdapter(owner.pets().toList())
+        }
+
+        listPets.apply {
+            adapter = petsAdapter
+        }
 
         CoroutineScope(Dispatchers.Main).launch {
             photoUserIV.setImageBitmap(owner.image())
         }
-        CoroutineScope(Dispatchers.Main).launch{
-            adapter = PetsAdapter(owner.pets().toList())
-        }
+
         nameUserTV.text = owner.name
         emailUserTV.text = owner.email
 
@@ -59,7 +62,7 @@ class OwnerProfileFragment : Fragment() {
 
         changePasswordBtn.setOnClickListener{
             val changePasswordFragment = ChangePasswordFragment()
-            val fragmentManager = activity.fragmentManager
+            val fragmentManager = activity!!.supportFragmentManager
             val fragmentTransaction = fragmentManager!!.beginTransaction()
             fragmentTransaction.add(R.id.activity_owner_container, changePasswordFragment)
             fragmentTransaction.commit()
@@ -67,12 +70,14 @@ class OwnerProfileFragment : Fragment() {
         }
 
         addPet.setOnClickListener{
-           val intent = Intent(getActivity(), PetRegisterActivity::class.java)
+           val intent = Intent(activity, PetRegisterActivity::class.java)
                 intent.putExtra(PetRegisterActivity.TITLE_KEY, "Registrar Mascota")
                 intent.putExtra(PetRegisterActivity.PET_KEY, Pet())
                 startActivityForResult(intent, PET_CALLBACK)
         }
-    }
+    }.root
+
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == GALLERY_CALLBACK && resultCode == Activity.RESULT_OK) {
@@ -87,16 +92,13 @@ class OwnerProfileFragment : Fragment() {
             owner.saveInDB()
             show("Su nueva mascota se agregó correctamente")
 
-            activity.runOnUiThread { adapter.notifyDataSetChanged() }
+            activity!!.runOnUiThread { petsAdapter.notifyDataSetChanged() }
         }
     }
 
 
-     fun getOwner(): Owner {return owner}
-
-
     companion object{
-        val GALLERY_CALLBACK = 1
-        val PET_CALLBACK = 2
+        const val GALLERY_CALLBACK = 1
+        const val PET_CALLBACK = 2
     }
 }

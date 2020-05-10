@@ -33,11 +33,9 @@ class SittersAdapter(var sitters: List<Sitter>, owner: Owner) :
 
         private var job = CoroutineScope(Main).launch { }
 
-        @SuppressLint("SetTextI18n")
         fun bind(sitter: Sitter) {
             job.cancel()
-            job =
-                CoroutineScope(Main).launch { view.photoSitterList.setImageBitmap(sitter.image()) }
+            job = CoroutineScope(Main).launch { view.photoSitterList.setImageBitmap(sitter.image()) }
             view.MyRating.rating = sitter.rating.toFloat()
             view.nameSitterList.text = "${sitter.name} ${sitter.lastName}"
             sitter.availability?.let {
