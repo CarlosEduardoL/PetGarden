@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.fragment_register_birth.*
 import zero.network.petgarden.databinding.FragmentPetNameBinding
 import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.util.onClick
+import zero.network.petgarden.util.toText
 
 /**
  * A simple [Fragment] subclass.
@@ -21,7 +22,7 @@ class PetNameFragment(private val listener: OnNextListener, private val pet: Pet
     ): View? = FragmentPetNameBinding.inflate(inflater, container, false).apply {
         petNameInput.setText(pet.name)
         nextButton.onClick {
-            pet.name
+            pet.name = petNameInput.toText()
             listener.next(this@PetNameFragment)
         }
     }.root

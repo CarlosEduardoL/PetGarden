@@ -1,7 +1,9 @@
 package zero.network.petgarden.ui.register.user.activities
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.location.LocationManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -30,6 +32,7 @@ import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.extra
 import zero.network.petgarden.util.show
 import zero.network.petgarden.util.startUserView
+import zero.network.petgarden.model.entity.Location as Location2
 
 /**
  * @author CarlosEduardoL
@@ -57,9 +60,12 @@ class RegisterActivity : AppCompatActivity(),
             commit()
         }
 
+        val location = lastLocation()
+
         database = FirebaseDatabase.getInstance().reference
 
         user = extra("user")
+        user.location = location
 
         emailFragment = EmailRegisterFragment(user, this)
         nameFragment = NameRegisterFragment(user, this)
@@ -83,35 +89,30 @@ class RegisterActivity : AppCompatActivity(),
 
     }
 
+    @SuppressLint("MissingPermission")
+    private fun lastLocation(): zero.network.petgarden.model.entity.Location {
+        val lm = getSystemService(LOCATION_SERVICE) as LocationManager
+        return lm.getProviders(true)
+            .mapNotNull { lm.getLastKnownLocation(it) }
+            .minBy { it.accuracy }
+            ?.let { Location2(it.latitude, it.longitude) }
+            ?: Location2(10.0, 10.0)
+    }
+
     override fun next(fragment: Fragment, state: IUser) {
         when (fragment) {
-            nameFragment -> supportFragmentManager.beginTransaction()
-                .replace(R.id.body, emailFragment)
-                .addToBackStack(REGISTER_STACK)
-                .commit()
-            emailFragment -> supportFragmentManager.beginTransaction()
-                .replace(R.id.body, passFragment)
-                .addToBackStack(REGISTER_STACK)
-                .commit()
-            passFragment -> supportFragmentManager.beginTransaction()
-                .replace(R.id.body, birthFragment)
-                .addToBackStack(REGISTER_STACK)
-                .commit()
-            birthFragment -> supportFragmentManager.beginTransaction()
-                .replace(R.id.body, roleFragment)
-                .addToBackStack(REGISTER_STACK)
-                .commit()
-            roleFragment -> when (state) {
-                is Entity -> supportFragmentManager.beginTransaction()
-                    .replace(
-                        R.id.body,
-                        PictureFragment(this, state, getString(R.string.user_picture))
-                    )
-                    .addToBackStack(REGISTER_STACK)
-                    .commit()
-            }
+            nameFragment -> changeView(emailFragment)
+            emailFragment -> changeView(passFragment)
+            passFragment -> changeView(birthFragment)
+            birthFragment -> changeView(roleFragment)
+            roleFragment -> if (state is Entity) changeView(
+                PictureFragment(this, state, getString(R.string.user_picture))
+            )
         }
     }
+
+    private fun changeView(fragment: Fragment) = supportFragmentManager.beginTransaction()
+        .replace(R.id.body, fragment).addToBackStack(REGISTER_STACK).commit()
 
     private fun <T> finishRegister(user: Entity, clazz: Class<T>) {
         if (user is IUser)
@@ -121,8 +122,7 @@ class RegisterActivity : AppCompatActivity(),
                 finished = true
                 startUserView(user, clazz)
                 return
-            } ?:
-            FirebaseAuth.getInstance()
+            } ?: FirebaseAuth.getInstance()
                 .createUserWithEmailAndPassword(user.email, user.password)
                 .addOnSuccessListener { finishRegister(user, clazz) }
                 .addOnFailureListener { show(it.message ?: "Unexpected Error, please retry") }
@@ -158,9 +158,7 @@ class RegisterActivity : AppCompatActivity(),
     }
 
     override fun onDestroy() {
-        if(!finished)FirebaseAuth.getInstance().currentUser?.let {
-            it.delete()
-        }
+        if (!finished) FirebaseAuth.getInstance().currentUser?.delete()
         super.onDestroy()
     }
 

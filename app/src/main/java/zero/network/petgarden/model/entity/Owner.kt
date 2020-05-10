@@ -32,6 +32,11 @@ data class Owner(
         return downloadImage()
     }
 
+    override fun saveInDB() {
+        _pets?.forEach { it.ownerID = id; it.saveInDB() }
+        super.saveInDB()
+    }
+
     override fun folder() = FOLDER
 
     override suspend fun pets(): Set<Pet> {
