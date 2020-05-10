@@ -65,5 +65,6 @@
     <string name="user_picture">¡Tomate una foto!</string>
     <string name="takePhoto">Tomar una foto</string>
     <string name="chooseFromGallery">Seleccionar una de la Galeria</string>
+    <string name="choose_picture">Selecciona una foto</string>
 
 </resources>

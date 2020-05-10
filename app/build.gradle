@@ -76,5 +76,8 @@ dependencies {
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"
     kapt "android.arch.persistence.room:compiler:$room_version"
 
+    //crop
+    api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+
 
 }

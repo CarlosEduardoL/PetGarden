@@ -39,8 +39,6 @@ fun LoginActivity.initDatabase() {
     ).build()
 }
 
-fun Entity.isCached() = db.imgRegDao().get(id) !== null && File(appRoot(),"${folder()}/$id.png").exists()
-
 @Throws(IOException::class)
 fun copy(src: File, dst: File) {
     FileInputStream(src).use { `in` ->
