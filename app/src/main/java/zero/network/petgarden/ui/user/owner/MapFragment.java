@@ -104,13 +104,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     public void initMapLocation(){
 
 
-        //Llevar a la ultima localizacion conocida
-        Location last = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        locationActual = last;
-        LatLng pos = new LatLng(last.getLatitude(), last.getLongitude());
-
-
-
         //Solicitar actualizaciones de posicion
         manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 2, this);
 
