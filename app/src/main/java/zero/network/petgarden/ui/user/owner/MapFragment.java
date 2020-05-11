@@ -88,6 +88,8 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             last.setLatitude(ownerView.getOwner().getLocation().getLat());
         }
         LatLng act = new LatLng(last.getLatitude(), last.getLongitude());
+        markerPosActual = mMap.addMarker(  new MarkerOptions().position(act).title("Yo").snippet("Mi ubicación")  );
+        firstEntry = true;
         googleMap.addMarker(new MarkerOptions().position(act)
                 .title("Marker in Sydney"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(act,18));
@@ -106,8 +108,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         Location last = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         locationActual = last;
         LatLng pos = new LatLng(last.getLatitude(), last.getLongitude());
-        markerPosActual = mMap.addMarker(  new MarkerOptions().position(pos).title("Yo").snippet("Mi ubicación")  );
-        firstEntry = true;
+
 
 
         //Solicitar actualizaciones de posicion
