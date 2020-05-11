@@ -13,7 +13,7 @@ import zero.network.petgarden.R
 import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.tools.OnPetClickListener
 
-class SelectPetFragment(view: OwnerView, private val pets:List<Pet>) : Fragment(), OnPetClickListener, OwnerView by view {
+class SelectPetFragment(private val pets:List<Pet>) : Fragment(), OnPetClickListener {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -1,6 +1,6 @@
 package zero.network.petgarden.ui.user.owner
 
-import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +11,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import zero.network.petgarden.R
+import zero.network.petgarden.databinding.ActivitySitterFromUserBinding
 import zero.network.petgarden.databinding.RowSitterBinding
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.util.getDate
 
-class SittersAdapter(var sitters: List<Sitter>, owner: Owner) :
+class SittersAdapter(var sitters: List<Sitter>, var owner: Owner) :
     RecyclerView.Adapter<SittersAdapter.SitterViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SitterViewHolder = SitterViewHolder(
@@ -26,14 +27,14 @@ class SittersAdapter(var sitters: List<Sitter>, owner: Owner) :
     override fun getItemCount(): Int = sitters.size
 
     override fun onBindViewHolder(holder: SitterViewHolder, position: Int) =
-        holder.bind(sitters[position])
+        holder.bind(sitters[position], owner)
 
     class SitterViewHolder(private val view: RowSitterBinding) :
         RecyclerView.ViewHolder(view.root) {
 
         private var job = CoroutineScope(Main).launch { }
 
-        fun bind(sitter: Sitter) {
+        fun bind(sitter: Sitter, owner: Owner) {
             job.cancel()
             job = CoroutineScope(Main).launch { view.photoSitterList.setImageBitmap(sitter.image()) }
             view.MyRating.rating = sitter.rating.toFloat()
@@ -45,12 +46,11 @@ class SittersAdapter(var sitters: List<Sitter>, owner: Owner) :
 
 
             itemView.setOnClickListener(View.OnClickListener { v: View ->
-                val fragmentProfile = SitterProfileFromUser(sitter, (itemView.context as OwnerActivity))
-                val fragmentManager = (itemView.context as OwnerActivity).supportFragmentManager
-                val fragmentTransaction: FragmentTransaction =
-                    fragmentManager.beginTransaction()
-                fragmentTransaction.add(R.id.activity_owner_container, fragmentProfile, null)
-                fragmentTransaction.commit()
+                val currentActivity = v.context
+                val i = Intent(currentActivity, SitterFromUserActivity::class.java)
+                i.putExtra("sitter", sitter)
+                i.putExtra("owner", owner)
+                currentActivity.startActivity(i)
             })
         }
     }

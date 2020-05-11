@@ -76,9 +76,9 @@
         android:id="@+id/listSitters"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="0dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="0dp"
         android:layout_marginRight="8dp" />
 
 

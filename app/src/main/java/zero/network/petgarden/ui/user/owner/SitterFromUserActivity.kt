@@ -2,30 +2,36 @@ package zero.network.petgarden.ui.user.owner
 
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_sitter_profile_from_user.*
-import kotlinx.android.synthetic.main.fragment_sitter_profile_from_user.view.*
+import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_sitter__from_user.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import zero.network.petgarden.R
-import zero.network.petgarden.model.entity.Duration
-import zero.network.petgarden.model.entity.Pet
-import zero.network.petgarden.model.entity.Sitter
-import zero.network.petgarden.model.entity.Task
+import zero.network.petgarden.databinding.ActivitySitterFromUserBinding
+import zero.network.petgarden.model.entity.*
 import zero.network.petgarden.tools.OnPetClickListener
+import zero.network.petgarden.util.extra
 import zero.network.petgarden.util.show
 import java.util.*
 
-class SitterProfileFromUser(private val sitter:Sitter, view: OwnerView) : Fragment(), OnPetClickListener, OwnerView by view{
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_sitter_profile_from_user, container, false).apply {
+class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
+
+    private lateinit var sitter: Sitter
+    private lateinit var owner:Owner
+    lateinit var binding: ActivitySitterFromUserBinding
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onCreate(savedInstanceState: Bundle?){
+        super.onCreate(savedInstanceState)
+        binding =  ActivitySitterFromUserBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        //Load sitter and owner
+        val extras = intent.extras
+        sitter = extras!!.getSerializable("sitter") as Sitter
+        owner =extras!!.getSerializable("owner") as Owner
 
 
         CoroutineScope(Dispatchers.Main).launch { photoSitter.setImageBitmap(sitter.image()) }
@@ -33,7 +39,7 @@ class SitterProfileFromUser(private val sitter:Sitter, view: OwnerView) : Fragme
         emailSitterTxt.setText(sitter.email)
 
         //Availability
-        if(sitter.availability!=null){
+        if (sitter.availability != null) {
             val fromHour = getHour(sitter.availability!!.start)
             val fromMin = getMinute(sitter.availability!!.start)
             val toHour = getHour(sitter.availability!!.end)
@@ -42,11 +48,11 @@ class SitterProfileFromUser(private val sitter:Sitter, view: OwnerView) : Fragme
             scheduleSitter.setText("$fromHour:$fromMin a $toHour:$toMin")
 
             //Cost
-            val cost  = sitter.availability!!.cost
+            val cost = sitter.availability!!.cost
             priceText.setText("$cost por hora")
 
         } else {
-            scheduleSitter.setText("No disponible")
+            scheduleSitter.setText("  No disponible")
             priceText.setText("No disponible")
         }
 
@@ -60,17 +66,14 @@ class SitterProfileFromUser(private val sitter:Sitter, view: OwnerView) : Fragme
         startTime.setIs24HourView(true)
         endTime.setIs24HourView(true)
 
-        next_button.setOnClickListener{
-            if (sitter.availability!=null){
-                //contracting
+        next_button.setOnClickListener {
+            if (sitter.availability != null) {
+                CoroutineScope(Dispatchers.Main).launch { contracting()}
                 show("El cuidador seleccionado ha sido contratado")
             }
-            //contracting(
-
-
             else show("El cuidador que desea contratar no está disponible")
         }
-    }.rootView
+    }
 
     private fun getHour(time:Long):Int{
         val date = Calendar.getInstance()
@@ -99,8 +102,8 @@ class SitterProfileFromUser(private val sitter:Sitter, view: OwnerView) : Fragme
             val task = Task(owner.pets().first().id, duration)
             sitter.addTask(task)
         }else {
-           val selectFragment =  SelectPetFragment(this, owner.pets().toList())
-            val fragmentTransaction = fragmentManager!!.beginTransaction()
+            val selectFragment =  SelectPetFragment(owner.pets().toList())
+            val fragmentTransaction = supportFragmentManager.beginTransaction()
             fragmentTransaction.add(R.id.activity_owner_container, selectFragment, null)
             fragmentTransaction.commit()
         }

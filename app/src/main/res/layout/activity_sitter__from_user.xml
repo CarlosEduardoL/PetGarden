@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    tools:context=".ui.user.owner.SitterProfileFromUser">
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    tools:context=".ui.user.owner.SitterFromUserActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -45,10 +45,10 @@
         android:layout_width="match_parent"
         android:layout_height="16dp" />
 
-    <EditText
-        style="@style/sectionSeparator"
-        android:id="@+id/editText2"
-        android:text="Información del cuidador" />
+        <EditText
+            android:id="@+id/editText2"
+            style="@style/sectionSeparator"
+            android:text="Información del cuidador" />
 
     <Space
         android:layout_width="match_parent"
@@ -61,12 +61,18 @@
 
         <TextView
             style="@style/emailUser"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
             android:gravity="center_horizontal"
-            android:text="Disponibilidad horaria:  "
-            android:textStyle="bold" />
+            android:text="Disponibilidad horaria"
+            android:textAlignment="textStart"
+            android:textStyle="bold"
+            tools:ignore="RtlCompat" />
+
+        <Space
+            android:layout_width="16dp"
+            android:layout_height="match_parent" />
 
         <TextView
             android:id="@+id/scheduleSitter"
@@ -93,7 +99,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
             android:gravity="center_horizontal"
-            android:text="Precio:  "
+            android:text="Precio  "
             android:textStyle="bold" />
 
         <TextView
@@ -122,7 +128,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
             android:gravity="center_horizontal"
-            android:text="Cuida a:  "
+            android:text="Cuida a   "
             android:textStyle="bold" />
 
         <TextView
@@ -148,12 +154,14 @@
         <TextView
             android:id="@+id/textView5"
             style="@style/emailUser"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
             android:gravity="center_horizontal"
-            android:text="Informacion adicional:  "
-            android:textStyle="bold" />
+            android:text="Informacion adicional   "
+            android:textAlignment="textStart"
+            android:textStyle="bold"
+            tools:ignore="RtlCompat" />
 
         <TextView
             android:id="@+id/addInfo"

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.fragment_list_sitter.*
 import zero.network.pet.filterFragment
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.FragmentListSitterBinding

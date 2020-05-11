@@ -107,6 +107,9 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         //Solicitar actualizaciones de posicion
         manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 2, this);
+        locationActual = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        locationActual.setLongitude(ownerView.getOwner().getLocation().getLongitude());
+        locationActual.setLatitude(ownerView.getOwner().getLocation().getLat());
 
         //Actualizar la ubicación del dueño sólo al inicio
         ownerView.getOwner().setLocation(new zero.network.petgarden.model.entity.Location(locationActual.getLatitude(),locationActual.getLongitude()));
