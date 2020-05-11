@@ -33,7 +33,6 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.ActivityLoginBinding
 import zero.network.petgarden.model.entity.Owner
@@ -139,7 +138,13 @@ class LoginActivity : AppCompatActivity() {
                 auth.signInWithEmailAndPassword(
                     emailInput.toText(),
                     passwordInput.toText()
-                ).await()
+                ).awaitOrException()?.let {
+                    show(
+                        """Esta cuenta no existe o ha sido creada usando facebook o google
+                        De ser esta ultima opcion porfavor use la opcion correspondiente para iniciar session""".trimIndent()
+                    )
+                }
+
                 sitterByEmail(emailInput.toText())?.let {
                     startUserView(it, SitterActivity::class.java)
                 }

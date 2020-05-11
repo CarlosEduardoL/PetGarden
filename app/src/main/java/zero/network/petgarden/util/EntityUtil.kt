@@ -2,10 +2,10 @@ package zero.network.petgarden.util
 
 import android.annotation.SuppressLint
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
 import org.json.JSONObject
 import zero.network.petgarden.model.behaivor.CallBack
 import zero.network.petgarden.model.behaivor.IUser
@@ -13,6 +13,7 @@ import zero.network.petgarden.model.entity.Location
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
+import zero.network.petgarden.tools.logError
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,13 +33,28 @@ suspend fun userByEmail(email: String): IUser? {
     return sitterByEmail(email)?: ownerByEmail(email)
 }
 
-suspend fun allSitters(): List<Sitter> = FirebaseDatabase.getInstance()
-    .reference.child("sitters").wait()
-    .children.map { it.getValue(Sitter::class.java)!! }
+private val sitters = mutableListOf<Sitter>()
+private fun update(callBack: CallBack<List<Sitter>>) = callBack.onResult(sitters.filter { it.availability != null })
+private fun DataSnapshot.toSitter() = getValue(Sitter::class.java)!!
 
-fun allSitters(callBack: CallBack<List<Sitter>>) = CoroutineScope(Main).launch {
-    callBack.onResult(allSitters())
-}
+fun subscribeToSitters(callBack: CallBack<List<Sitter>>) = FirebaseDatabase.getInstance()
+    .reference.child("sitters").addChildEventListener(object : ChildEventListener {
+        override fun onCancelled(error: DatabaseError) = logError(error.message)
+        override fun onChildMoved(data: DataSnapshot, id: String?) = logError("Esto no deberia pasar nunca, Asustate")
+        override fun onChildChanged(data: DataSnapshot, id: String?) {
+            sitters.remove(sitters.first{ id == it.id })
+            sitters.add(data.toSitter())
+            update(callBack)
+        }
+        override fun onChildAdded(data: DataSnapshot, id: String?) {
+            sitters.add(data.toSitter())
+            update(callBack)
+        }
+        override fun onChildRemoved(data: DataSnapshot) {
+            sitters.remove(data.toSitter())
+            update(callBack)
+        }
+    })
 
 val GoogleSignInAccount.user
     get() = User(

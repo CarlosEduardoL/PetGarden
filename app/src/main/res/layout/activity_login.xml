@@ -117,6 +117,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="2dp"
                     android:background="@android:color/transparent"
+                    android:inputType="textPassword"
                     android:fontFamily="@font/roboto_regular"
                     android:hint="@string/password" />
             </LinearLayout>

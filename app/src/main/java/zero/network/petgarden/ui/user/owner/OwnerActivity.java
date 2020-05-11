@@ -2,10 +2,7 @@ package zero.network.petgarden.ui.user.owner;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.os.Binder;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,14 +11,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -29,8 +18,6 @@ import java.util.List;
 
 import zero.network.petgarden.R;
 import zero.network.petgarden.databinding.ActivityOwnerBinding;
-import zero.network.petgarden.databinding.FragmentDockBinding;
-import zero.network.petgarden.model.entity.Location;
 import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Sitter;
 import zero.network.petgarden.ui.element.ActionBarFragment;
@@ -119,7 +106,7 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
 
     public void getSittersFromDB(){
 
-        EntityUtilKt.allSitters(
+        EntityUtilKt.subscribeToSitters(
                 (tempSitters)->{
                     sitters = tempSitters;
 
