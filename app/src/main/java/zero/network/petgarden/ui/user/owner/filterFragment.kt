@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_filter.*
 import zero.network.petgarden.R
+import zero.network.petgarden.databinding.FragmentFilterBinding
 import zero.network.petgarden.model.entity.Sitter
 import java.util.*
 
@@ -22,7 +23,7 @@ class filterFragment(var adapter: SittersAdapter, var sitters:List<Sitter>) : Fr
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_filter, container, false).apply {
+    ): View = FragmentFilterBinding.inflate(inflater, container, false).apply  {
 
         var min = 0
         var max = 20000
@@ -31,9 +32,11 @@ class filterFragment(var adapter: SittersAdapter, var sitters:List<Sitter>) : Fr
         var toHour = 23
         var toMins = 59
 
-        initTimePicker(fromHour, fromMins, toHour, toMins)
+        if (fromTP ==null) println("-----------------------------------BEFRETimePickernull----------------------")
+        fromTP.setIs24HourView(true)
+        //initTimePicker(fromHour, fromMins, toHour, toMins)
 
-        next_button.setOnClickListener {
+        nextButton.setOnClickListener {
             fromPriceET.text.toString().let { minTxt ->
                 if (minTxt.isNotEmpty()) {
                     min = minTxt.toInt()
@@ -60,7 +63,7 @@ class filterFragment(var adapter: SittersAdapter, var sitters:List<Sitter>) : Fr
 
             filterSitters(min, max, fromHour, fromMins, toHour, toMins, stars)
         }
-    }
+    }.root
 
 
     private fun filterSitters(min:Int, max:Int, fromHour:Int,
@@ -95,9 +98,10 @@ class filterFragment(var adapter: SittersAdapter, var sitters:List<Sitter>) : Fr
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun initTimePicker(fromHour: Int, fromMins: Int, toHour: Int, toMins: Int){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             fromTP.apply {
+                if (fromTP ==null) println("-----------------------------------TimePickernull----------------------")
                 setIs24HourView(true)
                 hour = fromHour
                 minute = fromMins }
@@ -107,6 +111,6 @@ class filterFragment(var adapter: SittersAdapter, var sitters:List<Sitter>) : Fr
                 hour = toHour
                 minute = toMins
             }
-        }
+
     }
 }

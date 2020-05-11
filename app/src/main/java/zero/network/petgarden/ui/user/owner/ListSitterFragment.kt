@@ -14,7 +14,6 @@ import zero.network.petgarden.databinding.FragmentListSitterBinding
 
 class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
-    private lateinit var filterFragment: filterFragment
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,7 +34,7 @@ class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
         })
 
         filterButton.setOnClickListener{
-            if(filterFragment==null) filterFragment = filterFragment(adapterSitters, sitters)
+            val filterFragment = filterFragment(adapterSitters, sitters)
 
             val fragmentManager = activity!!.supportFragmentManager
             val fragmentTransaction = fragmentManager!!.beginTransaction()

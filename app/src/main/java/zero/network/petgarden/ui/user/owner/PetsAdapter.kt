@@ -29,9 +29,9 @@ class PetsAdapter(private val pets: List<Pet>): BaseAdapter() {
         val recommendations = view.findViewById<TextView>(R.id.recommendationsTV)
         val photo  = view.findViewById<ImageView>(R.id.imagePet)
 
-        breed.setText(pet.breed)
-        age.setText(pet.years)
-        recommendations.setText(pet.about)
+        breed.text = pet.breed
+        age.text = ""+pet.years
+        recommendations.text = pet.about
         CoroutineScope(Dispatchers.Main).launch { photo.setImageBitmap(pet.loadImage()) }
 
         return view

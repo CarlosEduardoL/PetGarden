@@ -79,5 +79,6 @@ dependencies {
     //crop
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 
-
+    //Circular image
+    implementation 'com.mikhaellopez:circularimageview:4.2.0'
 }

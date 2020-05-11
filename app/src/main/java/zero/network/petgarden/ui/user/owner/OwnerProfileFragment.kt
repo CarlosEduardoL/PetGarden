@@ -28,13 +28,11 @@ import java.io.File
 
 class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
-    private lateinit var petsAdapter: PetsAdapter
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ):  View = FragmentOwnerProfileBinding.inflate(inflater, container, false).apply {
-
+            var petsAdapter:PetsAdapter
         CoroutineScope(Dispatchers.Main).launch{
             petsAdapter = PetsAdapter(owner.pets().toList())
             listPets.apply {
@@ -92,7 +90,7 @@ class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
             owner.saveInDB()
             show("Su nueva mascota se agregó correctamente")
 
-            activity!!.runOnUiThread { petsAdapter.notifyDataSetChanged() }
+          //  activity!!.runOnUiThread { petsAdapter.notifyDataSetChanged() } CORREGIR
         }
     }
 

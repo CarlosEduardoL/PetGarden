@@ -1,102 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:id="@+id/linearLayout3"
+    android:layout_width="320dp"
     android:layout_height="108dp"
     android:layout_centerHorizontal="false"
     android:layout_gravity="center_horizontal"
     android:background="@drawable/rounded_corner_row">
 
 
-    <ImageView
+    <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/imagePet"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_gravity="center"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginBottom="10dp"
-        android:background="#555" />
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:civ_border_color="#3f51b5"
+        app:civ_border_width="4dp"
+        app:civ_shadow="true"
+        app:civ_shadow_color="#000000"
+        app:civ_shadow_radius="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/agePet"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:layout_width="130dp"
-        android:layout_height="match_parent"
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="12dp"
+        android:text="Raza"
+        android:textColor="#FFFFFF"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toStartOf="@+id/textView8"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/imagePet"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/breedTV"
+        style="@style/infoPetText"
+        android:layout_width="72dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="1dp"
         android:gravity="center"
-        android:orientation="vertical">
+        android:text="Labrador"
+        android:textSize="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/agePet"
+        app:layout_constraintStart_toEndOf="@+id/imagePet"
+        app:layout_constraintTop_toBottomOf="@+id/textView6"
+        app:layout_constraintVertical_bias="0.0" />
 
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:text="Raza"
-            android:textColor="#FFFFFF"
-            android:textSize="12dp" />
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="Edad"
+        android:textColor="#FFFFFF"
+        android:textSize="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/agePet"
+        app:layout_constraintEnd_toStartOf="@+id/recommendationsTV"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/imagePet"
+        app:layout_constraintTop_toBottomOf="@+id/breedTV"
+        app:layout_constraintVertical_bias="1.0" />
 
-        <TextView
-            android:id="@+id/breedTV"
-            style="@style/infoPetText"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginRight="8dp"
-            android:gravity="center"
-            android:text="Labrador"
-            android:textSize="8dp" />
-
-        <TextView
-            android:id="@+id/textView7"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="4dp"
-            android:text="Edad"
-            android:textColor="#FFFFFF"
-            android:textSize="12dp" />
-
-        <TextView
-            android:id="@+id/agePet"
-            style="@style/infoPetText"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center"
-            android:text="2 anios"
-            android:textSize="8dp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout_marginRight="24dp"
+    <TextView
+        android:id="@+id/agePet"
+        style="@style/infoPetText"
+        android:layout_width="72dp"
+        android:layout_height="16dp"
+        android:layout_marginBottom="16dp"
         android:gravity="center"
-        android:orientation="vertical">
+        android:text="2 anios"
+        android:textSize="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="120dp" />
 
-        <TextView
-            android:id="@+id/textView8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:text="Recomendaciones"
-            android:textColor="#FFFFFF"
-            android:textSize="12dp" />
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Recomendaciones"
+        android:textColor="#FFFFFF"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/breedTV"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/recommendationsTV"
-            style="@style/infoPetText"
-            android:layout_width="92dp"
-            android:layout_height="55dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginRight="8dp"
-            android:gravity="center"
-            android:text="Es muy grunon y no le gusta comer solo alimento, se le debe preparar una sopa"
-            android:textSize="8dp" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/recommendationsTV"
+        style="@style/infoPetText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="80dp"
+        android:height="64dp"
+        android:gravity="center"
+        android:text="Es muy grunon y no le gusta comer solo alimento, se le debe preparar una sopa"
+        android:textSize="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.48"
+        app:layout_constraintStart_toEndOf="@+id/agePet"
+        app:layout_constraintTop_toBottomOf="@+id/textView8"
+        app:layout_constraintVertical_bias="0.066" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

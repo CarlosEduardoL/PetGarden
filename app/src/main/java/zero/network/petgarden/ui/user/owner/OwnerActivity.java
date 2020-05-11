@@ -101,7 +101,7 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        showMap();
+       // showMap();
     }
 
     public void showMap(){
