@@ -80,11 +80,9 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         manager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
         //Llevar marker de posicion actual con zoom la primer vez
-        Location last = null;
-        if (manager != null) {
-            last = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        }else{
+        Location last = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
+        if (last == null) {
             last = new Location("");
             last.setLongitude(ownerView.getOwner().getLocation().getLongitude());
             last.setLatitude(ownerView.getOwner().getLocation().getLat());
