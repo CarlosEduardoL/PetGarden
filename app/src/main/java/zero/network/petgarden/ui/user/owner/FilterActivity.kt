@@ -1,29 +1,33 @@
-package zero.network.pet
+package zero.network.petgarden.ui.user.owner
 
-import androidx.annotation.RequiresApi
-import zero.network.petgarden.model.entity.Duration
-import zero.network.petgarden.ui.user.owner.SittersAdapter
-import kotlin.math.roundToInt
-
+import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_filter.*
-import zero.network.petgarden.R
-import zero.network.petgarden.databinding.FragmentFilterBinding
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_filter.*
+import zero.network.petgarden.databinding.ActivityFilterBinding
+import zero.network.petgarden.model.entity.Duration
 import zero.network.petgarden.model.entity.Sitter
+import java.io.Serializable
 import java.util.*
+import kotlin.math.roundToInt
 
-class filterFragment(var adapter: SittersAdapter, var sitters:List<Sitter>) : Fragment() {
+
+class FilterActivity : AppCompatActivity() {
+
+    private lateinit var sitters:List<Sitter>
+    lateinit var binding:ActivityFilterBinding
 
     @RequiresApi(Build.VERSION_CODES.M)
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = FragmentFilterBinding.inflate(inflater, container, false).apply  {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding =  ActivityFilterBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val extras = intent.extras
+        sitters = extras!!.getSerializable("sitters") as List<Sitter>
 
         var min = 0
         var max = 20000
@@ -33,10 +37,9 @@ class filterFragment(var adapter: SittersAdapter, var sitters:List<Sitter>) : Fr
         var toMins = 59
 
         if (fromTP ==null) println("-----------------------------------BEFRETimePickernull----------------------")
-        fromTP.setIs24HourView(true)
-        //initTimePicker(fromHour, fromMins, toHour, toMins)
+        initTimePicker(fromHour, fromMins, toHour, toMins)
 
-        nextButton.setOnClickListener {
+        next_button.setOnClickListener {
             fromPriceET.text.toString().let { minTxt ->
                 if (minTxt.isNotEmpty()) {
                     min = minTxt.toInt()
@@ -63,7 +66,7 @@ class filterFragment(var adapter: SittersAdapter, var sitters:List<Sitter>) : Fr
 
             filterSitters(min, max, fromHour, fromMins, toHour, toMins, stars)
         }
-    }.root
+    }
 
 
     private fun filterSitters(min:Int, max:Int, fromHour:Int,
@@ -79,38 +82,41 @@ class filterFragment(var adapter: SittersAdapter, var sitters:List<Sitter>) : Fr
             set(Calendar.MINUTE, toMins)
         }
 
+        var sittersFiltered:List<Sitter>
         if (numStars>0){
-           adapter.sitters =
-               sitters.filter { it.availability!=null }
-                      .filter { it.availability!!.cost in min..max }
-                      .filter { it.availability!!.contains(Duration(fromDate.timeInMillis, toDate.timeInMillis, 0))}
-                      .filter{  it.rating.roundToInt()==numStars }
+           sittersFiltered = sitters.filter { it.availability!=null }
+                    .filter { it.availability!!.cost in min..max }
+                    .filter { it.availability!!.contains(Duration(fromDate.timeInMillis, toDate.timeInMillis, 0))}
+                    .filter{  it.rating.roundToInt()==numStars }
         }else {
-            adapter.sitters =
+            sittersFiltered =
                 sitters.filter { it.availability!=null }
                     .filter { it.availability!!.cost in min..max }
                     .filter { it.availability!!.contains(Duration(fromDate.timeInMillis, toDate.timeInMillis, 0))}
                     .filter{  it.rating.roundToInt()>0 }
 
         }
-        adapter.notifyDataSetChanged()
-        activity!!.supportFragmentManager.popBackStack()
+
+        val intent = Intent()
+        intent.putExtra("sittersFiltered", sittersFiltered as Serializable)
+        setResult(RESULT_OK, intent)
+        finish()
     }
 
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun initTimePicker(fromHour: Int, fromMins: Int, toHour: Int, toMins: Int){
-            fromTP.apply {
-                if (fromTP ==null) println("-----------------------------------TimePickernull----------------------")
-                setIs24HourView(true)
-                hour = fromHour
-                minute = fromMins }
+        fromTP.apply {
+            if (fromTP ==null) println("-----------------------------------TimePickernull----------------------")
+            setIs24HourView(true)
+            hour = fromHour
+            minute = fromMins }
 
-            toTP.apply {
-                setIs24HourView(true)
-                hour = toHour
-                minute = toMins
-            }
+        toTP.apply {
+            setIs24HourView(true)
+            hour = toHour
+            minute = toMins
+        }
 
     }
 }

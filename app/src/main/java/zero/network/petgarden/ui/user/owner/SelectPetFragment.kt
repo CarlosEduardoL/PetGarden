@@ -1,14 +1,10 @@
 package zero.network.petgarden.ui.user.owner
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import zero.network.pet.filterFragment
 import zero.network.petgarden.R
 import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.tools.OnPetClickListener

@@ -61,7 +61,7 @@
     <string name="wrong_password">Contraseña Incorrecta</string>
     <string name="password_cannot_be_equals">La nueva contraseña no puede ser igual a la anterior</string>
     <string name="search_message">Buscar cuidadores por nombre</string>
-    <string name="filter">Filtar</string>
+    <string name="filter">Filtrar</string>
     <string name="user_picture">¡Tomate una foto!</string>
     <string name="takePhoto">Tomar una foto</string>
     <string name="chooseFromGallery">Seleccionar una de la Galeria</string>

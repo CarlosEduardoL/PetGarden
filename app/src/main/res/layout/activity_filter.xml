@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".ui.user.owner.OwnerActivity" >
+    tools:context=".ui.user.owner.FilterActivity" >
 
     <TextView
         style="@style/FilterSubtitle"
