@@ -64,13 +64,9 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
 
         loadDataFromActivity();
 
-        //Check Permissions
-        ActivityCompat.requestPermissions(this, new String[]{
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.INTERNET
-        }, 11);
 
 
+        showMap();
 
 
     }
@@ -101,7 +97,7 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-       // showMap();
+       showMap();
     }
 
     public void showMap(){

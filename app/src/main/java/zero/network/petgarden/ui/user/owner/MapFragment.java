@@ -90,6 +90,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         LatLng act = new LatLng(last.getLatitude(), last.getLongitude());
         markerPosActual = mMap.addMarker(  new MarkerOptions().position(act).title("Yo").snippet("Mi ubicación")  );
         firstEntry = true;
+        locationActual = last;
         googleMap.addMarker(new MarkerOptions().position(act)
                 .title("Marker in Sydney"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(act,18));
