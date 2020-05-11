@@ -36,6 +36,7 @@ public class DockFragment extends Fragment implements BottomNavigationView.OnNav
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentDockBinding.inflate(inflater,container,false);
+        ownerView.getTopBar().setVisibility(false);
 
         binding.BottomNavigationOwner.setOnNavigationItemSelectedListener(this);
         return binding.getRoot();
@@ -49,10 +50,10 @@ public class DockFragment extends Fragment implements BottomNavigationView.OnNav
 
         switch (item.getItemId()) {
             case R.id.nav_map:
-               /* fragment = new MapFragment(ownerView);
+                fragment = new MapFragment(ownerView);
                 ownerView.getTopBar().setVisibility(false);
                 ownerView.getTopBar().update("Mapa",false,false);
-                break;*/
+                break;
             case R.id.nav_sitter:
                 Log.e("XXX","Sitters Selected");
                 title = "Cuidadores";
