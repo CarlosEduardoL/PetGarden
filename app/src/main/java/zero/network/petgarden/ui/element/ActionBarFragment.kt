@@ -5,6 +5,7 @@ import android.content.Intent.*
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
@@ -58,7 +59,9 @@ class ActionBarFragment(
     fun update(title: String = this.title, isBackButton: Boolean = this.isBackButton, isCloseButton: Boolean = this.isCloseButton)= binding.apply {
         titleText.text = title
         if (!isBackButton) backButton.visibility = View.GONE
+        else backButton.visibility = VISIBLE
         if (!isCloseButton) exitButton.visibility = View.GONE
+        else exitButton.visibility = VISIBLE
     }
 
     fun setVisibility(visibility:Boolean){

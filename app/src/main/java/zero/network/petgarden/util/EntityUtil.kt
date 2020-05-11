@@ -33,29 +33,6 @@ suspend fun userByEmail(email: String): IUser? {
     return sitterByEmail(email)?: ownerByEmail(email)
 }
 
-private val sitters = mutableListOf<Sitter>()
-private fun update(callBack: CallBack<List<Sitter>>) = callBack.onResult(sitters.filter { it.availability != null })
-private fun DataSnapshot.toSitter() = getValue(Sitter::class.java)!!
-
-fun subscribeToSitters(callBack: CallBack<List<Sitter>>) = FirebaseDatabase.getInstance()
-    .reference.child("sitters").addChildEventListener(object : ChildEventListener {
-        override fun onCancelled(error: DatabaseError) = logError(error.message)
-        override fun onChildMoved(data: DataSnapshot, id: String?) = logError("Esto no deberia pasar nunca, Asustate")
-        override fun onChildChanged(data: DataSnapshot, id: String?) {
-            sitters.remove(sitters.first{ id == it.id })
-            sitters.add(data.toSitter())
-            update(callBack)
-        }
-        override fun onChildAdded(data: DataSnapshot, id: String?) {
-            sitters.add(data.toSitter())
-            update(callBack)
-        }
-        override fun onChildRemoved(data: DataSnapshot) {
-            sitters.remove(data.toSitter())
-            update(callBack)
-        }
-    })
-
 val GoogleSignInAccount.user
     get() = User(
         givenName!!,

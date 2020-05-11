@@ -23,7 +23,7 @@ import zero.network.petgarden.model.entity.Sitter;
 import zero.network.petgarden.ui.element.ActionBarFragment;
 import zero.network.petgarden.util.EntityUtilKt;
 
-public class OwnerActivity extends AppCompatActivity implements OwnerView{
+public class OwnerActivity extends SitterListener implements OwnerView{
 
     FragmentManager fragmentManager;
     private Owner owner;
@@ -42,19 +42,13 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
         binding = ActivityOwnerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-
         loadInitialFragments();
-
 
         sitters = new ArrayList<>();
 
-
         loadDataFromActivity();
 
-
-
         showMap();
-
 
     }
 
@@ -82,14 +76,8 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-       showMap();
-    }
 
     public void showMap(){
-        getSittersFromDB();
-
 
         if( ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fragmentMap = new MapFragment(this);
@@ -99,25 +87,14 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
             fragmentTransaction.commit();
         }
 
-
     }
 
+    @Override
+    public void onSittersUpdate(@NotNull List<Sitter> sitters) {
+        this.sitters = sitters;
 
-
-    public void getSittersFromDB(){
-
-        EntityUtilKt.subscribeToSitters(
-                (tempSitters)->{
-                    sitters = tempSitters;
-
-                    fragmentMap.addSittersMarkers(sitters);
-                }
-        );
-
-
-
+        fragmentMap.addSittersMarkers(sitters);
     }
-
 
     @NotNull
     public Owner getOwner() {
@@ -138,10 +115,8 @@ public class OwnerActivity extends AppCompatActivity implements OwnerView{
     }
 
 
-    @NotNull
-    @Override
+    @NotNull @Override
     public ActionBarFragment getTopBar() {
         return topBarFragment;
     }
-
 }
