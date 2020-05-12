@@ -63,16 +63,14 @@
 
         <TimePicker
             android:id="@+id/fromTP"
-            android:layout_width="180dp"
-            android:layout_height="87dp"
-            android:scaleX="0.75"
+            android:layout_width="175dp"
+            android:layout_height="match_parent"
             android:timePickerMode="spinner" />
 
         <TextView
             android:id="@+id/textView5"
-            android:layout_width="35dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:gravity="center"
             android:text="a"
             android:textColor="#000000"
@@ -80,9 +78,8 @@
 
         <TimePicker
             android:id="@+id/toTP"
-            android:layout_width="187dp"
+            android:layout_width="175dp"
             android:layout_height="match_parent"
-            android:scaleX="0.75"
             android:timePickerMode="spinner" />
 
 

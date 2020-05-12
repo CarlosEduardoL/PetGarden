@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import zero.network.petgarden.R
 import zero.network.petgarden.model.entity.Pet
 
-class PetsAdapter(private val pets: List<Pet>): BaseAdapter() {
+class PetsAdapter(private var pets: List<Pet>): BaseAdapter() {
 
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -37,9 +37,16 @@ class PetsAdapter(private val pets: List<Pet>): BaseAdapter() {
         return view
     }
 
+     fun updateListPets(updatedPets: List<Pet>){
+        pets = updatedPets
+        notifyDataSetChanged()
+    }
+
     override fun getItem(position: Int): Any = pets[position]
 
     override fun getItemId(position: Int): Long = position.toLong()
 
     override fun getCount(): Int = pets.size
+
+
 }

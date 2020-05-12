@@ -36,7 +36,6 @@ class FilterActivity : AppCompatActivity() {
         var toHour = 23
         var toMins = 59
 
-        if (fromTP ==null) println("-----------------------------------BEFRETimePickernull----------------------")
         initTimePicker(fromHour, fromMins, toHour, toMins)
 
         next_button.setOnClickListener {
@@ -83,6 +82,7 @@ class FilterActivity : AppCompatActivity() {
         }
 
         var sittersFiltered:List<Sitter>
+
         if (numStars>0){
            sittersFiltered = sitters.filter { it.availability!=null }
                     .filter { it.availability!!.cost in min..max }
@@ -93,8 +93,7 @@ class FilterActivity : AppCompatActivity() {
                 sitters.filter { it.availability!=null }
                     .filter { it.availability!!.cost in min..max }
                     .filter { it.availability!!.contains(Duration(fromDate.timeInMillis, toDate.timeInMillis, 0))}
-                    .filter{  it.rating.roundToInt()>0 }
-
+                    .filter{  it.rating.roundToInt()>=0 }
         }
 
         val intent = Intent()
@@ -107,7 +106,6 @@ class FilterActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun initTimePicker(fromHour: Int, fromMins: Int, toHour: Int, toMins: Int){
         fromTP.apply {
-            if (fromTP ==null) println("-----------------------------------TimePickernull----------------------")
             setIs24HourView(true)
             hour = fromHour
             minute = fromMins }

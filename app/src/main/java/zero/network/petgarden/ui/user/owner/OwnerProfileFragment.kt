@@ -1,11 +1,14 @@
 package zero.network.petgarden.ui.user.owner
 
+import android.app.ActionBar
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.facebook.AccessToken
@@ -28,18 +31,19 @@ import java.io.File
 
 class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
+    lateinit var petsAdapter: PetsAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ):  View = FragmentOwnerProfileBinding.inflate(inflater, container, false).apply {
-            var petsAdapter:PetsAdapter
         CoroutineScope(Dispatchers.Main).launch{
             petsAdapter = PetsAdapter(owner.pets().toList())
+
             listPets.apply {
                 adapter = petsAdapter
             }
         }
-
 
         CoroutineScope(Dispatchers.Main).launch {
             photoUserIV.setImageBitmap(owner.image())
@@ -88,11 +92,12 @@ class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
         } else if (resultCode == Activity.RESULT_OK && data !== null && requestCode == PET_CALLBACK) {
             owner.apply { addPet(data.extra(PetRegisterActivity.PET_KEY) { return }, CallBack { }) }
             owner.saveInDB()
-            show("Su nueva mascota se agregó correctamente")
 
-          //  activity!!.runOnUiThread { petsAdapter.notifyDataSetChanged() } CORREGIR
+            show("Su nueva mascota se agregó correctamente")
+            CoroutineScope(Dispatchers.Main).launch { petsAdapter.updateListPets(owner.pets().toList()) }
         }
     }
+
 
 
     companion object{
