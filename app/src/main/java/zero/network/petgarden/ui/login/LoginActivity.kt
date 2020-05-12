@@ -44,6 +44,7 @@ import zero.network.petgarden.ui.register.user.FragmentStart
 import zero.network.petgarden.ui.user.owner.OwnerActivity
 import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.*
+import java.util.*
 
 
 class LoginActivity : AppCompatActivity() {
@@ -129,6 +130,10 @@ class LoginActivity : AppCompatActivity() {
                     startUserView(it, OwnerActivity::class.java)
                 }
 
+                val animation = AnimationUtils.loadAnimation(this@LoginActivity, android.R.anim.fade_out)
+                binding.splashScreen.startAnimation(animation)
+                binding.splashScreen.visibility = GONE
+
             }
         }
     }
@@ -137,7 +142,7 @@ class LoginActivity : AppCompatActivity() {
         loginButton.onClick {
             if (emailInput.text.isNotEmpty() && passwordInput.text.isNotEmpty()) loginScope.launch {
                 auth.signInWithEmailAndPassword(
-                    emailInput.toText(),
+                    emailInput.toText().toLowerCase(Locale.ROOT),
                     passwordInput.toText()
                 ).awaitOrException()?.let {
                     show(
