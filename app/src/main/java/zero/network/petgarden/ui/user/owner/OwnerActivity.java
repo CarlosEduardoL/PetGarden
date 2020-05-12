@@ -4,42 +4,40 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.Fragment;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import zero.network.petgarden.R;
 import zero.network.petgarden.databinding.ActivityOwnerBinding;
+import zero.network.petgarden.model.behaivor.CallBack;
 import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Sitter;
+import zero.network.petgarden.tools.DebugLogKt;
 import zero.network.petgarden.ui.element.ActionBarFragment;
-import zero.network.petgarden.util.EntityUtilKt;
 
-public class OwnerActivity extends SitterListener implements OwnerView{
+public class OwnerActivity extends SitterListener implements OwnerView {
 
-    FragmentManager fragmentManager;
     private Owner owner;
-    private List<Sitter> sitters;
-    MapFragment fragmentMap;
-    ListSitterFragment sittersFragment;
+    private List<Sitter> sitters = Collections.emptyList();
+
+    private MapFragment fragmentMap;
+    private ListSitterFragment sittersFragment;
+    private OwnerProfileFragment profileFragment;
+
     private ActionBarFragment topBarFragment;
 
-
-    private ActivityOwnerBinding binding;
-
+    private Fragment actualFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityOwnerBinding.inflate(getLayoutInflater());
+        zero.network.petgarden.databinding.ActivityOwnerBinding binding = ActivityOwnerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         loadInitialFragments();
@@ -52,48 +50,53 @@ public class OwnerActivity extends SitterListener implements OwnerView{
 
     }
 
-    private void loadInitialFragments(){
-        topBarFragment = new ActionBarFragment("",false);
-        FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
-        transaction1.replace(R.id.topBar,topBarFragment, null);
-        transaction1.commit();
+    private void loadInitialFragments() {
 
+        sittersFragment = new ListSitterFragment(this);
+        fragmentMap = new MapFragment(this);
+        profileFragment = new OwnerProfileFragment(this);
 
+        // Set TopBar
+        topBarFragment = new ActionBarFragment("", false, false, result -> {
+            loadMapView();
+        });
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.topBar, topBarFragment, null)
+                .commit();
+
+        // Set Dock
         DockFragment dockFragment = new DockFragment(this);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.dock_container,dockFragment, null);
-        transaction.commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.dock_container, dockFragment)
+                .commit();
     }
-
 
     private void loadDataFromActivity() {
-
         //PONER A CARGAR LOS DATOS DEL EXTRA
         Bundle extras = getIntent().getExtras();
-        owner =(Owner) extras.getSerializable("user");
-        /*owner = new Owner();*/
-
+        if(extras != null)
+            owner = (Owner) extras.getSerializable("user");
+        else
+            throw new NullPointerException();
     }
 
-
-    public void showMap(){
-
-        if( ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fragmentMap = new MapFragment(this);
-            fragmentManager =getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.actualFragmentContainer,fragmentMap, null);
-            fragmentTransaction.commit();
+    public void showMap() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            loadMapView();
         }
+    }
 
+    private void loadActualFragment(){
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.actualFragmentContainer, actualFragment)
+                .commit();
     }
 
     @Override
     public void onSittersUpdate(@NotNull List<Sitter> sitters) {
         this.sitters = sitters;
-
-        fragmentMap.addSittersMarkers(sitters);
+        if(fragmentMap == actualFragment) fragmentMap.addSittersMarkers(sitters);
     }
 
     @NotNull
@@ -101,7 +104,7 @@ public class OwnerActivity extends SitterListener implements OwnerView{
         return owner;
     }
 
-    public void setOwner(Owner owner) {
+    public void setOwner(@NotNull Owner owner) {
         this.owner = owner;
     }
 
@@ -110,13 +113,31 @@ public class OwnerActivity extends SitterListener implements OwnerView{
         return sitters;
     }
 
-    public void setSitters(List<Sitter> sitters) {
+    public void setSitters(@NotNull List<Sitter> sitters) {
         this.sitters = sitters;
     }
 
-
-    @NotNull @Override
+    @NotNull
+    @Override
     public ActionBarFragment getTopBar() {
         return topBarFragment;
+    }
+
+    @Override
+    public void loadMapView() {
+        actualFragment = fragmentMap;
+        loadActualFragment();
+    }
+
+    @Override
+    public void loadProfileView() {
+        actualFragment = profileFragment;
+        loadActualFragment();
+    }
+
+    @Override
+    public void loadSittersView() {
+        actualFragment = sittersFragment;
+        loadActualFragment();
     }
 }

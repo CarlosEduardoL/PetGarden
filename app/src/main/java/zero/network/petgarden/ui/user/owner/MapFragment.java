@@ -110,6 +110,8 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         initMapLocation();
 
+        addSittersMarkers(ownerView.getSitters());
+
     }
 
     @SuppressLint("MissingPermission")
@@ -137,11 +139,9 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     }
 
     public void addSittersMarkers(List<Sitter> sitters){
-        LatLng pos = null;
+        LatLng pos;
 
         for(Sitter sitter: sitters){
-
-
             pos = new LatLng(sitter.getLocation().getLat(),sitter.getLocation().getLongitude());
             Location tempLocation = new Location("");
             tempLocation.setLatitude(sitter.getLocation().getLat());
@@ -153,7 +153,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                         .position(pos).title(sitter.getName())
                         .snippet("Mi ubicación")
                         .draggable(false)
-                        .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_sitter_map));
+                        .icon(bitmapDescriptorFromVector(getContext(), R.drawable.ic_sitter_map));
                 mMap.addMarker(temp);
             }
 

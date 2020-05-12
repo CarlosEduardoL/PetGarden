@@ -24,15 +24,13 @@ import zero.network.petgarden.util.show
 
 class ChangePasswordFragment(val owner: Owner): Fragment(){
 
-    private val activity:OwnerActivity = getActivity() as OwnerActivity
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentChangePasswordBinding.inflate(inflater, container, false).apply{
 
-        nameUserTV.setText(owner.name)
-        emailUserTV.setText(owner.email)
+        nameUserTV.text = owner.name
+        emailUserTV.text = owner.email
 
         updatePass.setOnClickListener{
            val currentPass =  currentPassTV.text.toString()

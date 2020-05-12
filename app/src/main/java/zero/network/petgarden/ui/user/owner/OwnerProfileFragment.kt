@@ -55,7 +55,6 @@ class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
             changePasswordBtn.visibility = View.GONE
 
         cameraBtn.setOnClickListener{
-
             val gal = Intent(Intent.ACTION_GET_CONTENT)
             gal.type = "image/*"
             startActivityForResult(gal, GALLERY_CALLBACK)

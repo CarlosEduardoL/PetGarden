@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.jetbrains.annotations.NotNull;
+
 import zero.network.petgarden.R;
 import zero.network.petgarden.databinding.FragmentDockBinding;
 import zero.network.petgarden.model.entity.Owner;
@@ -27,12 +29,11 @@ public class DockFragment extends Fragment implements BottomNavigationView.OnNav
 
 
     public DockFragment(OwnerView ownerView) {
-        // Required empty public constructor
         this.ownerView = ownerView;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentDockBinding.inflate(inflater,container,false);
@@ -45,37 +46,25 @@ public class DockFragment extends Fragment implements BottomNavigationView.OnNav
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        Fragment fragment = null;
-        String title = null;
-
         switch (item.getItemId()) {
             case R.id.nav_map:
-                fragment = new MapFragment(ownerView);
+                ownerView.loadMapView();
                 ownerView.getTopBar().setVisibility(false);
                 ownerView.getTopBar().update("Mapa",false,false);
                 break;
             case R.id.nav_sitter:
                 Log.e("XXX","Sitters Selected");
-                title = "Cuidadores";
-                fragment = new ListSitterFragment(ownerView);
+                ownerView.loadSittersView();
                 ownerView.getTopBar().setVisibility(true);
                 ownerView.getTopBar().update("Cuidadores",true,false);
                 break;
             case R.id.nav_profile:
                 Log.e("XXX","Nav Selected");
-                title = "Perfil";
-                fragment = new OwnerProfileFragment(ownerView);
+                ownerView.loadProfileView();
                 ownerView.getTopBar().setVisibility(true);
                 ownerView.getTopBar().update("Perfil",true,true);
                 break;
         }
-
-    if(fragment!=null){
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.actualFragmentContainer,fragment);
-        ft.commit();
-    }
-
         return true;
     }
 }

@@ -50,15 +50,13 @@ class SittersAdapter(var sitters: List<Sitter>, var owner: Owner) :
                 view.price.text = "Precio: No disponible"
             }
 
-
-
-            itemView.setOnClickListener(View.OnClickListener { v: View ->
+            itemView.setOnClickListener { v: View ->
                 val currentActivity = v.context
                 val i = Intent(currentActivity, SitterFromUserActivity::class.java)
                 i.putExtra("sitter", sitter)
                 i.putExtra("owner", owner)
                 currentActivity.startActivity(i)
-            })
+            }
         }
     }
 

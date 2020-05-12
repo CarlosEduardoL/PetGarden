@@ -24,7 +24,7 @@ class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
         savedInstanceState: Bundle?
     ): View = FragmentListSitterBinding.inflate(inflater, container, false).apply {
 
-         adapterSitters = SittersAdapter(sitters, owner)
+         adapterSitters = SittersAdapter(sitters.toSet().toList(), owner)
             listSitters.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = adapterSitters

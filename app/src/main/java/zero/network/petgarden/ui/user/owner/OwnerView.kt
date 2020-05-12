@@ -10,4 +10,8 @@ interface  OwnerView {
     var sitters: List<Sitter>
     val topBar: ActionBarFragment
 
+    fun loadMapView()
+    fun loadProfileView()
+    fun loadSittersView()
+
 }
