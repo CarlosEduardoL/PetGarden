@@ -61,7 +61,6 @@ public class SitterActivity extends AppCompatActivity implements SitterView{
         Bundle extras = getIntent().getExtras();
         sitter =(Sitter) extras.getSerializable("user");
 
-
     }
 
 

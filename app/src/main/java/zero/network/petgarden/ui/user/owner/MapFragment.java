@@ -32,9 +32,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import zero.network.petgarden.R;
 import zero.network.petgarden.model.entity.Owner;
+import zero.network.petgarden.model.entity.Pet;
 import zero.network.petgarden.model.entity.Sitter;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -101,7 +104,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         firstEntry = true;
         locationActual = last;
 
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(act,18));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(act,17));
 
         mMap.setMyLocationEnabled(true);
 

@@ -28,8 +28,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import zero.network.petgarden.R;
+import zero.network.petgarden.model.entity.Owner;
+import zero.network.petgarden.model.entity.Pet;
 import zero.network.petgarden.model.entity.Sitter;
 import zero.network.petgarden.ui.user.owner.OwnerView;
 
@@ -94,7 +98,7 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
         locationActual = last;
         googleMap.addMarker(new MarkerOptions().position(act)
                 .title("Marker in Sydney"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(act,18));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(act,16));
 
         mMap.setMyLocationEnabled(true);
 
@@ -112,7 +116,7 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
         locationActual.setLongitude(sitterView.getSitter().getLocation().getLongitude());
         locationActual.setLatitude(sitterView.getSitter().getLocation().getLat());
 
-        //Actualizar la ubicación del dueño sólo al inicio
+        //Actualizar la ubicación del sitter sólo al inicio
         sitterView.getSitter().setLocation(new zero.network.petgarden.model.entity.Location(locationActual.getLatitude(),locationActual.getLongitude()));
         sitterView.getSitter().saveInDB();
 
@@ -155,7 +159,28 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
 
     }
 
-    public void addLocations(){
+    public void addOwnerMarkers(Map<Owner, Set<Pet>> clientsXpets){
+        LatLng pos = null;
+
+        for(Owner owner: clientsXpets.keySet()){
+
+
+            pos = new LatLng(owner.getLocation().getLat(),owner.getLocation().getLongitude());
+            Location tempLocation = new Location("");
+            tempLocation.setLatitude(owner.getLocation().getLat());
+            tempLocation.setLongitude(owner.getLocation().getLongitude());
+
+            //Si la distancia es menor que 4K, ponga los marcadores en el mapa
+            if(locationActual.distanceTo(tempLocation) <4000){
+                MarkerOptions temp =new MarkerOptions()
+                        .position(pos).title(owner.getName())
+                        .snippet("Mi ubicación")
+                        .draggable(false)
+                        .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_sitter_marker));
+                mMap.addMarker(temp);
+            }
+
+        }
 
     }
 

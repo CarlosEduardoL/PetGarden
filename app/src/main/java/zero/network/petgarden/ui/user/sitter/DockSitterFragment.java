@@ -53,7 +53,7 @@ public class DockSitterFragment extends Fragment implements BottomNavigationView
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment fragment = null;
+        Fragment fragment = new Fragment();
         String title = null;
 
         switch (item.getItemId()) {
