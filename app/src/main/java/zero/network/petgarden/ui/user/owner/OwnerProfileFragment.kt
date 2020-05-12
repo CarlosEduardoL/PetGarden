@@ -1,20 +1,15 @@
 package zero.network.petgarden.ui.user.owner
 
-import android.app.ActionBar
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import androidx.core.view.size
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.facebook.AccessToken
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import kotlinx.android.synthetic.main.fragment_owner_profile.*
-import kotlinx.android.synthetic.main.fragment_owner_profile.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,11 +27,15 @@ import java.io.File
 class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
     lateinit var petsAdapter: PetsAdapter
+    private  lateinit var changePasswordFragment:ChangePasswordFragment
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ):  View = FragmentOwnerProfileBinding.inflate(inflater, container, false).apply {
+
+        changePasswordFragment = ChangePasswordFragment(owner)
+
         CoroutineScope(Dispatchers.Main).launch{
             petsAdapter = PetsAdapter(owner.pets().toList())
 
@@ -63,10 +62,9 @@ class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
         }
 
         changePasswordBtn.setOnClickListener{
-            val changePasswordFragment = ChangePasswordFragment()
             val fragmentManager = activity!!.supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.add(R.id.activity_owner_container, changePasswordFragment)
+            fragmentTransaction.add(R.id.actualFragmentContainer, changePasswordFragment).addToBackStack(null)
             fragmentTransaction.commit()
 
         }

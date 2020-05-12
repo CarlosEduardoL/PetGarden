@@ -72,7 +72,7 @@ public class DockSitterFragment extends Fragment implements BottomNavigationView
             case R.id.nav_profile:
                 Log.e("XXX","Nav Selected");
                 title = "Perfil";
-                fragment = new SitterProfileFragment();
+                fragment = new SitterProfileFragment(sitterView);
                 sitterView.getTopBar().setVisibility(true);
                 sitterView.getTopBar().update("Perfil",true,true);
                 break;

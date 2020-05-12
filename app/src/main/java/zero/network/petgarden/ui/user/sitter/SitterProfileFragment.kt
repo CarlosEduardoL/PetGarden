@@ -15,8 +15,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.FragmentSitterProfileBinding
-import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.tools.uploadImage
+import zero.network.petgarden.ui.user.owner.ChangePassFragment
 import zero.network.petgarden.ui.user.owner.ChangePasswordFragment
 import zero.network.petgarden.util.getPath
 import java.io.File
@@ -24,12 +24,13 @@ import java.io.File
 class SitterProfileFragment(view: SitterView) : Fragment(), SitterView by view {
 
     private lateinit var adapter: CustomersAdapter
+    private lateinit var changePasswordFragment: ChangePassFragment
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentSitterProfileBinding.inflate(inflater, container, false).apply {
-
+        changePasswordFragment = ChangePassFragment(sitter)
 
         CoroutineScope(Dispatchers.Main).launch { adapter = CustomersAdapter(sitter.clientsXPets(), context!!) }
         CoroutineScope(Dispatchers.Main).launch { photoSitterIV.setImageBitmap(sitter.image()) }
@@ -37,8 +38,10 @@ class SitterProfileFragment(view: SitterView) : Fragment(), SitterView by view {
         emailSitterTV.text = sitter.email
 
 
-        if (AccessToken.getCurrentAccessToken()!=null || GoogleSignIn.getLastSignedInAccount(context)!=null)
+        if (AccessToken.getCurrentAccessToken()!=null || GoogleSignIn.getLastSignedInAccount(context)!=null) {
             changePasswordBtn.visibility = View.GONE
+            println("---------------------Auth vigente-------------------------")
+        }
 
 
         cameraBtn.setOnClickListener{
@@ -48,10 +51,9 @@ class SitterProfileFragment(view: SitterView) : Fragment(), SitterView by view {
         }
 
         changePasswordBtn.setOnClickListener{
-            val changePasswordFragment = ChangePasswordFragment()
             val fragmentManager = activity!!.supportFragmentManager
             val fragmentTransaction = fragmentManager!!.beginTransaction()
-            fragmentTransaction.add(R.id.activity_owner_container, changePasswordFragment)
+            fragmentTransaction.replace(R.id.actualFragmentContainerSitter, changePasswordFragment).addToBackStack(null)
             fragmentTransaction.commit()
         }
     }.root

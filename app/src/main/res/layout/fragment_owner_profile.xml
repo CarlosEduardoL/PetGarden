@@ -61,14 +61,12 @@
         android:gravity="center_horizontal"
         android:text="user@gmail.com" />
 
-    <Button
+    <TextView
         android:id="@+id/changePasswordBtn"
         android:layout_width="match_parent"
         android:layout_height="32dp"
-        android:background="#FFFFFF"
-        android:backgroundTint="#FFFFFF"
         android:text="@string/change_password"
-        android:textAllCaps="false"
+        android:gravity="center"
         android:textColor="#1AB28E"
         android:textSize="16dp"
         android:textStyle="bold" />

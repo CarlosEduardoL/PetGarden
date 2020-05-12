@@ -16,48 +16,48 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import zero.network.petgarden.R
-import zero.network.petgarden.databinding.FragmentChangePasswordBinding
+import zero.network.petgarden.databinding.FragmentChangePassBinding
 import zero.network.petgarden.model.entity.Owner
+import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.util.show
 
 
-class ChangePasswordFragment(val owner: Owner): Fragment(){
-
-    private val activity:OwnerActivity = getActivity() as OwnerActivity
+class ChangePassFragment(val sitter: Sitter): Fragment(){
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentChangePasswordBinding.inflate(inflater, container, false).apply{
+    ): View = FragmentChangePassBinding.inflate(inflater, container, false).apply {
 
-        nameUserTV.setText(owner.name)
-        emailUserTV.setText(owner.email)
+        nameUserTV.text = sitter.name
+        emailUserTV.text = sitter.email
 
         updatePass.setOnClickListener{
-           val currentPass =  currentPassTV.text.toString()
+            val currentPass =  currentPassTV.text.toString()
             val newPass = newPassTV.text.toString()
-                if (currentPass.equals(owner.password)) {
-                    if (newPass.isNotEmpty())
-                        CoroutineScope(Dispatchers.Main).launch { updatePassword(newPass)}
-                    else
-                        show("Su nueva contraseña no contiene caracteres")
-                } else {
-                    show("Contraseña actual incorrecta")
-                }
-            fragmentManager!!.popBackStack()
+
+            if (currentPass == sitter.password) {
+                if (newPass.isNotEmpty())
+                    CoroutineScope(Dispatchers.Main).launch { updatePassword(newPass)}
+                else
+                    show("Su nueva contraseña no contiene caracteres")
+            } else {
+                show("Contraseña actual incorrecta")
             }
-        }.root
+            fragmentManager!!.popBackStack()
+        }
+    }.root
 
 
-    suspend fun updatePassword(password:String){
+    private suspend fun updatePassword(password:String){
         val ref = FirebaseDatabase.getInstance().reference
-        val ownersRef: DatabaseReference = ref.child("owners")
-        val ownerRef: DatabaseReference = ownersRef.child(owner.id)
-        val ownerUpdates: MutableMap<String, Any> = HashMap()
-        ownerUpdates["password"] = password
+        val sittersRef: DatabaseReference = ref.child("sitters")
+        val sitterRef: DatabaseReference = sittersRef.child(sitter.id)
+        val sitterUpdates: MutableMap<String, Any> = HashMap()
+        sitterUpdates["password"] = password
 
-        ownerRef.updateChildren(ownerUpdates)
+        sitterRef.updateChildren(sitterUpdates)
     }
 
 }
