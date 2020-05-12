@@ -1,65 +1,185 @@
 package zero.network.petgarden.ui.user.sitter;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
+
 import zero.network.petgarden.R;
+import zero.network.petgarden.model.entity.Sitter;
+import zero.network.petgarden.ui.user.owner.OwnerView;
+
+import static android.content.Context.LOCATION_SERVICE;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MapSitterFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapSitterFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class MapSitterFragment extends SupportMapFragment implements OnMapReadyCallback, LocationListener {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private GoogleMap mMap;
+    private Marker markerPosActual;
+    private Location locationActual;
+    private SitterView sitterView;
+    private boolean firstEntry;
+    private LocationManager manager;
 
-    public MapSitterFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MapSitterFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MapSitterFragment newInstance(String param1, String param2) {
-        MapSitterFragment fragment = new MapSitterFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public MapSitterFragment(SitterView sitterView){
+        this.sitterView = sitterView;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map_sitter, container, false);
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        getMapAsync(this);
+        return rootView;
+    }
+
+
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Add a marker in Sydney and move the camera
+        manager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+
+        //Llevar marker de posicion actual con zoom la primer vez
+        Location last = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        if (last == null) {
+            last = new Location("");
+            last.setLongitude(sitterView.getSitter().getLocation().getLongitude());
+            last.setLatitude(sitterView.getSitter().getLocation().getLat());
+        }
+        LatLng act = new LatLng(last.getLatitude(), last.getLongitude());
+        markerPosActual = mMap.addMarker(  new MarkerOptions().position(act).title("Yo").snippet("Mi ubicación")  );
+        firstEntry = true;
+        locationActual = last;
+        googleMap.addMarker(new MarkerOptions().position(act)
+                .title("Marker in Sydney"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(act,18));
+
+        mMap.setMyLocationEnabled(true);
+
+        initMapLocation();
+
+    }
+
+    @SuppressLint("MissingPermission")
+    public void initMapLocation(){
+
+
+        //Solicitar actualizaciones de posicion
+        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 2, this);
+        locationActual = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        locationActual.setLongitude(sitterView.getSitter().getLocation().getLongitude());
+        locationActual.setLatitude(sitterView.getSitter().getLocation().getLat());
+
+        //Actualizar la ubicación del dueño sólo al inicio
+        sitterView.getSitter().setLocation(new zero.network.petgarden.model.entity.Location(locationActual.getLatitude(),locationActual.getLongitude()));
+        sitterView.getSitter().saveInDB();
+
+    }
+
+
+
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+
+    @Override
+    public void onLocationChanged(Location location) {
+        locationActual = location;
+        LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
+        markerPosActual.setPosition(  pos  );
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
+
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    public void addLocations(){
+
+    }
+
+    public GoogleMap getmMap() {
+        return mMap;
+    }
+
+    public void setmMap(GoogleMap mMap) {
+        this.mMap = mMap;
+    }
+
+    public Marker getMarkerPosActual() {
+        return markerPosActual;
+    }
+
+    public void setMarkerPosActual(Marker markerPosActual) {
+        this.markerPosActual = markerPosActual;
+    }
+
+    public Location getLocationActual() {
+        return locationActual;
+    }
+
+    public void setLocationActual(Location locationActual) {
+        this.locationActual = locationActual;
     }
 }

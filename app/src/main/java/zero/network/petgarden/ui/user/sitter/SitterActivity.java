@@ -13,6 +13,8 @@ import android.os.Bundle;
 
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.jetbrains.annotations.NotNull;
+
 import zero.network.petgarden.R;
 import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Sitter;
@@ -20,7 +22,7 @@ import zero.network.petgarden.ui.element.ActionBarFragment;
 import zero.network.petgarden.ui.user.owner.DockFragment;
 import zero.network.petgarden.ui.user.owner.MapFragment;
 
-public class SitterActivity extends AppCompatActivity {
+public class SitterActivity extends AppCompatActivity implements SitterView{
 
     private Sitter sitter;
     MapSitterFragment fragmentMap;
@@ -36,6 +38,8 @@ public class SitterActivity extends AppCompatActivity {
 
         loadDataFromActivity();
 
+        showMap();
+
     }
 
     private void loadInitialFragments() {
@@ -45,9 +49,8 @@ public class SitterActivity extends AppCompatActivity {
         transaction1.replace(R.id.topBarSitter,topBarFragment, null);
         transaction1.commit();
 
-        DockSitterFragment dockFragment = new DockSitterFragment();
+        DockSitterFragment dockFragment = new DockSitterFragment(this);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.dock_container_sitter,dockFragment, null);
         transaction.commit();
     }
@@ -61,16 +64,13 @@ public class SitterActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        showMap();
-    }
+
 
     public void showMap(){
 
 
         if( ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fragmentMap = new MapSitterFragment();
+            fragmentMap = new MapSitterFragment(this);
 
             fragmentManager =getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -83,4 +83,10 @@ public class SitterActivity extends AppCompatActivity {
 
 
     public Sitter getSitter(){return sitter;}
+
+    @NotNull
+    @Override
+    public ActionBarFragment getTopBar() {
+        return topBarFragment;
+    }
 }
