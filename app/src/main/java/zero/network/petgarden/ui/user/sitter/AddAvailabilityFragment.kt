@@ -14,16 +14,21 @@ import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.util.show
 import java.util.*
 
-class AddAvailabilityFragment(var sitter:Sitter): Fragment() {
+class AddAvailabilityFragment(var sitter:Sitter, var dateSelected:Long): Fragment() {
+
+    private var price = 2500
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentAddAvailabilityBinding.inflate(inflater, container, false).apply {
 
-        var price = 2500
-        incPrice.setOnClickListener{incrementPrice(price)}
-        decPrice.setOnClickListener{decrementPrice(price)}
+        startTimeTask.setIs24HourView(true)
+        endTimeTask.setIs24HourView(true)
+
+        incPrice.setOnClickListener{incrementPrice()}
+        decPrice.setOnClickListener{decrementPrice()}
 
         addFreeSched.setOnClickListener{
             addAvailability()
@@ -38,38 +43,36 @@ class AddAvailabilityFragment(var sitter:Sitter): Fragment() {
             priceTV.text.toString().toInt())
 
         val isAvailable = sitter.addAvailability(duration)
-
         if (isAvailable){
+            sitter.saveInDB()
             show("Su disponibilidad ha sido fijada")
             fragmentManager!!.popBackStack()
-
         }else
             show("Usted ya ha fijado una disponibilidad em este horario")
     }
 
-    private fun setFormatTime(){
-        startTimeTask.setIs24HourView(true)
-        endTimeTask.setIs24HourView(true)
-    }
+
 
 
     private fun hourToTimeInMilis(hour:Int, min:Int):Long{
-        val date = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, hour)
-            set(Calendar.MINUTE, min)
-        }
+        val date = Calendar.getInstance()
+
+            date.apply {
+                timeInMillis = dateSelected
+                set(Calendar.HOUR_OF_DAY, hour)
+                set(Calendar.MINUTE, min) }
 
         return date.timeInMillis
     }
 
-    private fun incrementPrice(price: Int){
-       var updatedPrice = price + STEP_PRICE
-        priceTV.text = "$$updatedPrice"
+    private fun incrementPrice(){
+        price += STEP_PRICE
+        priceTV.text = "$price"
     }
 
-    private fun decrementPrice(price: Int){
-        var updatedPrice = price - STEP_PRICE
-        priceTV.text = "$$updatedPrice"
+    private fun decrementPrice(){
+        price -= STEP_PRICE
+        priceTV.text = "$price"
     }
 
     companion object{

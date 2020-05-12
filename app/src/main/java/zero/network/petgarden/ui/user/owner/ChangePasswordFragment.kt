@@ -38,14 +38,15 @@ class ChangePasswordFragment(val owner: Owner): Fragment(){
            val currentPass =  currentPassTV.text.toString()
             val newPass = newPassTV.text.toString()
                 if (currentPass.equals(owner.password)) {
-                    if (newPass.isNotEmpty())
-                        CoroutineScope(Dispatchers.Main).launch { updatePassword(newPass)}
-                    else
+                    if (newPass.isNotEmpty()) {
+                        CoroutineScope(Dispatchers.Main).launch { updatePassword(newPass) }
+                        show("Contraseña actualizada correctamente")
+                        fragmentManager!!.popBackStack()
+                    }else
                         show("Su nueva contraseña no contiene caracteres")
                 } else {
                     show("Contraseña actual incorrecta")
                 }
-            fragmentManager!!.popBackStack()
             }
         }.root
 

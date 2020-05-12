@@ -32,11 +32,11 @@
             android:textColor="#000000"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imageButton"
+            app:layout_constraintEnd_toStartOf="@+id/addAvailability"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/addAvailability"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="32dp"
