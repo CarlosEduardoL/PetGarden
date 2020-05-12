@@ -42,7 +42,7 @@ class AddAvailabilityFragment(var sitter:Sitter, var dateSelected:Long): Fragmen
             hourToTimeInMilis(endTimeTask.hour, endTimeTask.minute),
             priceTV.text.toString().toInt())
 
-        val isAvailable = sitter.addAvailability(duration)
+        val isAvailable = sitter.planner.addAvailability(duration)
         if (isAvailable){
             sitter.saveInDB()
             show("Su disponibilidad ha sido fijada")

@@ -51,7 +51,7 @@ class ScheduleFragment(view: SitterView) : Fragment(), SitterView by view {
                 scope.launch {
                     val start = time.startOfDay().time
                     val end = time.endOfDay().time
-                    val dayTasks = sitter.tasks
+                    val dayTasks = sitter.planner.tasks
                         .asSequence()
                         .filter { it.duration.start >= start && it.duration.end <= end }
                         .map { it.petID to it.duration.start }.toMap()
@@ -67,7 +67,7 @@ class ScheduleFragment(view: SitterView) : Fragment(), SitterView by view {
 
         addAvailability.setOnClickListener{
             val fragmentManager = activity!!.supportFragmentManager
-            val fragmentTransaction = fragmentManager!!.beginTransaction()
+            val fragmentTransaction = fragmentManager.beginTransaction()
             addAvailabilityFragment.dateSelected = calendarView.date
             fragmentTransaction.replace(R.id.actualFragmentContainerSitter, addAvailabilityFragment).addToBackStack(null)
             fragmentTransaction.commit()

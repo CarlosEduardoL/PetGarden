@@ -11,12 +11,12 @@ interface IPlanner {
     /**
      * list of spaces of time in where the planner is free to take new tasks
      */
-    val availabilities: List<Duration>
+    var availabilities: List<Duration>
 
     /**
      * list of task to do
      */
-    val tasks: List<Task>
+    var tasks: List<Task>
 
     /**
      * add a new task if have the availability else return false

@@ -15,10 +15,8 @@ import java.util.List;
 
 import zero.network.petgarden.R;
 import zero.network.petgarden.databinding.ActivityOwnerBinding;
-import zero.network.petgarden.model.behaivor.CallBack;
 import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Sitter;
-import zero.network.petgarden.tools.DebugLogKt;
 import zero.network.petgarden.ui.element.ActionBarFragment;
 
 public class OwnerActivity extends SitterListener implements OwnerView {
@@ -37,7 +35,7 @@ public class OwnerActivity extends SitterListener implements OwnerView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        zero.network.petgarden.databinding.ActivityOwnerBinding binding = ActivityOwnerBinding.inflate(getLayoutInflater());
+        ActivityOwnerBinding binding = ActivityOwnerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         loadInitialFragments();

@@ -31,12 +31,12 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
         //Load sitter and owner
         val extras = intent.extras
         sitter = extras!!.getSerializable("sitter") as Sitter
-        owner =extras!!.getSerializable("owner") as Owner
+        owner = extras.getSerializable("owner") as Owner
 
 
         CoroutineScope(Dispatchers.Main).launch { photoSitter.setImageBitmap(sitter.image()) }
-        nameSitterTxt.setText(sitter.name)
-        emailSitterTxt.setText(sitter.email)
+        nameSitterTxt.text = sitter.name
+        emailSitterTxt.text = sitter.email
 
         //Availability
         if (sitter.availability != null) {
@@ -45,15 +45,15 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
             val toHour = getHour(sitter.availability!!.end)
             val toMin = getMinute(sitter.availability!!.end)
 
-            scheduleSitter.setText("$fromHour:$fromMin a $toHour:$toMin")
+            scheduleSitter.text = "$fromHour:$fromMin a $toHour:$toMin"
 
             //Cost
             val cost = sitter.availability!!.cost
-            priceText.setText("$cost por hora")
+            priceText.text = "$cost por hora"
 
         } else {
-            scheduleSitter.setText("  No disponible")
-            priceText.setText("No disponible")
+            scheduleSitter.text = "  No disponible"
+            priceText.text = "No disponible"
         }
 
         //kindPets
@@ -100,7 +100,7 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
 
         if(numPets==1) {
             val task = Task(owner.pets().first().id, duration)
-            sitter.addTask(task)
+            sitter.planner.addTask(task)
         }else {
             val selectFragment =  SelectPetFragment(owner.pets().toList())
             val fragmentTransaction = supportFragmentManager.beginTransaction()
@@ -126,6 +126,6 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
         val duration = Duration(start, end, sitter.availability!!.cost)
         var task:Task = Task("", Duration(1,1,1))
         CoroutineScope(Dispatchers.Main).launch { task = Task(owner.pets().first().id, duration) }
-        sitter.addTask(task)
+        sitter.planner.addTask(task)
     }
 }

@@ -3,7 +3,6 @@ package zero.network.petgarden.model.entity
 import android.graphics.Bitmap
 import com.google.firebase.database.FirebaseDatabase
 import zero.network.petgarden.model.behaivor.Entity
-import zero.network.petgarden.model.behaivor.IPlanner
 import zero.network.petgarden.model.behaivor.ISitter
 import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.tools.downloadImage
@@ -18,12 +17,13 @@ data class Sitter(
     var rating: Double = 0.0,
     var kindPets: String = "Nothing Especial",
     var additional: String = "Nothing Especial",
-    val clients: MutableList<String> = mutableListOf(),
-    private val planner: Planner = Planner()
-) : IUser by user, IPlanner by planner, Serializable, Entity, ISitter {
+    var planner: Planner = Planner()
+) : IUser by user, Serializable, Entity, ISitter {
 
     val availability: Duration?
-        get() = planner.availabilities.min()
+        get() {
+            return planner.availabilities.min()
+        }
 
     private var _clients: MutableSet<Owner>? = null
     private var _pets: MutableSet<Pet>? = null

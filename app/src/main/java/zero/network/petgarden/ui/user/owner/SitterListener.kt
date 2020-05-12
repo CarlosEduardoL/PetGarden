@@ -22,8 +22,9 @@ abstract class SitterListener: AppCompatActivity() {
                 override fun onCancelled(error: DatabaseError) = logError(error.message)
                 override fun onChildMoved(data: DataSnapshot, id: String?) = logError("Esto no deberia pasar nunca, Asustate")
                 override fun onChildChanged(data: DataSnapshot, id: String?) {
-                    sitters.remove(sitters.first{ id == it.id })
-                    sitters.add(data.toSitter())
+                    val sitter = data.toSitter()
+                    sitters.remove(sitters.first{ sitter.id == it.id })
+                    sitters.add(sitter)
                     onSittersUpdate(sitters)
                 }
                 override fun onChildAdded(data: DataSnapshot, id: String?) {
