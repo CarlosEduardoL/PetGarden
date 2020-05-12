@@ -1,5 +1,6 @@
 package zero.network.petgarden.ui.user.owner
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -7,11 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_sitter__from_user.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
-import zero.network.petgarden.R
 import zero.network.petgarden.databinding.RowSitterBinding
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Sitter
@@ -34,6 +33,7 @@ class SittersAdapter(var sitters: List<Sitter>, var owner: Owner) :
 
         private var job = CoroutineScope(Main).launch { }
 
+        @SuppressLint("SetTextI18n")
         fun bind(sitter: Sitter, owner: Owner) {
             job.cancel()
             job = CoroutineScope(Main).launch { view.photoSitterList.setImageBitmap(sitter.image()) }
@@ -46,8 +46,8 @@ class SittersAdapter(var sitters: List<Sitter>, var owner: Owner) :
             }
 
             if (sitter.availability==null){
-                view.schedule.setText(" Horario: No disponible")
-                view.price.setText(" Precio: No disponible")
+                view.schedule.text = "Horario: No disponible"
+                view.price.text = "Precio: No disponible"
             }
 
 
@@ -61,6 +61,5 @@ class SittersAdapter(var sitters: List<Sitter>, var owner: Owner) :
             })
         }
     }
-
 
 }

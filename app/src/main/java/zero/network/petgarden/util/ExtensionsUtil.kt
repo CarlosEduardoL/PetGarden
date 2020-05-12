@@ -40,14 +40,10 @@ inline fun<reified T> Intent.extra(key: String, onError: (error: String) -> Noth
     }else onError("key $key doesn't exist")
 }
 
-/**
- * Return date in specified format.
- * @param dateFormat Date format
- * @return String representing date in specified format
- */
-fun Long.getDate(dateFormat: String): String {
-    // Create a calendar object that will convert the date and time value in milliseconds to date.
-    val calendar: Calendar = Calendar.getInstance()
-    calendar.timeInMillis = this
-    return SimpleDateFormat(dateFormat).format(calendar.time)
+fun <K,V : Collection<E>,E> List<Pair<K,V>>.simplify(): List<Pair<K,E>>{
+    val list: MutableList<Pair<K,E>> = mutableListOf()
+    forEach {
+        list.addAll(it.second.map { value -> it.first to value })
+    }
+    return list
 }
