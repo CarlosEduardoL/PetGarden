@@ -39,7 +39,7 @@ import zero.network.petgarden.model.entity.Sitter;
 
 import static android.content.Context.LOCATION_SERVICE;
 
-public class MapFragment extends SupportMapFragment implements OnMapReadyCallback, LocationListener {
+public class MapFragment extends SupportMapFragment implements OnMapReadyCallback, LocationListener, GoogleMap.OnMarkerDragListener {
 
     private GoogleMap mMap;
     private Marker markerPosActual;
@@ -75,6 +75,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMarkerDragListener(this);
 
         // Add a marker in Sydney and move the camera
         manager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
@@ -88,11 +89,18 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             last.setLatitude(ownerView.getOwner().getLocation().getLat());
         }
         LatLng act = new LatLng(last.getLatitude(), last.getLongitude());
-        markerPosActual = mMap.addMarker(  new MarkerOptions().position(act).title("Yo").snippet("Mi ubicación")  );
+        markerPosActual = mMap.addMarker(  new MarkerOptions()
+                .position(act)
+                .title("Mi ubicación")
+                .snippet("Presione y arrastre para fijar")
+                .draggable(true)
+                .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_owner_marker)));
+        markerPosActual.setTag("owner_position");
+        markerPosActual.showInfoWindow();
+
         firstEntry = true;
         locationActual = last;
-        googleMap.addMarker(new MarkerOptions().position(act)
-                .title("Marker in Sydney"));
+
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(act,18));
 
         mMap.setMyLocationEnabled(true);
@@ -133,6 +141,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 MarkerOptions temp =new MarkerOptions()
                         .position(pos).title(sitter.getName())
                         .snippet("Mi ubicación")
+                        .draggable(false)
                         .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_sitter_map));
                 mMap.addMarker(temp);
             }
@@ -202,4 +211,26 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     public void setLocationActual(Location locationActual) {
         this.locationActual = locationActual;
     }
+
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+        if(markerPosActual!=null && marker.getTag().equals("owner_position")){
+            markerPosActual.hideInfoWindow();
+            LatLng position =  marker.getPosition();
+            ownerView.getOwner().setLocation(new zero.network.petgarden.model.entity.Location(position.latitude,position.longitude));
+            ownerView.getOwner().saveInDB();
+        }
+    }
+
+
 }
