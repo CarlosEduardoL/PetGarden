@@ -1,5 +1,6 @@
 package zero.network.petgarden.util
 
+import java.text.SimpleDateFormat
 import java.util.*
 
 fun Date.endOfDay() = Calendar.getInstance().apply {
@@ -17,6 +18,18 @@ fun Date.startOfDay() = Calendar.getInstance().apply {
     set(Calendar.SECOND, 0)
     set(Calendar.MILLISECOND, 0)
 }.time
+
+/**
+ * Return date in specified format.
+ * @param dateFormat Date format
+ * @return String representing date in specified format
+ */
+fun Long.getDate(dateFormat: String): String {
+    // Create a calendar object that will convert the date and time value in milliseconds to date.
+    val calendar: Calendar = Calendar.getInstance()
+    calendar.timeInMillis = this
+    return SimpleDateFormat(dateFormat).format(calendar.time)
+}
 
 fun monthToText(month: Int) = when(month){
     1 -> "Enero"

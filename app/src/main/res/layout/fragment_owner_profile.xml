@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -84,14 +85,14 @@
     <ListView
         android:id="@+id/listPets"
         android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"></ListView>
+        android:layout_height="270dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"></ListView>
 
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="16dp" />
+        android:layout_height="4dp" />
 
     <Button
         android:id="@+id/addPet"

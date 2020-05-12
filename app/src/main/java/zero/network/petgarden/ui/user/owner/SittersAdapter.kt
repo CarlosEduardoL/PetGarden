@@ -1,5 +1,6 @@
 package zero.network.petgarden.ui.user.owner
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
-import zero.network.petgarden.R
-import zero.network.petgarden.databinding.ActivitySitterFromUserBinding
 import zero.network.petgarden.databinding.RowSitterBinding
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Sitter
@@ -34,15 +33,23 @@ class SittersAdapter(var sitters: List<Sitter>, var owner: Owner) :
 
         private var job = CoroutineScope(Main).launch { }
 
+        @SuppressLint("SetTextI18n")
         fun bind(sitter: Sitter, owner: Owner) {
             job.cancel()
             job = CoroutineScope(Main).launch { view.photoSitterList.setImageBitmap(sitter.image()) }
             view.MyRating.rating = sitter.rating.toFloat()
             view.nameSitterList.text = "${sitter.name} ${sitter.lastName}"
+
             sitter.availability?.let {
-                view.schedule.text = "${it.start.getDate("hh:mm:ss")} a ${it.end.getDate("hh:mm:ss")}"
-                view.price.text = "$${it.cost}"
+                view.schedule.text = "Dispoinibilidad horaria:  ${it.start.getDate("hh:mm:ss")} a ${it.end.getDate("hh:mm:ss")}"
+                view.price.text = "Precio:  ${it.cost}/hora"
             }
+
+            if (sitter.availability==null){
+                view.schedule.text = "Horario: No disponible"
+                view.price.text = "Precio: No disponible"
+            }
+
 
 
             itemView.setOnClickListener(View.OnClickListener { v: View ->

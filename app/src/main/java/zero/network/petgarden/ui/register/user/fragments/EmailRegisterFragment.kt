@@ -12,6 +12,7 @@ import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.ui.register.user.OnNextListener
 import zero.network.petgarden.util.show
 import zero.network.petgarden.util.toText
+import java.util.*
 
 /**
  * @author CarlosEduardoL
@@ -35,7 +36,7 @@ class EmailRegisterFragment(
             }
             emailInput.toText().let {
                 if (it.isNotEmpty()){
-                    user.email = it
+                    user.email = it.toLowerCase(Locale.ROOT)
                     listener.next(this@EmailRegisterFragment, user)
                 }else {
                     show(getString(R.string.field_error))
