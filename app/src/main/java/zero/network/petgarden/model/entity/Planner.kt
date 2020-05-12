@@ -3,23 +3,25 @@ package zero.network.petgarden.model.entity
 import zero.network.petgarden.model.behaivor.IPlanner
 import java.io.Serializable
 
-data class Task(val petID: String, val duration: Duration)
+data class Task(var petID: String, var duration: Duration)
 
 class Planner(
-    private val _availability: MutableList<Duration> = mutableListOf(),
-    private val _tasks: MutableList<Task> = mutableListOf()
+    private var _availability: MutableList<Duration> = mutableListOf(),
+    private var _tasks: MutableList<Task> = mutableListOf()
 ) : IPlanner, Serializable {
 
-    override var availabilities: List<Duration> = _availability
+    override var availabilities: List<Duration>
         get() = _availability
         set(value) {
-            println(value)
-            field = value
+            _availability = value.toMutableList()
         }
 
 
-    override var tasks: List<Task> = _tasks
+    override var tasks: List<Task>
         get() = _tasks
+        set(value) {
+            _tasks = value.toMutableList()
+        }
 
     override fun addTask(task: Task): Boolean {
         availabilities.sorted().firstOrNull { it.contains(task.duration) }?.let {

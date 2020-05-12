@@ -4,9 +4,9 @@ package zero.network.petgarden.model.entity
  * @author CarlosEduardoL
  */
 class Duration (
-    val start: Long = 0,
-    val end: Long = 0,
-    val cost: Int = 0
+    var start: Long = 0,
+    var end: Long = 0,
+    var cost: Int = 0
 ): Comparable<Duration> {
 
     /**
