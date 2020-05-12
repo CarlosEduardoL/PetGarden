@@ -16,7 +16,7 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/bottom_navigation_background"
         app:itemIconTint="@drawable/bottom_navigation_color_selector"
-        app:menu="@menu/bottom_navigation"
+        app:menu="@menu/bottom_navigation_sitter"
         android:id="@+id/bottom_nav_sitter"/>
 
 
