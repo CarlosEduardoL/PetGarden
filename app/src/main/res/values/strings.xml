@@ -66,5 +66,6 @@
     <string name="takePhoto">Tomar una foto</string>
     <string name="chooseFromGallery">Seleccionar una de la Galeria</string>
     <string name="choose_picture">Selecciona una foto</string>
+    <string name="set_availability">Fijar disponibilidad</string>
 
 </resources>
