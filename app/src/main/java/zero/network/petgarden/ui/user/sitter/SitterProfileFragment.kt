@@ -21,10 +21,8 @@ import zero.network.petgarden.ui.user.owner.ChangePasswordFragment
 import zero.network.petgarden.util.getPath
 import java.io.File
 
-class SitterProfileFragment : Fragment() {
+class SitterProfileFragment(view: SitterView) : Fragment(), SitterView by view {
 
-    private val activity:SitterActivity = getActivity() as SitterActivity
-    private val sitter = activity.sitter
     private lateinit var adapter: CustomersAdapter
 
     override fun onCreateView(
@@ -33,17 +31,15 @@ class SitterProfileFragment : Fragment() {
     ): View = FragmentSitterProfileBinding.inflate(inflater, container, false).apply {
 
 
-        CoroutineScope(Dispatchers.Main).launch {
-            adapter = CustomersAdapter(sitter.clientsXPets(), context!!)
-        }
-
-
+        CoroutineScope(Dispatchers.Main).launch { adapter = CustomersAdapter(sitter.clientsXPets(), context!!) }
         CoroutineScope(Dispatchers.Main).launch { photoSitterIV.setImageBitmap(sitter.image()) }
         nameSitterTV.text = sitter.name
         emailSitterTV.text = sitter.email
 
+
         if (AccessToken.getCurrentAccessToken()!=null || GoogleSignIn.getLastSignedInAccount(context)!=null)
             changePasswordBtn.visibility = View.GONE
+
 
         cameraBtn.setOnClickListener{
             val gal = Intent(Intent.ACTION_GET_CONTENT)
@@ -53,7 +49,7 @@ class SitterProfileFragment : Fragment() {
 
         changePasswordBtn.setOnClickListener{
             val changePasswordFragment = ChangePasswordFragment()
-            val fragmentManager = activity.fragmentManager
+            val fragmentManager = activity!!.supportFragmentManager
             val fragmentTransaction = fragmentManager!!.beginTransaction()
             fragmentTransaction.add(R.id.activity_owner_container, changePasswordFragment)
             fragmentTransaction.commit()
@@ -74,10 +70,7 @@ class SitterProfileFragment : Fragment() {
     }
 
     companion object{
-        val GALLERY_CALLBACK = 1
-        val PET_CALLBACK = 2
+        const val GALLERY_CALLBACK = 1
+        const val PET_CALLBACK = 2
     }
-
-    fun getSitter(): Sitter {return sitter}
-
 }
