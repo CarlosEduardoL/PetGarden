@@ -1,5 +1,7 @@
 package zero.network.petgarden.model.entity
 
+import java.io.Serializable
+
 /**
  * @author CarlosEduardoL
  */
@@ -7,7 +9,7 @@ class Duration (
     var start: Long = 0,
     var end: Long = 0,
     var cost: Int = 0
-): Comparable<Duration> {
+): Comparable<Duration>, Serializable {
 
     /**
      * extract a duration from another, return this duration - the param [duration]
