@@ -101,6 +101,7 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
         if(numPets==1) {
             val task = Task(owner.pets().first().id, duration)
             sitter.planner.addTask(task)
+            sitter.saveInDB()
         }else {
             val selectFragment =  SelectPetFragment(owner.pets().toList())
             val fragmentTransaction = supportFragmentManager.beginTransaction()
@@ -127,5 +128,6 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
         var task:Task = Task("", Duration(1,1,1))
         CoroutineScope(Dispatchers.Main).launch { task = Task(owner.pets().first().id, duration) }
         sitter.planner.addTask(task)
+        sitter.saveInDB()
     }
 }

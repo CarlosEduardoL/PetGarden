@@ -37,6 +37,7 @@ class SitterProfileFragment(view: SitterView) : Fragment(), SitterView by view {
         nameSitterTV.text = sitter.name
         emailSitterTV.text = sitter.email
 
+        CoroutineScope(Dispatchers.Main).launch {println("-------Clientes sitter view = ${sitter.clients().size}")}
 
         if (AccessToken.getCurrentAccessToken()!=null || GoogleSignIn.getLastSignedInAccount(context)!=null) {
             changePasswordBtn.visibility = View.GONE

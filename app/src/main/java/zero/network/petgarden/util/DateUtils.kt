@@ -31,7 +31,7 @@ fun Long.getDate(dateFormat: String): String {
     return SimpleDateFormat(dateFormat).format(calendar.time)
 }
 
-fun monthToText(month: Int) = when(month){
+fun monthToText(month: Int) = when(month+1){
     1 -> "Enero"
     2 -> "Febrero"
     3 -> "Marzo"
@@ -41,7 +41,7 @@ fun monthToText(month: Int) = when(month){
     7 -> "Julio"
     8 -> "Agosto"
     9 -> "Septiembre"
-    10 -> "Obtubre"
+    10 -> "Octubre"
     11 -> "Noviembre"
     12 -> "Diciembre"
     else -> throw Exception("Internal date error")
