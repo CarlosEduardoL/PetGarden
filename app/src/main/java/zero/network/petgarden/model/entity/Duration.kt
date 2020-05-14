@@ -11,6 +11,10 @@ class Duration (
     var cost: Int = 0
 ): Comparable<Duration>, Serializable {
 
+    init {
+        if (end < start) throw Exception("No valid state")
+    }
+
     /**
      * extract a duration from another, return this duration - the param [duration]
      */

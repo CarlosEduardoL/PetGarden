@@ -1,5 +1,6 @@
 package zero.network.petgarden.model.behaivor
 
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
 /**
@@ -22,7 +23,8 @@ interface Entity {
      * upload the entity to the DB
      */
     fun saveInDB() {
-        FirebaseDatabase.getInstance().reference.child(folder()).child(id).setValue(this)
+        if (id == FirebaseAuth.getInstance().currentUser?.uid)
+            FirebaseDatabase.getInstance().reference.child(folder()).child(id).setValue(this)
     }
 
 }
