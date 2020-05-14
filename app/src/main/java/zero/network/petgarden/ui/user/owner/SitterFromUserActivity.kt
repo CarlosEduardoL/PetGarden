@@ -100,14 +100,18 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
 
         if(numPets==1) {
             val task = Task(owner.pets().first().id, duration)
+
             sitter.planner.addTask(task)
             sitter.saveInDB()
         }else {
             val selectFragment =  SelectPetFragment(owner.pets().toList())
             val fragmentTransaction = supportFragmentManager.beginTransaction()
-            fragmentTransaction.add(R.id.activity_owner_container, selectFragment, null)
+            fragmentTransaction.add(R.id.actualFragmentContainer, selectFragment, null)
             fragmentTransaction.commit()
         }
+
+        owner.sitterList.add(sitter.id)
+        owner.saveInDB()
     }
 
 

@@ -108,11 +108,21 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
 
     @SuppressLint("MissingPermission")
     public void initMapLocation(){
+        //Llevar marker de posicion actual con zoom la primer vez
+        Location last = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
+        if (last == null) {
+            last = new Location("");
+            last.setLongitude(sitterView.getSitter().getLocation().getLongitude());
+            last.setLatitude(sitterView.getSitter().getLocation().getLat());
+        }
 
         //Solicitar actualizaciones de posicion
         manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 2, this);
-        locationActual = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        if(locationActual==null)
+            locationActual = last;
+
         locationActual.setLongitude(sitterView.getSitter().getLocation().getLongitude());
         locationActual.setLatitude(sitterView.getSitter().getLocation().getLat());
 
