@@ -52,6 +52,12 @@
         <activity
             android:name="com.facebook.FacebookActivity"
             android:label="@string/app_name" />
+        
+        <service android:name=".services.FCMService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
 
         <meta-data
             android:name="com.google.android.geo.AIzaSyB8w7mIzR5bg_aQUY7ZVUXwAs-8HT2Kvqw"

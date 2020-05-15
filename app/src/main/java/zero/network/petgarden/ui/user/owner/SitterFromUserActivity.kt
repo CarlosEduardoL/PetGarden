@@ -15,6 +15,7 @@ import zero.network.petgarden.tools.OnPetClickListener
 import zero.network.petgarden.util.extra
 import zero.network.petgarden.util.show
 import java.util.*
+import kotlin.concurrent.fixedRateTimer
 
 class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
 
@@ -66,13 +67,19 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
         startTime.setIs24HourView(true)
         endTime.setIs24HourView(true)
 
+        //Date to Long
+        val start = HourToTimeInMilis(startTime.hour, startTime.minute)
+        val end = HourToTimeInMilis(endTime.hour, endTime.minute)
+
         next_button.setOnClickListener {
-            if (sitter.availability != null) {
-                CoroutineScope(Dispatchers.Main).launch { contracting()}
-                show("El cuidador seleccionado ha sido contratado")
-            }
-            else show("El cuidador que desea contratar no está disponible")
+            if (checkValidSchedule(start, end)) {
+                if (sitter.availability != null) {
+                    CoroutineScope(Dispatchers.Main).launch { contracting() }
+                } else show("El cuidador que desea contratar no está disponible")
+            }else
+                show("El periodo de tiempo seleccionado no es válido")
         }
+
     }
 
     private fun getHour(time:Long):Int{
@@ -100,13 +107,18 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
 
         if(numPets==1) {
             val task = Task(owner.pets().first().id, duration)
+            val successful = sitter.planner.addTask(task)
 
-            sitter.planner.addTask(task)
-            sitter.saveInDB()
+            if (successful) {
+                sitter.saveInDB()
+                show("El cuidador seleccionado ha sido contratado")
+            }else
+                show("EL cuidador no tiene disponibilidad en este horario")
+
         }else {
             val selectFragment =  SelectPetFragment(owner.pets().toList())
             val fragmentTransaction = supportFragmentManager.beginTransaction()
-            fragmentTransaction.add(R.id.actualFragmentContainer, selectFragment, null)
+            fragmentTransaction.add(R.id.actualFragmentContainer, selectFragment, null).addToBackStack(null)
             fragmentTransaction.commit()
         }
 
@@ -131,7 +143,17 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
         val duration = Duration(start, end, sitter.availability!!.cost)
         var task:Task = Task("", Duration(1,1,1))
         CoroutineScope(Dispatchers.Main).launch { task = Task(owner.pets().first().id, duration) }
-        sitter.planner.addTask(task)
-        sitter.saveInDB()
+
+        val successful = sitter.planner.addTask(task)
+
+        if (successful) {
+            sitter.saveInDB()
+            show("El cuidador seleccionado ha sido contratado")
+        }else
+            show("El cuidador no tiene disponibilidad en este horario")
+    }
+
+    private  fun checkValidSchedule(startTime: Long, endTime: Long): Boolean{
+        return startTime < endTime
     }
 }
