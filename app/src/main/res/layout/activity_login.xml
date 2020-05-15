@@ -137,6 +137,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/facebookButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="80dp"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textSize="16dp"
+            android:text="Iniciar Sesión Con Facebook"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:paddingLeft="22dp"
+            app:layout_constraintTop_toBottomOf="@+id/loginButton"
+            app:srcCompat="@drawable/facebook_login" />
+
         <ImageView
             android:id="@+id/googleButton"
             android:layout_width="0dp"
@@ -151,20 +169,6 @@
             android:contentDescription="@string/login_with_google" />
 
 
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/facebookButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="80dp"
-            android:layout_marginEnd="32dp"
-            android:contentDescription="@string/login_with_google"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/loginButton"
-            app:srcCompat="@drawable/facebook_login" />
-
         <TextView
             android:id="@+id/registerButton"
             android:layout_width="wrap_content"
@@ -175,16 +179,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
-        <Button
-            android:id="@+id/buttonPruebas"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:layout_marginEnd="144dp"
-            android:text="Pruebas"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/googleButton" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

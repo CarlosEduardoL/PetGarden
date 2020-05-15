@@ -74,7 +74,6 @@ class LoginActivity : AppCompatActivity() {
 
         requestPermission()
 
-        ClasePruebas(this)
 
     }
 
