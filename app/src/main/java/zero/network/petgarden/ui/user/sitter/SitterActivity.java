@@ -40,6 +40,8 @@ public class SitterActivity extends AppCompatActivity implements SitterView{
 
         showMap();
 
+        //Suscribe to topic
+
     }
 
     private void loadInitialFragments() {
