@@ -17,7 +17,7 @@ import java.util.logging.Filter
 
 class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
-    private lateinit var adapterSitters:SittersAdapter
+    private lateinit var adapterSitters: SittersAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,6 +46,10 @@ class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
         }
 
     }.root
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

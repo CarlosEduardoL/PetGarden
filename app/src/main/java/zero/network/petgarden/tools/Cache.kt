@@ -87,13 +87,11 @@ private suspend fun Entity.downloadImageFile(): File = withContext(IO){
     val metadata = fStorage.child("${folder()}/$id.png").metadata.await()
     if (reg !== null) {
         if (metadata.creationTimeMillis == reg.date && file.exists()) {
-            logMessage("Image from cache")
             return@withContext file
         }
     }
     val url = fStorage.child("${folder()}/$id.png").downloadUrl.await()
     saveURLImageOnFile(url.toString(), "${folder()}/$id.png")
     db.imgRegDao().insert(ImgReg(id, metadata.creationTimeMillis))
-    logError("Image from Internet")
     return@withContext file
 }
