@@ -2,18 +2,13 @@ package zero.network.petgarden.util
 
 import android.annotation.SuppressLint
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import org.json.JSONObject
-import zero.network.petgarden.model.behaivor.CallBack
 import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.model.entity.Location
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
-import zero.network.petgarden.tools.logError
 import java.text.SimpleDateFormat
 import java.util.*
 

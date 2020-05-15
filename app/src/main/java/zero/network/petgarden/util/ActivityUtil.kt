@@ -6,7 +6,6 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import zero.network.petgarden.model.behaivor.IUser
-import zero.network.petgarden.tools.logError
 import zero.network.petgarden.ui.register.user.FragmentStart
 import zero.network.petgarden.ui.register.user.activities.RegisterActivity
 import java.io.File

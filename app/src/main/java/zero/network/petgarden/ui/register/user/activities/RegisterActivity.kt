@@ -18,7 +18,6 @@ import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
-import zero.network.petgarden.tools.logMessage
 import zero.network.petgarden.ui.element.ActionBarFragment
 import zero.network.petgarden.ui.register.PictureFragment
 import zero.network.petgarden.ui.register.PictureListener
