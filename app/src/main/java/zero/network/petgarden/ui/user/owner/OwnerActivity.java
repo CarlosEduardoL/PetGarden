@@ -30,6 +30,7 @@ public class OwnerActivity extends SitterListener implements OwnerView {
 
     private ActionBarFragment topBarFragment;
 
+    private DockFragment dockFragment;
     private Fragment actualFragment;
 
     @Override
@@ -55,15 +56,13 @@ public class OwnerActivity extends SitterListener implements OwnerView {
         profileFragment = new OwnerProfileFragment(this);
 
         // Set TopBar
-        topBarFragment = new ActionBarFragment("", false, false, result -> {
-            loadMapView();
-        });
+        topBarFragment = new ActionBarFragment("", false, false, result -> dockFragment.selectItem(R.id.nav_map));
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.topBar, topBarFragment, null)
                 .commit();
 
         // Set Dock
-        DockFragment dockFragment = new DockFragment(this);
+        dockFragment = new DockFragment(this);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.dock_container, dockFragment)
                 .commit();

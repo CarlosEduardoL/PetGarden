@@ -36,8 +36,8 @@ public class DockFragment extends Fragment implements BottomNavigationView.OnNav
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentDockBinding.inflate(inflater,container,false);
         ownerView.getTopBar().setVisibility(false);
+        binding = FragmentDockBinding.inflate(inflater,container,false);
 
         binding.BottomNavigationOwner.setOnNavigationItemSelectedListener(this);
         return binding.getRoot();
@@ -66,5 +66,9 @@ public class DockFragment extends Fragment implements BottomNavigationView.OnNav
                 break;
         }
         return true;
+    }
+
+    public void selectItem(int selection) {
+        binding.BottomNavigationOwner.setSelectedItemId(selection);
     }
 }
