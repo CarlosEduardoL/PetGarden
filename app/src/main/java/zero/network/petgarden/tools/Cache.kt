@@ -19,6 +19,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.System.currentTimeMillis as time
 
 
 private lateinit var db: ImgRegDatabase
@@ -31,7 +32,7 @@ fun LoginActivity.initDatabase() {
     appContext = applicationContext
     File(appRoot(), Pet.FOLDER).let { if (!it.exists()) it.mkdir() }
     File(appRoot(), Sitter.FOLDER).let { if (!it.exists()) it.mkdir() }
-    File(appRoot(),Owner.FOLDER).let { if (!it.exists()) it.mkdir() }
+    File(appRoot(), Owner.FOLDER).let { if (!it.exists()) it.mkdir() }
     db = Room.databaseBuilder(
         appContext,
         ImgRegDatabase::class.java,
@@ -52,19 +53,23 @@ fun copy(src: File, dst: File) {
     }
 }
 
+private val Entity.isCached
+    get() = File(appRoot(), "${folder()}/$id.png").exists()
+
 /**
  * Upload Image to [FirebaseStorage] and but conserve a local copy
  * and save the register in the [db]
  */
 suspend fun Entity.uploadImage(temp: File) = withContext(IO) {
-    val image = File(appRoot(),"${folder()}/$id.png")
+    val route = "${folder()}/$id.png"
+    val image = File(appRoot(), route)
     if (temp.renameTo(image)) temp.delete()
+    lastRevision[id] = time()
     val fStorage = FirebaseStorage.getInstance().reference
     if (image.exists() && image.isFile) {
         val file = Uri.fromFile(image)
-
-        fStorage.child("${folder()}/$id.png").putFile(file).await()
-        val metadata = fStorage.child("${folder()}/$id.png").metadata.await()
+        fStorage.child(route).putFile(file).await()
+        val metadata = fStorage.child(route).metadata.await()
         val time = metadata.creationTimeMillis
         val imgReg = ImgReg(image.name, time)
         db.imgRegDao().insert(imgReg)
@@ -77,21 +82,38 @@ suspend fun Entity.uploadImage(temp: File) = withContext(IO) {
  * @return [Bitmap] with the wanted image
  */
 suspend fun Entity.downloadImage(): Bitmap = BitmapFactory.decodeFile(
-         downloadImageFile().path
-).let { Bitmap.createScaledBitmap(it, it.width/4, it.height/4,false) }
+    downloadImageFile().path
+).let { Bitmap.createScaledBitmap(it, it.width / 4, it.height / 4, false) }
 
-private suspend fun Entity.downloadImageFile(): File = withContext(IO){
+private val lastRevision = mutableMapOf<String, Long>()
+private val Long.seconds : Long
+        get() = this/1000
+
+private suspend fun Entity.downloadImageFile(): File = withContext(IO) {
     val reg = db.imgRegDao().get(id)
     val fStorage = FirebaseStorage.getInstance().reference
-    val file = File(appRoot(),"${folder()}/$id.png")
-    val metadata = fStorage.child("${folder()}/$id.png").metadata.await()
-    if (reg !== null) {
-        if (metadata.creationTimeMillis == reg.date && file.exists()) {
-            return@withContext file
-        }
+    val file = File(appRoot(), "${folder()}/$id.png")
+
+    if (id in lastRevision && (time() - lastRevision[id]!!) < 30L.seconds && isCached){
+        return@withContext file
     }
-    val url = fStorage.child("${folder()}/$id.png").downloadUrl.await()
-    saveURLImageOnFile(url.toString(), "${folder()}/$id.png")
-    db.imgRegDao().insert(ImgReg(id, metadata.creationTimeMillis))
-    return@withContext file
+
+    try {
+        val metadata = fStorage.child("${folder()}/$id.png").metadata.await()
+        if (reg !== null) {
+            if (metadata.creationTimeMillis == reg.date && file.exists()) {
+                lastRevision[id] = time()
+                return@withContext file
+            }
+        }
+        val url = fStorage.child("${folder()}/$id.png").downloadUrl.await()
+        saveURLImageOnFile(url.toString(), "${folder()}/$id.png")
+        db.imgRegDao().insert(ImgReg(id, metadata.creationTimeMillis))
+        lastRevision[id] = time()
+        return@withContext file
+    } catch (e: Exception) {
+        if (isCached) return@withContext file
+        else throw Exception("Image Error")
+    }
+
 }
