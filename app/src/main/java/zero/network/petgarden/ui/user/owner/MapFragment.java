@@ -109,6 +109,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(act,17));
 
         mMap.setMyLocationEnabled(true);
+        mMap.setOnMarkerClickListener(this);
 
         initMapLocation();
 
@@ -158,6 +159,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                         .draggable(false)
                         .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_sitter_map)));
                 temp.setTag("sitter::"+sitter.getId());
+
 
             }
 
@@ -250,10 +252,11 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        Log.e(">>>Tag: ",marker.getTag().toString());
         if(marker.getTag().toString().contains("sitter")){
             String[] temp = marker.getTag().toString().split("::");
             String idSelected = temp[1];
-
+            Log.e(">>>","Entrando a sitter from map");
             for(Sitter mySitter: ownerView.getSitters()){
                 if(mySitter.getId().equals(idSelected)){
                     //Intent a la actividad del perfil del sitter desde el cliente
