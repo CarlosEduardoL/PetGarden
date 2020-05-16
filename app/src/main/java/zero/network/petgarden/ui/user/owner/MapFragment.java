@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -33,6 +34,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import zero.network.petgarden.R;
@@ -42,7 +44,7 @@ import zero.network.petgarden.model.entity.Sitter;
 
 import static android.content.Context.LOCATION_SERVICE;
 
-public class MapFragment extends SupportMapFragment implements OnMapReadyCallback, LocationListener, GoogleMap.OnMarkerDragListener {
+public class MapFragment extends SupportMapFragment implements OnMapReadyCallback, LocationListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     private Marker markerPosActual;
@@ -149,12 +151,14 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
             //Si la distancia es menor que 4K, ponga los marcadores en el mapa
             if(locationActual.distanceTo(tempLocation) <4000){
-                MarkerOptions temp =new MarkerOptions()
-                        .position(pos).title(sitter.getName())
-                        .snippet("Mi ubicación")
+
+                Marker temp = mMap.addMarker(  new MarkerOptions()
+                        .position(pos)
+                        .title(sitter.getName())
                         .draggable(false)
-                        .icon(bitmapDescriptorFromVector(getContext(), R.drawable.ic_sitter_map));
-                mMap.addMarker(temp);
+                        .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_sitter_map)));
+                temp.setTag("sitter::"+sitter.getId());
+
             }
 
         }
@@ -244,4 +248,24 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     }
 
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        if(marker.getTag().toString().contains("sitter")){
+            String[] temp = marker.getTag().toString().split("::");
+            String idSelected = temp[1];
+
+            for(Sitter mySitter: ownerView.getSitters()){
+                if(mySitter.getId().equals(idSelected)){
+                    //Intent a la actividad del perfil del sitter desde el cliente
+                    Intent i = new Intent(getActivity(), SitterFromUserActivity.class);
+                    Bundle extras = i.getExtras();
+                    extras.putAll(extras);
+
+                }
+            }
+
+        }
+
+        return true;
+    }
 }

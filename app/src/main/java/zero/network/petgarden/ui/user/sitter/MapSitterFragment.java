@@ -44,7 +44,7 @@ import static android.content.Context.LOCATION_SERVICE;
  * Use the {@link MapSitterFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapSitterFragment extends SupportMapFragment implements OnMapReadyCallback, LocationListener {
+public class MapSitterFragment extends SupportMapFragment implements OnMapReadyCallback, LocationListener, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     private Marker markerPosActual;
@@ -216,5 +216,10 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
 
     public void setLocationActual(Location locationActual) {
         this.locationActual = locationActual;
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
     }
 }
