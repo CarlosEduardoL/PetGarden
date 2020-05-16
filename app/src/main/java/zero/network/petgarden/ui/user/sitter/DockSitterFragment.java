@@ -29,7 +29,6 @@ import zero.network.petgarden.ui.user.owner.OwnerView;
  * create an instance of this fragment.
  */
 public class DockSitterFragment extends Fragment implements BottomNavigationView.OnNavigationItemSelectedListener {
-    // TODO: Rename parameter arguments, choose names that match
 
     private FragmentDockSitterBinding binding;
     private SitterView sitterView;
@@ -58,32 +57,26 @@ public class DockSitterFragment extends Fragment implements BottomNavigationView
 
         switch (item.getItemId()) {
             case R.id.nav_map:
-                fragment = new MapSitterFragment(sitterView);
+                sitterView.loadMapView();
                 sitterView.getTopBar().setVisibility(false);
                 sitterView.getTopBar().update("Mapa",false,false);
                 break;
             case R.id.nav_sitter:
-                Log.e("XXX","Sitters Selected");
-                title = "Cuidadores";
-                fragment = new ScheduleFragment(sitterView);
+                sitterView.loadSchedulerView();
                 sitterView.getTopBar().setVisibility(true);
                 sitterView.getTopBar().update("Planeador",true,false);
                 break;
             case R.id.nav_profile:
-                Log.e("XXX","Nav Selected");
-                title = "Perfil";
-                fragment = new SitterProfileFragment(sitterView);
+                sitterView.loadProfileView();
                 sitterView.getTopBar().setVisibility(true);
                 sitterView.getTopBar().update("Perfil",true,true);
                 break;
         }
 
-        if(fragment!=null){
-            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.actualFragmentContainerSitter,fragment);
-            ft.commit();
-        }
-
         return true;
+    }
+
+    public void selectItem(int selection) {
+        binding.bottomNavSitter.setSelectedItemId(selection);
     }
 }

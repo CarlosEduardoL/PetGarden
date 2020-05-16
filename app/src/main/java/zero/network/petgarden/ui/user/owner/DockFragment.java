@@ -21,8 +21,6 @@ import zero.network.petgarden.databinding.FragmentDockBinding;
 import zero.network.petgarden.model.entity.Owner;
 
 public class DockFragment extends Fragment implements BottomNavigationView.OnNavigationItemSelectedListener {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
     private FragmentDockBinding binding;
     private OwnerView ownerView;

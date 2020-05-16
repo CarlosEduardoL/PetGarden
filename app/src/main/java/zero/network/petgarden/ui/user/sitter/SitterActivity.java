@@ -3,6 +3,7 @@ package zero.network.petgarden.ui.user.sitter;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -27,9 +28,16 @@ import zero.network.petgarden.ui.user.owner.MapFragment;
 public class SitterActivity extends AppCompatActivity implements SitterView{
 
     private Sitter sitter;
-    MapSitterFragment fragmentMap;
+
+    private MapSitterFragment fragmentMap;
+    private ScheduleFragment fragmentSchedule;
+    private SitterProfileFragment fragmentProfile;
+
     FragmentManager fragmentManager;
     private ActionBarFragment topBarFragment;
+    private DockSitterFragment dockFragment;
+
+    private Fragment actualView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +61,16 @@ public class SitterActivity extends AppCompatActivity implements SitterView{
 
     private void loadInitialFragments() {
 
-        topBarFragment = new ActionBarFragment("",false);
+        fragmentSchedule  = new ScheduleFragment(this);
+        fragmentMap = new MapSitterFragment(this);
+        fragmentProfile = new SitterProfileFragment(this);
+
+        topBarFragment = new ActionBarFragment("",false, false, (l) -> dockFragment.selectItem(R.id.nav_map));
         FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
         transaction1.replace(R.id.topBarSitter,topBarFragment, null);
         transaction1.commit();
 
-        DockSitterFragment dockFragment = new DockSitterFragment(this);
+        dockFragment = new DockSitterFragment(this);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.dock_container_sitter,dockFragment, null);
         transaction.commit();
@@ -78,8 +90,6 @@ public class SitterActivity extends AppCompatActivity implements SitterView{
 
 
         if( ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fragmentMap = new MapSitterFragment(this);
-
             fragmentManager =getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.actualFragmentContainerSitter,fragmentMap, null);
@@ -89,12 +99,35 @@ public class SitterActivity extends AppCompatActivity implements SitterView{
 
     }
 
+    private void loadActualFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.actualFragmentContainerSitter, actualView)
+                .commit();
+    }
 
+    @Override @NotNull
     public Sitter getSitter(){return sitter;}
 
-    @NotNull
-    @Override
+    @NotNull @Override
     public ActionBarFragment getTopBar() {
         return topBarFragment;
+    }
+
+    @Override
+    public void loadMapView() {
+        actualView = fragmentMap;
+        loadActualFragment();
+    }
+
+    @Override
+    public void loadSchedulerView() {
+        actualView = fragmentSchedule;
+        loadActualFragment();
+    }
+
+    @Override
+    public void loadProfileView() {
+        actualView = fragmentProfile;
+        loadActualFragment();
     }
 }
