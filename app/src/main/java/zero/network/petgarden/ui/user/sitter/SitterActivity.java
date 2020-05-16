@@ -10,8 +10,10 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +43,12 @@ public class SitterActivity extends AppCompatActivity implements SitterView{
         showMap();
 
         //Suscribe to topic
-
+        FirebaseMessaging.getInstance().subscribeToTopic("contracting").addOnCompleteListener(
+                task -> {
+                    if (task.isSuccessful())
+                        Log.e(">>>>>>>>>>>", "Suscripcion exitosa");
+                }
+        );
     }
 
     private void loadInitialFragments() {

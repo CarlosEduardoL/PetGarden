@@ -1,9 +1,11 @@
 package zero.network.petgarden.ui.user.owner
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_sitter__from_user.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,9 +13,13 @@ import kotlinx.coroutines.launch
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.ActivitySitterFromUserBinding
 import zero.network.petgarden.model.entity.*
+import zero.network.petgarden.model.notifications.FCMMessage
+import zero.network.petgarden.model.notifications.Message
 import zero.network.petgarden.tools.OnPetClickListener
+import zero.network.petgarden.util.POSTtoFCM
 import zero.network.petgarden.util.extra
 import zero.network.petgarden.util.show
+
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
 
@@ -111,6 +117,18 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
 
             if (successful) {
                 sitter.saveInDB()
+
+                //Colocar en el metodo de sendNotif
+                var fcm = FCMMessage()
+                fcm.to =  "/topics/contracting"
+                fcm.data = Message(owner.pets().first().id, duration)
+                val gson  = Gson()
+                val json =  gson.toJson(fcm)
+
+                Thread(Runnable {
+                        POSTtoFCM(FCMMessage.API_KEY, json)
+                    }).start()
+
                 show("El cuidador seleccionado ha sido contratado")
             }else
                 show("EL cuidador no tiene disponibilidad en este horario")
@@ -155,5 +173,9 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
 
     private  fun checkValidSchedule(startTime: Long, endTime: Long): Boolean{
         return startTime < endTime
+    }
+
+    private fun sendNotification(){
+
     }
 }

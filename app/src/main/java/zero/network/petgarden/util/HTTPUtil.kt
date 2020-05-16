@@ -114,7 +114,7 @@ private fun OutputStream.writeString(data: String) {
 }
 
 
-private fun POSTtoFCM(API_KEY: String, data: String?) {
+ fun POSTtoFCM(API_KEY: String, data: String?) {
     try {
         val page = URL("https://fcm.googleapis.com/fcm/send")
         val connection =
