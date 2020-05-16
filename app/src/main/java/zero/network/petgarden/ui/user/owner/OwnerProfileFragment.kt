@@ -63,7 +63,7 @@ class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
         changePasswordBtn.setOnClickListener{
             val fragmentManager = activity!!.supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.add(R.id.actualFragmentContainer, changePasswordFragment).addToBackStack(null)
+            fragmentTransaction.replace(R.id.actualFragmentContainer, changePasswordFragment).addToBackStack(null)
             fragmentTransaction.commit()
 
         }

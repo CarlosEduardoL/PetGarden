@@ -10,93 +10,107 @@
     android:orientation="vertical"
     tools:context=".ui.user.owner.OwnerActivity">
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="212dp">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/photoUserIV"
-            android:layout_width="180dp"
-            android:layout_height="180dp"
-            android:layout_gravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <ImageButton
-            android:id="@+id/cameraBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.736"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/photoUserIV"
-            app:layout_constraintVertical_bias="0.975"
-            app:srcCompat="@drawable/camera_button" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="212dp">
 
-    <TextView
-        android:id="@+id/nameUserTV"
-        style="@style/emailUser"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="Name user"
-        android:textStyle="bold" />
+                <ImageView
+                    android:id="@+id/photoUserIV"
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
+                    android:layout_gravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:srcCompat="@tools:sample/avatars" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="4dp" />
+                <ImageButton
+                    android:id="@+id/cameraBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.736"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/photoUserIV"
+                    app:layout_constraintVertical_bias="0.975"
+                    app:srcCompat="@drawable/camera_button" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/emailUserTV"
-        style="@style/emailUser"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="user@gmail.com" />
+            <TextView
+                android:id="@+id/nameUserTV"
+                style="@style/emailUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Name user"
+                android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/changePasswordBtn"
-        android:layout_width="match_parent"
-        android:layout_height="32dp"
-        android:text="@string/change_password"
-        android:gravity="center"
-        android:textColor="#1AB28E"
-        android:textSize="16dp"
-        android:textStyle="bold" />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="4dp" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="16dp" />
+            <TextView
+                android:id="@+id/emailUserTV"
+                style="@style/emailUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="user@gmail.com" />
 
-    <EditText
-        android:id="@+id/editText2"
-        style="@style/sectionSeparator"
-        android:text="Mascotas" />
+            <TextView
+                android:id="@+id/changePasswordBtn"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:text="@string/change_password"
+                android:gravity="center"
+                android:textColor="#1AB28E"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-    <ListView
-        android:id="@+id/listPets"
-        android:layout_width="match_parent"
-        android:layout_height="270dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"></ListView>
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="16dp" />
+
+            <TextView
+                android:id="@+id/editText2"
+                style="@style/sectionSeparator"
+                android:text="Mascotas"
+                android:inputType="none"/>
+
+            <ListView
+                android:id="@+id/listPets"
+                android:layout_width="match_parent"
+                android:layout_height="270dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
 
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="4dp" />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="4dp" />
 
-    <Button
-        android:id="@+id/addPet"
-        style="@style/AppButton"
-        android:layout_marginBottom="64dp"
-        android:text="Agregar Mascota" />
+            <Button
+                android:id="@+id/addPet"
+                style="@style/AppButton"
+                android:layout_marginBottom="64dp"
+                android:text="Agregar Mascota" />
+        </LinearLayout>
+
+
+
+    </ScrollView>
 
 
 </LinearLayout>
