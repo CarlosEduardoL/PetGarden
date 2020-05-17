@@ -1,6 +1,8 @@
 package zero.network.petgarden.services
 
 import android.util.Log
+import android.widget.RemoteViews
+import androidx.core.app.NotificationCompat
 import com.google.android.gms.tasks.Task
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -10,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import zero.network.petgarden.R
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.notifications.Message
 import zero.network.petgarden.util.sitterByEmail
@@ -23,14 +26,13 @@ class FCMService:FirebaseMessagingService() {
         val gson = Gson()
         val message = gson.fromJson<Message>(obj.toString(), Message::class.java)
 
-        CoroutineScope(Dispatchers.Main).launch {
-        if (message.handshake) {
-                val sitter = sitterByEmail(message.emailSitter)!!
-            println("---------Nuevo topic: owner "+message.ownerId+" sitter:"+sitter.id)
-                suscribeToTopic("${message.ownerId} ${sitter.id}")
-            }else{
-                println("------------- Notificacion contratacion exitosa--------------------------------")
-            }
-        }
+        launchNotification()
+    }
+
+    private fun launchNotification(){
+        val notificationLayout = RemoteViews(packageName, R.layout.notification_contracting)
+        val customNotification = NotificationCompat.Builder(this, "contracting")
+                                                .setCustomContentView(notificationLayout)
+                                                .build()
     }
 }

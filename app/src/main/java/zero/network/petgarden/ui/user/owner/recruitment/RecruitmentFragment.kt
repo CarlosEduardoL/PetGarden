@@ -123,7 +123,7 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view , Frag
     private fun handshake(){
         val handshake = FCMMessage()
         handshake.to =  "/topics/"+sitter.id
-        handshake.data = Message(sitter.email, owner.id, true)
+        handshake.data = Message(sitter.email, owner.id)
 
         val gson  = Gson()
         val json =  gson.toJson(handshake)
@@ -138,7 +138,7 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view , Frag
         //                           |
         //                           v
         fcm.to = "/topics/${owner.id} ${sitter.id}"// <------- Quitar el espacio entre ownerID y SitterID -------->
-        fcm.data = Message(sitter.email, owner.id, false)
+        fcm.data = Message(sitter.email, owner.id)
 
         val gson  = Gson()
         val json =  gson.toJson(fcm)
