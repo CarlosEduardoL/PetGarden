@@ -15,8 +15,13 @@ import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.ui.user.owner.recruitment.SitterFromUserActivity
 import zero.network.petgarden.util.getDate
 
-class SittersAdapter(var sitters: List<Sitter>, var owner: Owner) :
+class SittersAdapter(val owner: Owner, var sitters: List<Sitter> = listOf()) :
     RecyclerView.Adapter<SittersAdapter.SitterViewHolder>() {
+
+    fun update(sitters: List<Sitter>){
+        this.sitters = sitters
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SitterViewHolder = SitterViewHolder(
             RowSitterBinding.inflate(LayoutInflater.from(parent.context))

@@ -16,12 +16,16 @@ import java.io.Serializable
 
 class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
-    private val adapterSitters: SittersAdapter = SittersAdapter(sitters.toSet().toList(), owner)
+    private var _sitters: List<Sitter>? = null
+        get() = if (field == null) sitters
+        else field
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentListSitterBinding.inflate(inflater, container, false).apply {
+
+        val adapterSitters = SittersAdapter(owner, _sitters!!)
 
         listSitters.apply {
             layoutManager = LinearLayoutManager(activity)
@@ -31,8 +35,7 @@ class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                adapterSitters.sitters = sitters.filter { "${it.name} ${it.lastName}".contains(s,true) }
-                adapterSitters.notifyDataSetChanged()
+                adapterSitters.update(_sitters!!.filter { "${it.name} ${it.lastName}".contains(s,true) })
             }
 
         })
@@ -47,14 +50,12 @@ class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
 
     fun updateSitters(sitters: List<Sitter>){
-        adapterSitters.sitters = sitters.toSet().toList()
-        adapterSitters.notifyDataSetChanged()
+        _sitters = sitters.toSet().toList()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        adapterSitters.sitters = data!!.extras!!.getSerializable("sittersFiltered") as List<Sitter>
-        adapterSitters.notifyDataSetChanged()
+        _sitters = data!!.extras!!.getSerializable("sittersFiltered") as List<Sitter>
     }
 
     companion object {
