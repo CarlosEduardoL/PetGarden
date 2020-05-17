@@ -6,7 +6,6 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import zero.network.petgarden.model.behaivor.CallBack
 import zero.network.petgarden.model.entity.Sitter
 
 abstract class SitterListener: AppCompatActivity() {
@@ -17,6 +16,7 @@ abstract class SitterListener: AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        sitters.removeAll { true }
         listener = FirebaseDatabase.getInstance()
             .reference.child("sitters").addChildEventListener(object : ChildEventListener {
                 override fun onCancelled(error: DatabaseError) { Log.d("Error",error.message) }
@@ -25,15 +25,15 @@ abstract class SitterListener: AppCompatActivity() {
                     val sitter = data.toSitter()
                     sitters.remove(sitters.first{ sitter.id == it.id })
                     sitters.add(sitter)
-                    onSittersUpdate(sitters)
+                    onSittersUpdate(sitters.sortedByDescending { it.rating })
                 }
                 override fun onChildAdded(data: DataSnapshot, id: String?) {
                     sitters.add(data.toSitter())
-                    onSittersUpdate(sitters)
+                    onSittersUpdate(sitters.sortedByDescending { it.rating })
                 }
                 override fun onChildRemoved(data: DataSnapshot) {
                     sitters.remove(data.toSitter())
-                    onSittersUpdate(sitters)
+                    onSittersUpdate(sitters.sortedByDescending { it.rating })
                 }
             })
     }

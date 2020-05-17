@@ -9,7 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_add_availability.*
 import zero.network.petgarden.databinding.FragmentAddAvailabilityBinding
-import zero.network.petgarden.model.entity.Duration
+import zero.network.petgarden.model.component.Duration
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.util.show
 import java.util.*
@@ -37,10 +37,12 @@ class AddAvailabilityFragment(var sitter:Sitter, var dateSelected:Long): Fragmen
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun addAvailability(){
-        val duration:Duration = Duration(
-            hourToTimeInMilis(startTimeTask.hour, startTimeTask.minute),
-            hourToTimeInMilis(endTimeTask.hour, endTimeTask.minute),
-            priceTV.text.toString().toInt())
+        val duration: Duration =
+            Duration(
+                hourToTimeInMilis(startTimeTask.hour, startTimeTask.minute),
+                hourToTimeInMilis(endTimeTask.hour, endTimeTask.minute),
+                priceTV.text.toString().toInt()
+            )
 
         val isAvailable = sitter.planner.addAvailability(duration)
         if (isAvailable){

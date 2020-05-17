@@ -1,7 +1,7 @@
 package zero.network.petgarden.model.behaivor
 
-import zero.network.petgarden.model.entity.Duration
-import zero.network.petgarden.model.entity.Task
+import zero.network.petgarden.model.component.Duration
+import zero.network.petgarden.model.component.Task
 
 /**
  * @author CarlosEduardoL

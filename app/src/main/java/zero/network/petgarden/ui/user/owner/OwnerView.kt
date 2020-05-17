@@ -14,4 +14,5 @@ interface  OwnerView {
     fun loadProfileView()
     fun loadSittersView()
 
+    fun reloadView()
 }

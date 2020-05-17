@@ -9,13 +9,12 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,15 +26,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import zero.network.petgarden.R;
 import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Pet;
-import zero.network.petgarden.model.entity.Sitter;
-import zero.network.petgarden.ui.user.owner.OwnerView;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -127,7 +123,7 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
         locationActual.setLatitude(sitterView.getSitter().getLocation().getLat());
 
         //Actualizar la ubicación del sitter sólo al inicio
-        sitterView.getSitter().setLocation(new zero.network.petgarden.model.entity.Location(locationActual.getLatitude(),locationActual.getLongitude()));
+        sitterView.getSitter().setLocation(new zero.network.petgarden.model.component.Location(locationActual.getLatitude(),locationActual.getLongitude()));
         sitterView.getSitter().saveInDB();
 
     }

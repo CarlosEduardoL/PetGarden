@@ -94,7 +94,12 @@ public class OwnerActivity extends SitterListener implements OwnerView {
     public void onSittersUpdate(@NotNull List<Sitter> sitters) {
         this.sitters = sitters;
         if(fragmentMap == actualFragment) fragmentMap.addSittersMarkers(sitters);
-        else if (sittersFragment == actualFragment) sittersFragment.updateSitters(sitters);
+        else if (sittersFragment == actualFragment) reloadView();
+    }
+
+    @Override
+    public void reloadView() {
+        getSupportFragmentManager().beginTransaction().detach(actualFragment).attach(actualFragment).commit();
     }
 
     @NotNull

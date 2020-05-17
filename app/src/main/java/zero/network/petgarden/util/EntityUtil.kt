@@ -5,7 +5,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.database.FirebaseDatabase
 import org.json.JSONObject
 import zero.network.petgarden.model.behaivor.IUser
-import zero.network.petgarden.model.entity.Location
+import zero.network.petgarden.model.component.Location
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User

@@ -1,4 +1,4 @@
-package zero.network.petgarden.model.entity
+package zero.network.petgarden.model.component
 
 import zero.network.petgarden.model.behaivor.IPlanner
 import java.io.Serializable

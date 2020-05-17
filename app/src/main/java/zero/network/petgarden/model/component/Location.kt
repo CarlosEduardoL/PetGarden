@@ -1,4 +1,4 @@
-package zero.network.petgarden.model.entity
+package zero.network.petgarden.model.component
 import java.io.Serializable
 
 /**

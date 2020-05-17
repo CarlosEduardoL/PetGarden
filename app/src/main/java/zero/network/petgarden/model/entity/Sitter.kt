@@ -5,6 +5,8 @@ import com.google.firebase.database.FirebaseDatabase
 import zero.network.petgarden.model.behaivor.Entity
 import zero.network.petgarden.model.behaivor.ISitter
 import zero.network.petgarden.model.behaivor.IUser
+import zero.network.petgarden.model.component.Duration
+import zero.network.petgarden.model.component.Planner
 import zero.network.petgarden.tools.downloadImage
 import zero.network.petgarden.tools.uploadImage
 import zero.network.petgarden.util.saveURLImageOnFile

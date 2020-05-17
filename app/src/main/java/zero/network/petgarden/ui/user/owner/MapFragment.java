@@ -137,7 +137,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         locationActual.setLatitude(ownerView.getOwner().getLocation().getLat());
 
         //Actualizar la ubicación del dueño sólo al inicio
-        ownerView.getOwner().setLocation(new zero.network.petgarden.model.entity.Location(locationActual.getLatitude(),locationActual.getLongitude()));
+        ownerView.getOwner().setLocation(new zero.network.petgarden.model.component.Location(locationActual.getLatitude(),locationActual.getLongitude()));
         ownerView.getOwner().saveInDB();
 
     }
@@ -245,7 +245,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         if(markerPosActual!=null && marker.getTag().equals("owner_position")){
             markerPosActual.hideInfoWindow();
             LatLng position =  marker.getPosition();
-            ownerView.getOwner().setLocation(new zero.network.petgarden.model.entity.Location(position.latitude,position.longitude));
+            ownerView.getOwner().setLocation(new zero.network.petgarden.model.component.Location(position.latitude,position.longitude));
             ownerView.getOwner().saveInDB();
         }
     }

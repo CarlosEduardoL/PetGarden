@@ -1,4 +1,4 @@
-package zero.network.petgarden.model.entity
+package zero.network.petgarden.model.component
 
 import java.io.Serializable
 
@@ -22,13 +22,33 @@ class Duration (
         return if (duration.end == end && duration.start == start){
             emptyList()
         }else if (duration.end == end){
-            listOf(Duration(start, duration.start, cost))
+            listOf(
+                Duration(
+                    start,
+                    duration.start,
+                    cost
+                )
+            )
         }else if (duration.start == start){
-            listOf(Duration(duration.end,end, cost))
+            listOf(
+                Duration(
+                    duration.end,
+                    end,
+                    cost
+                )
+            )
         }else{
             listOf(
-                Duration(start, duration.start, cost),
-                Duration(duration.end, end, cost)
+                Duration(
+                    start,
+                    duration.start,
+                    cost
+                ),
+                Duration(
+                    duration.end,
+                    end,
+                    cost
+                )
             )
         }
     }

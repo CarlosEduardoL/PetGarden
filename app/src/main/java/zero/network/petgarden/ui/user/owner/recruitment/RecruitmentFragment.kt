@@ -13,8 +13,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import zero.network.petgarden.databinding.FragmentRecruitmentBinding
-import zero.network.petgarden.model.entity.Duration
-import zero.network.petgarden.model.entity.Task
+import zero.network.petgarden.model.component.Duration
+import zero.network.petgarden.model.component.Task
 import zero.network.petgarden.model.notifications.FCMMessage
 import zero.network.petgarden.model.notifications.Message
 import zero.network.petgarden.util.POSTtoFCM
@@ -92,10 +92,15 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view , Frag
 
         val start = HourToTimeInMilis(startTime.hour, startTime.minute)
         val end = HourToTimeInMilis(endTime.hour, endTime.minute)
-        val duration = Duration(start, end, sitter.availability!!.cost)
+        val duration = Duration(
+            start,
+            end,
+            sitter.availability!!.cost
+        )
 
         selectPet()?.let {
-            val task = Task(it.id, duration)
+            val task =
+                Task(it.id, duration)
             val successful = sitter.planner.addTask(task)
 
             if (successful) {

@@ -6,6 +6,8 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import zero.network.petgarden.model.component.Filter
+import zero.network.petgarden.model.entity.Sitter
 
 
 // Get the string text from an EditText
@@ -39,4 +41,4 @@ fun <K,V : Collection<E>,E> List<Pair<K,V>>.simplify(): List<Pair<K,E>>{
     return list
 }
 
-fun<T> T.unit(){}
+fun List<Sitter>.filter(filter: Filter) = filter.filterSitters(this)

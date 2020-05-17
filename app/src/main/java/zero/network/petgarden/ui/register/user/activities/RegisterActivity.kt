@@ -31,7 +31,7 @@ import zero.network.petgarden.ui.user.owner.OwnerActivity
 import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.extra
 import zero.network.petgarden.util.startUserView
-import zero.network.petgarden.model.entity.Location as Location2
+import zero.network.petgarden.model.component.Location as Location2
 
 /**
  * @author CarlosEduardoL
@@ -89,7 +89,7 @@ class RegisterActivity : AppCompatActivity(),
     }
 
     @SuppressLint("MissingPermission")
-    private fun lastLocation(): zero.network.petgarden.model.entity.Location {
+    private fun lastLocation(): zero.network.petgarden.model.component.Location {
         val lm = getSystemService(LOCATION_SERVICE) as LocationManager
         return lm.getProviders(true)
             .mapNotNull { lm.getLastKnownLocation(it) }
