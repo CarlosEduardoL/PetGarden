@@ -125,12 +125,12 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 2, this);
         locationActual = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-       /* if (last == null && locationActual== null) {
+       if (last == null && locationActual== null) {
             last = new Location("");
             last.setLongitude(ownerView.getOwner().getLocation().getLongitude());
             last.setLatitude(ownerView.getOwner().getLocation().getLat());
             locationActual = last;
-        }*/
+        }
 
         locationActual.setLongitude(ownerView.getOwner().getLocation().getLongitude());
         locationActual.setLatitude(ownerView.getOwner().getLocation().getLat());

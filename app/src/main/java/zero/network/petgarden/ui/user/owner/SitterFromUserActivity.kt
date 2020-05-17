@@ -1,6 +1,5 @@
 package zero.network.petgarden.ui.user.owner
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
@@ -17,11 +16,10 @@ import zero.network.petgarden.model.notifications.FCMMessage
 import zero.network.petgarden.model.notifications.Message
 import zero.network.petgarden.tools.OnPetClickListener
 import zero.network.petgarden.util.POSTtoFCM
-import zero.network.petgarden.util.extra
 import zero.network.petgarden.util.show
+import zero.network.petgarden.util.suscribeToTopic
 
 import java.util.*
-import kotlin.concurrent.fixedRateTimer
 
 class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
 
@@ -73,11 +71,14 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
         startTime.setIs24HourView(true)
         endTime.setIs24HourView(true)
 
-        //Date to Long
-        val start = HourToTimeInMilis(startTime.hour, startTime.minute)
-        val end = HourToTimeInMilis(endTime.hour, endTime.minute)
+
 
         next_button.setOnClickListener {
+
+            //Date to Long
+            val start = HourToTimeInMilis(startTime.hour, startTime.minute)
+            val end = HourToTimeInMilis(endTime.hour, endTime.minute)
+
             if (checkValidSchedule(start, end)) {
                 if (sitter.availability != null) {
                     CoroutineScope(Dispatchers.Main).launch { contracting() }
@@ -118,16 +119,9 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
             if (successful) {
                 sitter.saveInDB()
 
-                //Colocar en el metodo de sendNotif
-                var fcm = FCMMessage()
-                fcm.to =  "/topics/contracting"
-                fcm.data = Message(owner.pets().first().id, duration)
-                val gson  = Gson()
-                val json =  gson.toJson(fcm)
-
-                Thread(Runnable {
-                        POSTtoFCM(FCMMessage.API_KEY, json)
-                    }).start()
+                suscribeToTopic("${owner.id} ${sitter.id}")
+                handshake()
+                sendNotification(duration)
 
                 show("El cuidador seleccionado ha sido contratado")
             }else
@@ -136,7 +130,7 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
         }else {
             val selectFragment =  SelectPetFragment(owner.pets().toList())
             val fragmentTransaction = supportFragmentManager.beginTransaction()
-            fragmentTransaction.add(R.id.actualFragmentContainer, selectFragment, null).addToBackStack(null)
+            fragmentTransaction.add(R.id.activity_owner_container, selectFragment, null).addToBackStack(null)
             fragmentTransaction.commit()
         }
 
@@ -175,7 +169,29 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
         return startTime < endTime
     }
 
-    private fun sendNotification(){
+    private fun handshake(){
+        var handshake = FCMMessage()
+        handshake.to =  "/topics/"+sitter.id
+        handshake.data = Message(sitter.email, owner.id, true)
 
+        val gson  = Gson()
+        val json =  gson.toJson(handshake)
+
+        Thread(Runnable {
+            POSTtoFCM(FCMMessage.API_KEY, json)
+        }).start()
+    }
+
+    private fun sendNotification(duration: Duration){
+        var fcm = FCMMessage()
+        fcm.to = "/topics/${owner.id} ${sitter.id}"
+        fcm.data = Message(sitter.email, owner.id, false)
+
+        val gson  = Gson()
+        val json =  gson.toJson(fcm)
+
+        Thread(Runnable {
+            POSTtoFCM(FCMMessage.API_KEY, json)
+        }).start()
     }
 }
