@@ -1,9 +1,5 @@
 package zero.network.petgarden.ui.user.owner;
 
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -18,9 +14,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -31,16 +27,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 
 import zero.network.petgarden.R;
-import zero.network.petgarden.model.entity.Owner;
-import zero.network.petgarden.model.entity.Pet;
 import zero.network.petgarden.model.entity.Sitter;
+import zero.network.petgarden.ui.user.owner.recruitment.SitterFromUserActivity;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -62,6 +53,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        manager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
         getMapAsync(this);
         return rootView;
     }
@@ -82,8 +74,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         mMap = googleMap;
         mMap.setOnMarkerDragListener(this);
 
-        // Add a marker in Sydney and move the camera
-        manager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
         //Llevar marker de posicion actual con zoom la primer vez
         Location last = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -117,12 +107,23 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     }
 
+    @Override @SuppressLint("MissingPermission")
+    public void onResume() {
+        super.onResume();
+        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 2, this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        manager.removeUpdates(this);
+    }
+
     @SuppressLint("MissingPermission")
     public void initMapLocation(){
 
         Location last = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         //Solicitar actualizaciones de posicion
-        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 2, this);
         locationActual = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
        if (last == null && locationActual== null) {

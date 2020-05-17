@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.user.owner.FilterActivity"></activity>
-        <activity android:name=".ui.user.owner.SitterFromUserActivity" />
+        <activity android:name=".ui.user.owner.recruitment.SitterFromUserActivity" />
         <activity android:name=".ui.user.sitter.SitterActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"

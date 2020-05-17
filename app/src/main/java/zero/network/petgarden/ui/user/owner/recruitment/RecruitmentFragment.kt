@@ -1,43 +1,41 @@
-package zero.network.petgarden.ui.user.owner
+package zero.network.petgarden.ui.user.owner.recruitment
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.TimePicker
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.activity_sitter__from_user.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import zero.network.petgarden.R
-import zero.network.petgarden.databinding.ActivitySitterFromUserBinding
-import zero.network.petgarden.model.entity.*
+import zero.network.petgarden.databinding.FragmentRecruitmentBinding
+import zero.network.petgarden.model.entity.Duration
+import zero.network.petgarden.model.entity.Task
 import zero.network.petgarden.model.notifications.FCMMessage
 import zero.network.petgarden.model.notifications.Message
-import zero.network.petgarden.tools.OnPetClickListener
 import zero.network.petgarden.util.POSTtoFCM
 import zero.network.petgarden.util.show
 import zero.network.petgarden.util.suscribeToTopic
-
 import java.util.*
 
-class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
+/**
+ * A simple [Fragment] subclass.
+ */
+class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view , Fragment(){
 
-    private lateinit var sitter: Sitter
-    private lateinit var owner:Owner
-    lateinit var binding: ActivitySitterFromUserBinding
+    private lateinit var binding: FragmentRecruitmentBinding
 
     @RequiresApi(Build.VERSION_CODES.M)
-    override fun onCreate(savedInstanceState: Bundle?){
-        super.onCreate(savedInstanceState)
-        binding =  ActivitySitterFromUserBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        //Load sitter and owner
-        val extras = intent.extras
-        sitter = extras!!.getSerializable("sitter") as Sitter
-        owner = extras.getSerializable("owner") as Owner
-
+    @SuppressLint("SetTextI18n")
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ) = FragmentRecruitmentBinding.inflate(inflater, container, false).apply {
+        binding = this
 
         CoroutineScope(Dispatchers.Main).launch { photoSitter.setImageBitmap(sitter.image()) }
         nameSitterTxt.text = sitter.name
@@ -71,9 +69,7 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
         startTime.setIs24HourView(true)
         endTime.setIs24HourView(true)
 
-
-
-        next_button.setOnClickListener {
+        nextButton.setOnClickListener {
 
             //Date to Long
             val start = HourToTimeInMilis(startTime.hour, startTime.minute)
@@ -81,39 +77,25 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
 
             if (checkValidSchedule(start, end)) {
                 if (sitter.availability != null) {
-                    CoroutineScope(Dispatchers.Main).launch { contracting() }
+                    CoroutineScope(Dispatchers.Main).launch {
+                        contracting(startTime, endTime)
+                    }
                 } else show("El cuidador que desea contratar no está disponible")
             }else
                 show("El periodo de tiempo seleccionado no es válido")
         }
-
-    }
-
-    private fun getHour(time:Long):Int{
-        val date = Calendar.getInstance()
-        date.timeInMillis = time
-
-        return date.get(Calendar.HOUR_OF_DAY)
-    }
-
-    private fun getMinute(time:Long):Int{
-        val date = Calendar.getInstance()
-        date.timeInMillis = time
-
-        return date.get(Calendar.MINUTE)
-    }
+    }.root
 
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private suspend fun contracting(){
-        var numPets = owner.pets().size
+    private suspend fun contracting(startTime: TimePicker, endTime: TimePicker){
 
         val start = HourToTimeInMilis(startTime.hour, startTime.minute)
         val end = HourToTimeInMilis(endTime.hour, endTime.minute)
         val duration = Duration(start, end, sitter.availability!!.cost)
 
-        if(numPets==1) {
-            val task = Task(owner.pets().first().id, duration)
+        selectPet()?.let {
+            val task = Task(it.id, duration)
             val successful = sitter.planner.addTask(task)
 
             if (successful) {
@@ -127,50 +109,14 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
             }else
                 show("EL cuidador no tiene disponibilidad en este horario")
 
-        }else {
-            val selectFragment =  SelectPetFragment(owner.pets().toList())
-            val fragmentTransaction = supportFragmentManager.beginTransaction()
-            fragmentTransaction.add(R.id.activity_owner_container, selectFragment, null).addToBackStack(null)
-            fragmentTransaction.commit()
+            owner.sitterList.add(sitter.id)
+            owner.saveInDB()
         }
 
-        owner.sitterList.add(sitter.id)
-        owner.saveInDB()
-    }
-
-
-    private fun HourToTimeInMilis(hour:Int, min:Int ):Long{
-        val date = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, hour)
-            set(Calendar.MINUTE, min)
-        }
-
-        return date.timeInMillis
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    override fun onPetClick(pet: Pet) {
-        val start = HourToTimeInMilis(startTime.hour, startTime.minute)
-        val end = HourToTimeInMilis(endTime.hour, endTime.minute)
-        val duration = Duration(start, end, sitter.availability!!.cost)
-        var task:Task = Task("", Duration(1,1,1))
-        CoroutineScope(Dispatchers.Main).launch { task = Task(owner.pets().first().id, duration) }
-
-        val successful = sitter.planner.addTask(task)
-
-        if (successful) {
-            sitter.saveInDB()
-            show("El cuidador seleccionado ha sido contratado")
-        }else
-            show("El cuidador no tiene disponibilidad en este horario")
-    }
-
-    private  fun checkValidSchedule(startTime: Long, endTime: Long): Boolean{
-        return startTime < endTime
     }
 
     private fun handshake(){
-        var handshake = FCMMessage()
+        val handshake = FCMMessage()
         handshake.to =  "/topics/"+sitter.id
         handshake.data = Message(sitter.email, owner.id, true)
 
@@ -184,7 +130,9 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
 
     private fun sendNotification(duration: Duration){
         var fcm = FCMMessage()
-        fcm.to = "/topics/${owner.id} ${sitter.id}"
+        //                           |
+        //                           v
+        fcm.to = "/topics/${owner.id} ${sitter.id}"// <------- Quitar el espacio entre ownerID y SitterID -------->
         fcm.data = Message(sitter.email, owner.id, false)
 
         val gson  = Gson()
@@ -194,4 +142,29 @@ class SitterFromUserActivity: AppCompatActivity(), OnPetClickListener{
             POSTtoFCM(FCMMessage.API_KEY, json)
         }).start()
     }
+
+    private fun getHour(time:Long):Int{
+        val date = Calendar.getInstance()
+        date.timeInMillis = time
+        return date.get(Calendar.HOUR_OF_DAY)
+    }
+
+    private fun getMinute(time:Long):Int{
+        val date = Calendar.getInstance()
+        date.timeInMillis = time
+        return date.get(Calendar.MINUTE)
+    }
+
+    private fun HourToTimeInMilis(hour:Int, min:Int ):Long{
+        val date = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, min)
+        }
+        return date.timeInMillis
+    }
+
+    private  fun checkValidSchedule(startTime: Long, endTime: Long): Boolean{
+        return startTime < endTime
+    }
+
 }

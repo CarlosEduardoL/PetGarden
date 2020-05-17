@@ -65,7 +65,7 @@ class ActionBarFragment(
     }
 
     fun setVisibility(visibility:Boolean){
-        if(visibility) binding.root.visibility = View.VISIBLE
+        if(visibility) binding.root.visibility = VISIBLE
         else binding.root.visibility = View.GONE
     }
 

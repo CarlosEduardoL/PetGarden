@@ -12,20 +12,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import zero.network.petgarden.databinding.FragmentListSitterBinding
 import zero.network.petgarden.model.entity.Sitter
 import java.io.Serializable
-import java.util.logging.Filter
 
 
 class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
-    private lateinit var adapterSitters: SittersAdapter
+    private val adapterSitters: SittersAdapter = SittersAdapter(sitters.toSet().toList(), owner)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentListSitterBinding.inflate(inflater, container, false).apply {
 
-         adapterSitters = SittersAdapter(sitters.toSet().toList(), owner)
-            listSitters.apply {
+        listSitters.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = adapterSitters
         }
@@ -47,8 +45,10 @@ class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
     }.root
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+
+    fun updateSitters(sitters: List<Sitter>){
+        adapterSitters.sitters = sitters.toSet().toList()
+        adapterSitters.notifyDataSetChanged()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

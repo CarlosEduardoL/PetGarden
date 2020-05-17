@@ -67,5 +67,6 @@
     <string name="chooseFromGallery">Seleccionar una de la Galeria</string>
     <string name="choose_picture">Selecciona una foto</string>
     <string name="set_availability">Fijar disponibilidad</string>
+    <string name="request_service">Solicitar Servicio</string>
 
 </resources>

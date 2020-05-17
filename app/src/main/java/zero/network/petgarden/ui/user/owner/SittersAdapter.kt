@@ -5,8 +5,6 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
@@ -14,6 +12,7 @@ import kotlinx.coroutines.launch
 import zero.network.petgarden.databinding.RowSitterBinding
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Sitter
+import zero.network.petgarden.ui.user.owner.recruitment.SitterFromUserActivity
 import zero.network.petgarden.util.getDate
 
 class SittersAdapter(var sitters: List<Sitter>, var owner: Owner) :

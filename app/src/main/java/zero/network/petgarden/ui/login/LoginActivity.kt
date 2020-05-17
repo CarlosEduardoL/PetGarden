@@ -10,7 +10,6 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.animation.AnimationUtils
@@ -54,7 +53,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var loginScope: CoroutineScope
 
-    lateinit var binding: ActivityLoginBinding
+    private lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -235,9 +234,7 @@ class LoginActivity : AppCompatActivity() {
         try {
             val account = completedTask.getResult(ApiException::class.java)!!
             val email = account.email!!
-            println("-------------------------------${userByEmail(email)}---------------------------------------------")
             userByEmail(email)?.let {
-                println("--------------------$it------------------------------")
                 when (it) {
                     is Sitter -> startUserView(it, SitterActivity::class.java)
                     is Owner -> startUserView(it, OwnerActivity::class.java)
