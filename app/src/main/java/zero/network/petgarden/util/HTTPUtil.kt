@@ -158,7 +158,12 @@ fun suscribeToTopic(topic:String){
             if (task.isSuccessful) Log.e(
                 ">>>>>>>>>>>",
                 "successful subscription"
-            )
+            )else {
+
+                Log.e(
+                    ">>>>>>>>>>>",
+                    "fallo suscripcion Exception: " +task.exception.toString()+"  result:"+task.result.toString())
+            }
         }
 }
 

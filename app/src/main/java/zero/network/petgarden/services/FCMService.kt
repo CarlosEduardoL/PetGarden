@@ -23,20 +23,14 @@ class FCMService:FirebaseMessagingService() {
         val gson = Gson()
         val message = gson.fromJson<Message>(obj.toString(), Message::class.java)
 
-        if (message.handshake){
-            var sitter = Sitter()
-            CoroutineScope(Dispatchers.Main).launch {sitter = sitterByEmail(message.emailSitter)!! }
-            FirebaseMessaging.getInstance().unsubscribeFromTopic(sitter.id)  .addOnCompleteListener { task: Task<Void?> ->
-                if (task.isSuccessful) Log.e(
-                    ">>>>>>>>>>>",
-                    "desuscripcion exitosa"
-                )
+        CoroutineScope(Dispatchers.Main).launch {
+        if (message.handshake) {
+                val sitter = sitterByEmail(message.emailSitter)!!
+            println("---------Nuevo topic: owner "+message.ownerId+" sitter:"+sitter.id)
+                suscribeToTopic("${message.ownerId} ${sitter.id}")
+            }else{
+                println("------------- Notificacion contratacion exitosa--------------------------------")
             }
-            suscribeToTopic("${message.ownerId} ${sitter.id}")
-
-        }else{
-            println("------------- Notificacion contratacion exitosa--------------------------------")
         }
-
     }
 }
