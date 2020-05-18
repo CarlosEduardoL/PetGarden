@@ -18,6 +18,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Date;
+
 import zero.network.petgarden.R;
 import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Sitter;
@@ -129,5 +131,24 @@ public class SitterActivity extends AppCompatActivity implements SitterView{
     public void loadProfileView() {
         actualView = fragmentProfile;
         loadActualFragment();
+    }
+
+
+    @Override
+    public void notifyArrivalToOwner() {
+        /*
+        Lanzar la push notification para avisarle al dueño que ya llegó su mascota
+         */
+    }
+
+    @Override
+    public double checkTaskTimeOfOwner(Owner owner) {
+        Date currentDate = new Date(System.currentTimeMillis());
+
+        /*Obtener las tareas para ver cual coincide con la del owner del parametro para sacarle el Date y compararlo con el
+        momento actual*/
+        getSitter().getPlanner().getTasks();
+
+        return 0;
     }
 }

@@ -1,5 +1,6 @@
 package zero.network.petgarden.ui.user.sitter
 
+import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.ui.element.ActionBarFragment
 
@@ -10,4 +11,6 @@ interface SitterView {
     fun loadMapView()
     fun loadSchedulerView()
     fun loadProfileView()
+    fun notifyArrivalToOwner()
+    fun checkTaskTimeOfOwner(owner: Owner): Double
 }
