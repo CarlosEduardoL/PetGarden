@@ -19,6 +19,7 @@ import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Sitter;
 import zero.network.petgarden.ui.element.ActionBarFragment;
 import zero.network.petgarden.util.ActivityUtilKt;
+import zero.network.petgarden.util.HTTPUtilKt;
 import zero.network.petgarden.util.NotificationUtils;
 
 public class OwnerActivity extends SitterListener implements OwnerView {
@@ -46,6 +47,7 @@ public class OwnerActivity extends SitterListener implements OwnerView {
         sitters = new ArrayList<>();
 
         loadDataFromActivity();
+        HTTPUtilKt.suscribeToTopic(owner.getId());
 
         showMap();
 
@@ -82,7 +84,7 @@ public class OwnerActivity extends SitterListener implements OwnerView {
     public void showMap() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             loadMapView();
-        }
+            }
     }
 
     private void loadActualFragment(){

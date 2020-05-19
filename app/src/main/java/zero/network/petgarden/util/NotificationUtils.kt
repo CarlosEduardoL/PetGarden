@@ -33,11 +33,9 @@ class NotificationUtils {
                 manager.createNotificationChannel(channel)
             }
 
-
             val notificationLayout = RemoteViews(context.packageName, R.layout.notification_contracting)
             addListenerAcceptBtn(context, message, notificationLayout)
             addListenerDeclineBtn(context, message, notificationLayout)
-
 
             setContentNotification(notificationLayout, message)
             val customNotification = NotificationCompat.Builder(context, CHANNEL_ID)
