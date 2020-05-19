@@ -9,6 +9,7 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import zero.network.petgarden.exception.CacheException
 import zero.network.petgarden.model.behaivor.Entity
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Pet
@@ -81,20 +82,23 @@ suspend fun Entity.uploadImage(temp: File) = withContext(IO) {
  * if any copy exist locally, it's used
  * @return [Bitmap] with the wanted image
  */
-suspend fun Entity.downloadImage(): Bitmap = BitmapFactory.decodeFile(
-    downloadImageFile().path
-).let { Bitmap.createScaledBitmap(it, it.width / 4, it.height / 4, false) }
+suspend fun Entity.downloadImage(): Bitmap {
+    val image = BitmapFactory.decodeFile(downloadImageFile().path)
+    if (image.width > 500 || image.height > 500)
+        image.let { Bitmap.createScaledBitmap(it, it.width / 4, it.height / 4, false) }
+    return image
+}
 
 private val lastRevision = mutableMapOf<String, Long>()
-private val Long.seconds : Long
-        get() = this/1000
+private val Long.seconds: Long
+    get() = this / 1000
 
 private suspend fun Entity.downloadImageFile(): File = withContext(IO) {
     val reg = db.imgRegDao().get(id)
     val fStorage = FirebaseStorage.getInstance().reference
     val file = File(appRoot(), "${folder()}/$id.png")
 
-    if (id in lastRevision && (time() - lastRevision[id]!!) < 30L.seconds && isCached){
+    if (id in lastRevision && (time() - lastRevision[id]!!) < 30L.seconds && isCached) {
         return@withContext file
     }
 
@@ -113,7 +117,7 @@ private suspend fun Entity.downloadImageFile(): File = withContext(IO) {
         return@withContext file
     } catch (e: Exception) {
         if (isCached) return@withContext file
-        else throw Exception("Image Error")
+        else throw CacheException("Image doesn't exist locally or in remote")
     }
 
 }

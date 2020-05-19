@@ -116,7 +116,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun checkLogin(job: Job) {
-        FirebaseAuth.getInstance().currentUser?.let {
+        auth.currentUser?.let {
             CoroutineScope(Main).launch {
                 if (job.isActive) {
                     job.cancel()
@@ -230,10 +230,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private suspend fun handleGoogleSignIn(completedTask: Task<GoogleSignInAccount>) {
-        println("-----------------------------------------------------------------")
         try {
             val account = completedTask.getResult(ApiException::class.java)!!
             val email = account.email!!
+            val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+            auth.signInWithCredential(credential)
             userByEmail(email)?.let {
                 when (it) {
                     is Sitter -> startUserView(it, SitterActivity::class.java)
@@ -242,8 +243,6 @@ class LoginActivity : AppCompatActivity() {
                 }
                 return
             }
-            val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-            auth.signInWithCredential(credential)
             startRegisterView(account.user, FragmentStart.BirthDay)
 
         } catch (e: ApiException) {
