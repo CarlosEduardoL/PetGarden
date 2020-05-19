@@ -28,14 +28,14 @@ class Filter(
 
         val sittersFiltered: List<Sitter>
 
-        sittersFiltered =
-            (sitters.filter { it.availability != null }
-                .filter { it.availability!!.cost in min..max }
-                .filter {
-                    it.availability!!.contains(
-                        Duration(fromDate.timeInMillis, toDate.timeInMillis)
-                    )
-                } + sitters.filter { it.availability == null }).filter { it.rating.toFloat() >= numStars }
-        return sittersFiltered.toSet().toList()
+        sittersFiltered = sitters
+            .filter { it.rating.toFloat() >= numStars }
+            .filter { (it.availability?.cost?:min in min..max) }
+            .filter {
+                it.availability?.contains(
+                    Duration(fromDate.timeInMillis, toDate.timeInMillis)
+                )?:true
+            }
+        return sittersFiltered
     }
 }

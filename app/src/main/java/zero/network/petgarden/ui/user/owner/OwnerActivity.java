@@ -1,12 +1,9 @@
 package zero.network.petgarden.ui.user.owner;
 
 import android.Manifest;
-import android.app.Notification;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.widget.RemoteViews;
 
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -21,6 +18,7 @@ import zero.network.petgarden.databinding.ActivityOwnerBinding;
 import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Sitter;
 import zero.network.petgarden.ui.element.ActionBarFragment;
+import zero.network.petgarden.util.ActivityUtilKt;
 import zero.network.petgarden.util.NotificationUtils;
 
 public class OwnerActivity extends SitterListener implements OwnerView {
@@ -105,6 +103,7 @@ public class OwnerActivity extends SitterListener implements OwnerView {
 
     @Override
     public void reloadView() {
+        ActivityUtilKt.show(this, "updating sitters...");
         getSupportFragmentManager().beginTransaction().detach(actualFragment).attach(actualFragment).commit();
     }
 
