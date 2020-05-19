@@ -44,9 +44,9 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
                 if (response == NotificationUtils.ACCEPT){
                     owner.sitterList.add(sitter.id)
                     owner.saveInDB()
-                    show("El cuidador seleccionado ha sido contratado")
+                    CoroutineScope(Dispatchers.Main).launch {show("El cuidador seleccionado ha sido contratado")}
                 }else
-                    show("El cuidador no aceptó la oferta de contratación")
+                    CoroutineScope(Dispatchers.Main).launch {show("El cuidador no aceptó la oferta de contratación")}
             }
         }
 
