@@ -30,11 +30,11 @@ class Filter(
 
         sittersFiltered = sitters
             .filter { it.rating.toFloat() >= numStars }
-            .filter { (it.availability?.cost?:min in min..max) }
+            .filter { it.availability?.cost?:min in min..max }
             .filter {
                 it.availability?.contains(
                     Duration(fromDate.timeInMillis, toDate.timeInMillis)
-                )?:true
+                )?:true || (fromHour+fromMins==0 && toHour+toMins ==23+59)
             }
         return sittersFiltered
     }
