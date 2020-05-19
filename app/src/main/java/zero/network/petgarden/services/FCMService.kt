@@ -22,7 +22,6 @@ import zero.network.petgarden.util.suscribeToTopic
 
 class FCMService():FirebaseMessagingService() {
 
-    lateinit var listener: OnResponseContractingListener
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         println("-------------------Mensaje recibido${remoteMessage.data}-----------------------------")
@@ -34,6 +33,7 @@ class FCMService():FirebaseMessagingService() {
             println("-------------Mensaje del sitter recibido------------------")
 
             if (message.responseContracting == NotificationUtils.ACCEPT)
+                //Poner un companion y meter el var listener. En vez del set El nombre de la clase .le
                 listener.responseContracting(NotificationUtils.ACCEPT)
             else
                 listener.responseContracting(NotificationUtils.DECLINE)
@@ -41,7 +41,13 @@ class FCMService():FirebaseMessagingService() {
             NotificationUtils.createNotification(this, message)
     }
 
-    fun setOnResponseContractingListener(listener: OnResponseContractingListener){
-            this.listener = listener
+
+    companion object{
+        var listener:OnResponseContractingListener = object :OnResponseContractingListener{
+            override fun responseContracting(response: String) {
+                println("-------------dentro de listener desde FCMService-------------------")
+            }
+        }
     }
+
 }

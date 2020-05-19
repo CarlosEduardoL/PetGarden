@@ -38,19 +38,17 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
         binding = this
 
 
-        val fcm  = FCMService()
-        fcm.setOnResponseContractingListener(object : OnResponseContractingListener {
+        FCMService.listener =object : OnResponseContractingListener {
             override fun responseContracting(response: String) {
                 println("-------------Decision del sitter recibida------------------")
                 if (response == NotificationUtils.ACCEPT){
-                    sitter.saveInDB()
                     owner.sitterList.add(sitter.id)
                     owner.saveInDB()
                     show("El cuidador seleccionado ha sido contratado")
                 }else
                     show("El cuidador no aceptó la oferta de contratación")
             }
-        })
+        }
 
         CoroutineScope(Dispatchers.Main).launch { photoSitter.setImageBitmap(sitter.image()) }
         nameSitterTxt.text = sitter.name
