@@ -35,9 +35,9 @@ class NotificationUtils {
 
 
             val notificationLayout = RemoteViews(context.packageName, R.layout.notification_contracting)
-
             addListenerAcceptBtn(context, message, notificationLayout)
             addListenerDeclineBtn(context, message, notificationLayout)
+
 
             setContentNotification(notificationLayout, message)
             val customNotification = NotificationCompat.Builder(context, CHANNEL_ID)
@@ -45,6 +45,7 @@ class NotificationUtils {
                                                                 .setCustomBigContentView(notificationLayout)
                                                                 .setAutoCancel(true)
             manager.notify(1, customNotification.build())
+
             consecutive++
         }
 
@@ -65,7 +66,7 @@ class NotificationUtils {
                 R.id.declineBtn,
                 PendingIntent.getService(
                     context,
-                    0,
+                    1,
                     declineIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT
                 )
@@ -82,7 +83,7 @@ class NotificationUtils {
                 R.id.acceptContracting,
                 PendingIntent.getService(
                     context,
-                    0,
+                    2,
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
                 )

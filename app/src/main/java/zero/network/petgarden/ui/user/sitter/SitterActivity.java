@@ -23,9 +23,11 @@ import java.util.Date;
 import zero.network.petgarden.R;
 import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Sitter;
+import zero.network.petgarden.model.notifications.Message;
 import zero.network.petgarden.ui.element.ActionBarFragment;
 import zero.network.petgarden.ui.user.owner.DockFragment;
 import zero.network.petgarden.ui.user.owner.MapFragment;
+import zero.network.petgarden.util.NotificationUtils;
 
 public class SitterActivity extends AppCompatActivity implements SitterView{
 
@@ -51,6 +53,7 @@ public class SitterActivity extends AppCompatActivity implements SitterView{
         loadDataFromActivity();
 
         showMap();
+
 
         //Suscribe to topic
         FirebaseMessaging.getInstance().subscribeToTopic(sitter.getId()).addOnCompleteListener(

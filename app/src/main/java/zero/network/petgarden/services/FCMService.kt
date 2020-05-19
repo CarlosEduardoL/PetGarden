@@ -20,8 +20,10 @@ import zero.network.petgarden.util.NotificationUtils
 import zero.network.petgarden.util.sitterByEmail
 import zero.network.petgarden.util.suscribeToTopic
 
-class FCMService(listener: OnResponseContractingListener):FirebaseMessagingService() {
-    private val listener = listener
+class FCMService():FirebaseMessagingService() {
+
+    lateinit var listener: OnResponseContractingListener
+
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         println("-------------------Mensaje recibido${remoteMessage.data}-----------------------------")
         val obj  = JSONObject(remoteMessage.data as Map<*, *>)
@@ -29,12 +31,17 @@ class FCMService(listener: OnResponseContractingListener):FirebaseMessagingServi
         val message = gson.fromJson<Message>(obj.toString(), Message::class.java)
 
         if (message.ownerId=="") {
+            println("-------------Mensaje del sitter recibido------------------")
+
             if (message.responseContracting == NotificationUtils.ACCEPT)
                 listener.responseContracting(NotificationUtils.ACCEPT)
             else
                 listener.responseContracting(NotificationUtils.DECLINE)
         }else
             NotificationUtils.createNotification(this, message)
+    }
 
+    fun setOnResponseContractingListener(listener: OnResponseContractingListener){
+            this.listener = listener
     }
 }

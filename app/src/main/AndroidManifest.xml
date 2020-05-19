@@ -58,6 +58,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
+        <service android:enabled="true" android:name=".model.notifications.NotificationIntentService"/>
 
         <meta-data
             android:name="com.google.android.geo.AIzaSyB8w7mIzR5bg_aQUY7ZVUXwAs-8HT2Kvqw"

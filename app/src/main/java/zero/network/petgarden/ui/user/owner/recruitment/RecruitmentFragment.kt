@@ -25,7 +25,7 @@ import java.util.*
 /**
  * A simple [Fragment] subclass.
  */
-class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragment(), OnResponseContractingListener{
+class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragment(){
 
     private lateinit var binding: FragmentRecruitmentBinding
 
@@ -36,7 +36,21 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
         savedInstanceState: Bundle?
     ) = FragmentRecruitmentBinding.inflate(inflater, container, false).apply {
         binding = this
-        val fcm  = FCMService(this@RecruitmentFragment)
+
+
+        val fcm  = FCMService()
+        fcm.setOnResponseContractingListener(object : OnResponseContractingListener {
+            override fun responseContracting(response: String) {
+                println("-------------Decision del sitter recibida------------------")
+                if (response == NotificationUtils.ACCEPT){
+                    sitter.saveInDB()
+                    owner.sitterList.add(sitter.id)
+                    owner.saveInDB()
+                    show("El cuidador seleccionado ha sido contratado")
+                }else
+                    show("El cuidador no aceptó la oferta de contratación")
+            }
+        })
 
         CoroutineScope(Dispatchers.Main).launch { photoSitter.setImageBitmap(sitter.image()) }
         nameSitterTxt.text = sitter.name
@@ -148,15 +162,5 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
 
     private  fun checkValidSchedule(startTime: Long, endTime: Long): Boolean{
         return startTime < endTime
-    }
-
-    override fun responseContracting(response: String) {
-        if (response == NotificationUtils.ACCEPT){
-            sitter.saveInDB()
-            owner.sitterList.add(sitter.id)
-            owner.saveInDB()
-            show("El cuidador seleccionado ha sido contratado")
-        }else
-            show("El cuidador no aceptó la oferta de contratación")
     }
 }
