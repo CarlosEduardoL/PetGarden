@@ -56,7 +56,7 @@ public class SitterActivity extends AppCompatActivity implements SitterView{
         FirebaseMessaging.getInstance().subscribeToTopic(sitter.getId()).addOnCompleteListener(
                 task -> {
                     if (task.isSuccessful())
-                        Log.e(">>>>>>>>>>>", "First Suscripcion exitosa");
+                        Log.e(">>>>>>>>>>>", "Suscripcion sitter exitosa");
                 }
         );
     }

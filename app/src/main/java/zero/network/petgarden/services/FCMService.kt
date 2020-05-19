@@ -15,24 +15,26 @@ import org.json.JSONObject
 import zero.network.petgarden.R
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.notifications.Message
+import zero.network.petgarden.model.notifications.OnResponseContractingListener
+import zero.network.petgarden.util.NotificationUtils
 import zero.network.petgarden.util.sitterByEmail
 import zero.network.petgarden.util.suscribeToTopic
 
-class FCMService:FirebaseMessagingService() {
-
+class FCMService(listener: OnResponseContractingListener):FirebaseMessagingService() {
+    private val listener = listener
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         println("-------------------Mensaje recibido${remoteMessage.data}-----------------------------")
         val obj  = JSONObject(remoteMessage.data as Map<*, *>)
         val gson = Gson()
         val message = gson.fromJson<Message>(obj.toString(), Message::class.java)
 
-        launchNotification()
-    }
+        if (message.ownerId=="") {
+            if (message.responseContracting == NotificationUtils.ACCEPT)
+                listener.responseContracting(NotificationUtils.ACCEPT)
+            else
+                listener.responseContracting(NotificationUtils.DECLINE)
+        }else
+            NotificationUtils.createNotification(this, message)
 
-    private fun launchNotification(){
-        val notificationLayout = RemoteViews(packageName, R.layout.notification_contracting)
-        val customNotification = NotificationCompat.Builder(this, "contracting")
-                                                .setCustomContentView(notificationLayout)
-                                                .build()
     }
 }

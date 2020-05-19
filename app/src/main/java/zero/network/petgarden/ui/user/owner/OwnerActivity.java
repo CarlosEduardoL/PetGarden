@@ -83,7 +83,6 @@ public class OwnerActivity extends SitterListener implements OwnerView {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             loadMapView();
             System.out.println("---------------------Mostrar notificacion");
-            NotificationUtils.Companion.createNotification(this);
         }
     }
 

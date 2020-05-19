@@ -17,15 +17,15 @@ import zero.network.petgarden.model.component.Duration
 import zero.network.petgarden.model.component.Task
 import zero.network.petgarden.model.notifications.FCMMessage
 import zero.network.petgarden.model.notifications.Message
-import zero.network.petgarden.util.POSTtoFCM
-import zero.network.petgarden.util.show
-import zero.network.petgarden.util.suscribeToTopic
+import zero.network.petgarden.model.notifications.OnResponseContractingListener
+import zero.network.petgarden.services.FCMService
+import zero.network.petgarden.util.*
 import java.util.*
 
 /**
  * A simple [Fragment] subclass.
  */
-class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view , Fragment(){
+class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragment(), OnResponseContractingListener{
 
     private lateinit var binding: FragmentRecruitmentBinding
 
@@ -36,6 +36,7 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view , Frag
         savedInstanceState: Bundle?
     ) = FragmentRecruitmentBinding.inflate(inflater, container, false).apply {
         binding = this
+        val fcm  = FCMService(this@RecruitmentFragment)
 
         CoroutineScope(Dispatchers.Main).launch { photoSitter.setImageBitmap(sitter.image()) }
         nameSitterTxt.text = sitter.name
@@ -101,44 +102,21 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view , Frag
         selectPet()?.let {
             val task =
                 Task(it.id, duration)
-            val successful = sitter.planner.addTask(task)
+            val available = sitter.planner.addTask(task)
 
-            if (successful) {
-                sitter.saveInDB()
-
-                suscribeToTopic("${owner.id} ${sitter.id}")
-                handshake()
-                sendNotification(duration)
-
-                show("El cuidador seleccionado ha sido contratado")
+            if (available) {
+                requestContracting(duration)
             }else
-                show("EL cuidador no tiene disponibilidad en este horario")
-
-            owner.sitterList.add(sitter.id)
-            owner.saveInDB()
+                show("El cuidador no tiene disponibilidad en este horario")
         }
-
     }
 
-    private fun handshake(){
-        val handshake = FCMMessage()
-        handshake.to =  "/topics/"+sitter.id
-        handshake.data = Message(sitter.email, owner.id)
-
-        val gson  = Gson()
-        val json =  gson.toJson(handshake)
-
-        Thread(Runnable {
-            POSTtoFCM(FCMMessage.API_KEY, json)
-        }).start()
-    }
-
-    private fun sendNotification(duration: Duration){
+    private fun requestContracting(duration: Duration){
         var fcm = FCMMessage()
-        //                           |
-        //                           v
-        fcm.to = "/topics/${owner.id} ${sitter.id}"// <------- Quitar el espacio entre ownerID y SitterID -------->
-        fcm.data = Message(sitter.email, owner.id)
+        val schedule = "Horario:  ${duration.start.getDate("hh:mm:ss")} a ${duration.end.getDate("hh:mm:ss")}"
+
+        fcm.to = "/topics/${sitter.id}"
+        fcm.data = Message(owner.id, owner.name, schedule, "$${duration.cost}/h")
 
         val gson  = Gson()
         val json =  gson.toJson(fcm)
@@ -172,4 +150,13 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view , Frag
         return startTime < endTime
     }
 
+    override fun responseContracting(response: String) {
+        if (response == NotificationUtils.ACCEPT){
+            sitter.saveInDB()
+            owner.sitterList.add(sitter.id)
+            owner.saveInDB()
+            show("El cuidador seleccionado ha sido contratado")
+        }else
+            show("El cuidador no aceptó la oferta de contratación")
+    }
 }

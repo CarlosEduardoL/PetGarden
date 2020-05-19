@@ -1,0 +1,52 @@
+package zero.network.petgarden.model.notifications
+
+import android.app.IntentService
+import android.content.Intent
+import android.os.Handler
+import android.os.Looper
+import android.widget.Toast
+import androidx.annotation.Nullable
+import com.google.gson.Gson
+import zero.network.petgarden.util.NotificationUtils
+import zero.network.petgarden.util.POSTtoFCM
+import zero.network.petgarden.util.extra
+import zero.network.petgarden.util.getDate
+
+
+class NotificationIntentService : IntentService("notificationIntentService") {
+
+    override fun onHandleIntent(@Nullable intent: Intent?) {
+        val bundle = intent!!.extras
+        val message = bundle!!.get("message") as Message
+
+        when (intent!!.action) {
+            "decline" -> {
+                val declineHandler = Handler(Looper.getMainLooper())
+                declineHandler.post(Runnable {
+                    sendFCMessage(message, NotificationUtils.DECLINE)
+                })
+            }
+            "accept" -> {
+                val acceptHandler = Handler(Looper.getMainLooper())
+                acceptHandler.post(Runnable {
+                    sendFCMessage(message, NotificationUtils.ACCEPT)
+                })
+            }
+        }
+    }
+
+
+    private fun sendFCMessage(message: Message, responseContracting:String){
+        var fcm = FCMMessage()
+
+        fcm.to = "/topics/${message.ownerId}"
+        fcm.data = Message("", "", "", "", responseContracting)
+
+        val gson  = Gson()
+        val json =  gson.toJson(fcm)
+
+        Thread(Runnable {
+            POSTtoFCM(FCMMessage.API_KEY, json)
+        }).start()
+    }
+}
