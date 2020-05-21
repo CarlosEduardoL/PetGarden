@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import zero.network.petgarden.databinding.FragmentRecruitmentBinding
 import zero.network.petgarden.model.component.Duration
 import zero.network.petgarden.model.component.Task
+import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.model.notifications.FCMMessage
 import zero.network.petgarden.model.notifications.Message
 import zero.network.petgarden.model.notifications.OnResponseContractingListener
@@ -36,19 +37,6 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
         savedInstanceState: Bundle?
     ) = FragmentRecruitmentBinding.inflate(inflater, container, false).apply {
         binding = this
-
-
-        FCMService.listener =object : OnResponseContractingListener {
-            override fun responseContracting(response: String) {
-                println("-------------Decision del sitter recibida------------------")
-                if (response == NotificationUtils.ACCEPT){
-                    owner.sitterList.add(sitter.id)
-                    owner.saveInDB()
-                    CoroutineScope(Dispatchers.Main).launch {show("El cuidador seleccionado ha sido contratado")}
-                }else
-                    CoroutineScope(Dispatchers.Main).launch {show("El cuidador no aceptó la oferta de contratación")}
-            }
-        }
 
         CoroutineScope(Dispatchers.Main).launch { photoSitter.setImageBitmap(sitter.image()) }
         nameSitterTxt.text = sitter.name
@@ -118,6 +106,7 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
 
             if (available) {
                 requestContracting(duration)
+                listenResponseCOntracting(it)
             }else
                 show("El cuidador no tiene disponibilidad en este horario")
         }
@@ -159,5 +148,21 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
 
     private  fun checkValidSchedule(startTime: Long, endTime: Long): Boolean{
         return startTime < endTime
+    }
+
+    private fun listenResponseCOntracting(pet: Pet){
+        FCMService.listener =object : OnResponseContractingListener {
+            override fun responseContracting(response: String) {
+                println("-------------Decision del sitter recibida------------------")
+                if (response == NotificationUtils.ACCEPT){
+                    owner.sitterList.add(sitter.id)
+                    pet.sitterID = sitter.id
+                    owner.saveInDB()
+                    pet.saveInDB()
+                    CoroutineScope(Dispatchers.Main).launch {show("El cuidador seleccionado ha sido contratado")}
+                }else
+                    CoroutineScope(Dispatchers.Main).launch {show("El cuidador no aceptó la oferta de contratación")}
+            }
+        }
     }
 }
