@@ -129,7 +129,6 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
 
         fcm.to = "/topics/${sitter.id}"
         fcm.data = Message(owner.id, owner.name, schedule, "$${duration.cost}/h")
-
         val gson  = Gson()
         val json =  gson.toJson(fcm)
 

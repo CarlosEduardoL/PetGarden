@@ -7,5 +7,6 @@ class Message (
      var ownerName: String="",
      var schedule: String="",
      var cost: String="",
+     var type: String ="Nechiton",
      var responseContracting: String=""): Serializable{
 }

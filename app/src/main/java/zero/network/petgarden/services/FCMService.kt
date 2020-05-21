@@ -24,10 +24,13 @@ class FCMService():FirebaseMessagingService() {
 
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        println("-------------------Mensaje recibido${remoteMessage.data}-----------------------------")
+        println("-------------------Tipo de mensaje: ${remoteMessage.data.get("type").toString()}-----------------------------")
         val obj  = JSONObject(remoteMessage.data as Map<*, *>)
         val gson = Gson()
+        println("-------------------Leyendo ownerid:  ${remoteMessage.data.get(("ownerId"))}-----------------------------")
+
         val message = gson.fromJson<Message>(obj.toString(), Message::class.java)
+
 
         if (message.ownerId=="") {
             println("-------------Mensaje del sitter recibido------------------")
