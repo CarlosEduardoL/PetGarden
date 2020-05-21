@@ -11,6 +11,6 @@ interface SitterView {
     fun loadMapView()
     fun loadSchedulerView()
     fun loadProfileView()
-    fun notifyArrivalToOwner()
+    fun notifyArrivalToOwner(ownerID: String)
     fun checkTaskTimeOfOwner(owner: Owner): Double
 }

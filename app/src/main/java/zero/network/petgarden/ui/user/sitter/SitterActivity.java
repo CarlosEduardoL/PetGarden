@@ -19,14 +19,18 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
+import java.util.List;
 
 import zero.network.petgarden.R;
+import zero.network.petgarden.model.component.Task;
 import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Sitter;
+import zero.network.petgarden.model.notifications.FCMMessage;
 import zero.network.petgarden.model.notifications.Message;
 import zero.network.petgarden.ui.element.ActionBarFragment;
 import zero.network.petgarden.ui.user.owner.DockFragment;
 import zero.network.petgarden.ui.user.owner.MapFragment;
+import zero.network.petgarden.util.NotificationArriveUtil;
 import zero.network.petgarden.util.NotificationUtils;
 
 public class SitterActivity extends AppCompatActivity implements SitterView{
@@ -138,10 +142,18 @@ public class SitterActivity extends AppCompatActivity implements SitterView{
 
 
     @Override
-    public void notifyArrivalToOwner() {
+    public void notifyArrivalToOwner(String ownerID) {
         /*
         Lanzar la push notification para avisarle al dueño que ya llegó su mascota
          */
+
+        Message msj = new Message();
+        msj.setCost("0 pesos");
+        msj.setOwnerName("Test");
+        //NotificationArriveUtil.createNotification(this,"Su perrito ha llegado");
+        FCMMessage fcm = new FCMMessage();
+        fcm.setTo("/topics/"+ownerID);
+        fcm.setData(msj);
     }
 
     @Override
@@ -150,7 +162,11 @@ public class SitterActivity extends AppCompatActivity implements SitterView{
 
         /*Obtener las tareas para ver cual coincide con la del owner del parametro para sacarle el Date y compararlo con el
         momento actual*/
-        getSitter().getPlanner().getTasks();
+        List<Task> tasks =getSitter().getPlanner().getTasks();
+        for(Task task: tasks){
+
+
+        }
 
         return 0;
     }

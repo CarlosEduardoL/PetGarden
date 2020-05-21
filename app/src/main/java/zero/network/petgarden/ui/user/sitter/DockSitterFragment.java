@@ -13,15 +13,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.gson.Gson;
 
 import zero.network.petgarden.R;
 import zero.network.petgarden.databinding.FragmentDockBinding;
 import zero.network.petgarden.databinding.FragmentDockSitterBinding;
 import zero.network.petgarden.model.entity.Sitter;
+import zero.network.petgarden.model.notifications.FCMMessage;
+import zero.network.petgarden.model.notifications.FCMMessageArrival;
+import zero.network.petgarden.model.notifications.MessageArrival;
 import zero.network.petgarden.ui.user.owner.ListSitterFragment;
 import zero.network.petgarden.ui.user.owner.MapFragment;
 import zero.network.petgarden.ui.user.owner.OwnerProfileFragment;
 import zero.network.petgarden.ui.user.owner.OwnerView;
+import zero.network.petgarden.util.HTTPUtilKt;
+import zero.network.petgarden.util.NotificationArriveUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,6 +66,26 @@ public class DockSitterFragment extends Fragment implements BottomNavigationView
                 sitterView.loadMapView();
                 sitterView.getTopBar().setVisibility(false);
                 sitterView.getTopBar().update("Mapa",false,false);
+
+                sitterView.notifyArrivalToOwner("A9h5keqPIvOFSiyhI7X7MeQWP6O2");
+                MessageArrival message = new MessageArrival();
+                message.setBody("Llego mascota");
+                message.setTitulo("Tu mascota afuera");
+                message.setPetName("Max");
+                FCMMessageArrival fcm = new FCMMessageArrival();
+                fcm.setTo("/topic/A9h5keqPIvOFSiyhI7X7MeQWP6O2");
+                fcm.setData(message);
+                Gson gson = new Gson();
+                String json =gson.toJson(fcm);
+
+                new Thread(
+                        ()->{
+                            HTTPUtilKt util = new HTTPUtilKt();
+                             util.POSTtoFCM(FCMMessageArrival.API_KEY,json);
+
+                        }
+                ).start();
+
                 break;
             case R.id.nav_sitter:
                 sitterView.loadSchedulerView();
