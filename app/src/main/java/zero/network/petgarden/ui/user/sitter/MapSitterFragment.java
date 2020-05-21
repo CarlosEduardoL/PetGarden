@@ -147,7 +147,7 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
         markerPosActual.setPosition(  pos  );
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
 
-        if(hasArrived()) sitterView.notifyArrivalToOwner();
+        hasArrived();
 
 
     }
@@ -165,7 +165,7 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
                         tempLocation.setLatitude(temp.getLocation().getLat());
                         //Cambiar 45 por 45 minutos
                         if((locationActual.distanceTo(tempLocation)) <10 && (sitterView.checkTaskTimeOfOwner(temp)>=45)){
-                            sitterView.notifyArrivalToOwner();
+                            sitterView.notifyArrivalToOwner(temp.getId());
                         }
                     }
                 }
