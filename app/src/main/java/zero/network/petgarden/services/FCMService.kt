@@ -25,9 +25,9 @@ class FCMService():FirebaseMessagingService() {
 
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        println("-------------------Tipo de mensaje: ${remoteMessage.data["type"].toString()}-----------------------------")
+        println("-------------------Tipo de mensaje: ${remoteMessage.data.toString()}-----------------------------")
 
-        if (remoteMessage.data["type"].toString() != MessageArrival.TYPE) {
+        if (remoteMessage.data["type"].toString() == Message.TYPE) {
             val obj = JSONObject(remoteMessage.data as Map<*, *>)
             val gson = Gson()
 
