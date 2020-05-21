@@ -81,7 +81,6 @@ public class DockSitterFragment extends Fragment implements BottomNavigationView
                 new Thread(
                         ()->{
                              HTTPUtilKt.POSTtoFCM(FCMMessageArrival.API_KEY,json);
-
                         }
                 ).start();
 

@@ -15,6 +15,7 @@ import org.json.JSONObject
 import zero.network.petgarden.R
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.notifications.Message
+import zero.network.petgarden.model.notifications.MessageArrival
 import zero.network.petgarden.model.notifications.OnResponseContractingListener
 import zero.network.petgarden.util.NotificationUtils
 import zero.network.petgarden.util.sitterByEmail
@@ -24,33 +25,39 @@ class FCMService():FirebaseMessagingService() {
 
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        println("-------------------Tipo de mensaje: ${remoteMessage.data.get("type").toString()}-----------------------------")
-        val obj  = JSONObject(remoteMessage.data as Map<*, *>)
-        val gson = Gson()
-        println("-------------------Leyendo ownerid:  ${remoteMessage.data.get(("ownerId"))}-----------------------------")
+        println("-------------------Tipo de mensaje: ${remoteMessage.data["type"].toString()}-----------------------------")
 
-        val message = gson.fromJson<Message>(obj.toString(), Message::class.java)
+        if (remoteMessage.data["type"].toString() != MessageArrival.TYPE) {
+            val obj = JSONObject(remoteMessage.data as Map<*, *>)
+            val gson = Gson()
+
+            val message = gson.fromJson<Message>(obj.toString(), Message::class.java)
 
 
-        if (message.ownerId=="") {
-            println("-------------Mensaje del sitter recibido------------------")
+            if (message.ownerId == "") {
+                println("-------------Mensaje del sitter recibido------------------")
 
-            if (message.responseContracting == NotificationUtils.ACCEPT)
+                if (message.responseContracting == NotificationUtils.ACCEPT)
                 //Poner un companion y meter el var listener. En vez del set El nombre de la clase .le
-                listener.responseContracting(NotificationUtils.ACCEPT)
-            else
-                listener.responseContracting(NotificationUtils.DECLINE)
-        }else
-            NotificationUtils.createNotification(this, message)
-    }
+                    listener.responseContracting(NotificationUtils.ACCEPT)
+                else
+                    listener.responseContracting(NotificationUtils.DECLINE)
+            } else
+                NotificationUtils.createNotification(this, message)
 
-
-    companion object{
-        var listener:OnResponseContractingListener = object :OnResponseContractingListener{
-            override fun responseContracting(response: String) {
-                println("-------------dentro de listener desde FCMService-------------------")
-            }
+        }else {
+            //Se hace lo de chasqui
         }
     }
+
+
+
+        companion object{
+            var listener:OnResponseContractingListener = object :OnResponseContractingListener{
+                override fun responseContracting(response: String) {
+                    println("-------------dentro de listener desde FCMService-------------------")
+                }
+            }
+        }
 
 }
