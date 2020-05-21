@@ -22,6 +22,7 @@ import zero.network.petgarden.model.notifications.OnResponseContractingListener
 import zero.network.petgarden.services.FCMService
 import zero.network.petgarden.util.*
 import java.util.*
+import kotlin.concurrent.thread
 
 /**
  * A simple [Fragment] subclass.
@@ -44,12 +45,8 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
 
         //Availability
         if (sitter.availability != null) {
-            val fromHour = getHour(sitter.availability!!.start)
-            val fromMin = getMinute(sitter.availability!!.start)
-            val toHour = getHour(sitter.availability!!.end)
-            val toMin = getMinute(sitter.availability!!.end)
-
-            scheduleSitter.text = "$fromHour:$fromMin a $toHour:$toMin"
+            val duration = sitter.availability!!
+            scheduleSitter.text ="Horario:  ${duration.start.getDate("hh:mm:ss")} a ${duration.end.getDate("hh:mm:ss")}"
 
             //Cost
             val cost = sitter.availability!!.cost
@@ -105,8 +102,8 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
             val available = sitter.planner.addTask(task)
 
             if (available) {
-                requestContracting(duration)
                 listenResponseContracting(it)
+                requestContracting(duration)
             }else
                 show("El cuidador no tiene disponibilidad en este horario")
         }
@@ -121,9 +118,7 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
         val gson  = Gson()
         val json =  gson.toJson(fcm)
 
-        Thread(Runnable {
-            POSTtoFCM(FCMMessage.API_KEY, json)
-        }).start()
+        thread{ POSTtoFCM(FCMMessage.API_KEY, json) }
     }
 
     private fun getHour(time:Long):Int{
@@ -159,6 +154,7 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
                     pet.sitterID = sitter.id
                     owner.saveInDB()
                     pet.saveInDB()
+                    sitter.saveInDB()
                     CoroutineScope(Dispatchers.Main).launch {show("El cuidador seleccionado ha sido contratado")}
                 }else
                     CoroutineScope(Dispatchers.Main).launch {show("El cuidador no aceptó la oferta de contratación")}

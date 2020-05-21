@@ -24,10 +24,6 @@ interface Entity {
      * upload the entity to the DB
      */
     fun saveInDB() {
-        if ( this is Pet || id == FirebaseAuth.getInstance().currentUser?.uid)
             FirebaseDatabase.getInstance().reference.child(folder()).child(id).setValue(this)
-        else
-            println(this)
     }
-
 }

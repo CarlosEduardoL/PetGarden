@@ -28,6 +28,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
+                android:layout_marginEnd="6dp"
+                android:layout_marginBottom="4dp"
                 android:contentDescription="@string/email"
                 app:srcCompat="@drawable/black_search" />
 
@@ -36,10 +38,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="2dp"
+                android:layout_marginBottom="3dp"
                 android:background="@android:color/transparent"
                 android:fontFamily="@font/roboto_regular"
-                android:inputType="textEmailAddress"
-                android:hint="@string/search_message" />
+                android:hint="@string/search_message"
+                android:inputType="textEmailAddress" />
         </LinearLayout>
 
         <View

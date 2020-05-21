@@ -38,7 +38,6 @@ class FCMService():FirebaseMessagingService() {
                 println("-------------respuesta del sitter desde onMessageReceived: ${message.responseContracting}------------------")
 
                 if (message.responseContracting == NotificationUtils.ACCEPT)
-
                     listener.responseContracting(NotificationUtils.ACCEPT)
                 else
                     listener.responseContracting(NotificationUtils.DECLINE)
