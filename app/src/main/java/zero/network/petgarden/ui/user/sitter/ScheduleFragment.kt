@@ -8,13 +8,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_add_availability.*
-import kotlinx.android.synthetic.main.fragment_schedule.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import zero.network.petgarden.R
-import zero.network.petgarden.databinding.FragmentAddAvailabilityBinding
 import zero.network.petgarden.databinding.FragmentScheduleBinding
 import zero.network.petgarden.util.endOfDay
 import zero.network.petgarden.util.monthToText
@@ -33,9 +30,10 @@ class ScheduleFragment(view: SitterView) : Fragment(), SitterView by view {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentScheduleBinding.inflate(inflater, container, false)!!.apply {
-        addAvailabilityFragment = AddAvailabilityFragment(sitter, Calendar.getInstance().timeInMillis)
+        addAvailabilityFragment =
+            AddAvailabilityFragment(sitter, Calendar.getInstance().timeInMillis)
         val adapter = ScheduleAdapter()
-        val task = scope.launch {  }
+        val task = scope.launch { }
         listClients.apply {
             this.adapter = adapter
             layoutManager = LinearLayoutManager(context)
@@ -46,11 +44,14 @@ class ScheduleFragment(view: SitterView) : Fragment(), SitterView by view {
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             selectDay.text = "$dayOfMonth de ${monthToText(month)}"
             Calendar.getInstance().apply {
-                set(year,month, dayOfMonth)
+                set(year, month, dayOfMonth)
                 if (task.isActive) task.cancel()
                 scope.launch {
                     val start = time.startOfDay().time
                     val end = time.endOfDay().time
+                    println(Calendar.getInstance().apply { timeInMillis = start }.time)
+                    println(Calendar.getInstance().apply { timeInMillis = end }.time)
+                    println(sitter.planner.tasks)
                     val dayTasks = sitter.planner.tasks
                         .asSequence()
                         .filter { it.duration.start >= start && it.duration.end <= end }
@@ -59,24 +60,30 @@ class ScheduleFragment(view: SitterView) : Fragment(), SitterView by view {
                         .map { "${it.key.name} ${it.key.lastName}" to it.value.map { pet -> pet.id } }
                         .map { it.first to it.second.toSet().intersect(dayTasks.keys) }
                         .simplify()
-                        .map { it.first to (dayTasks[it.second] ?:0) }
-
+                        .map { it.first to (dayTasks[it.second] ?: 0) }
+                    println(dayTasks)
+                    println(
+                        sitter.clientsXPets()
+                            .map { "${it.key.name} ${it.key.lastName}" to it.value.map { pet -> pet.id } }
+                            .map { it.first to it.second.toSet().intersect(dayTasks.keys) }
+                    )
                 }
             }
         }
 
-        addAvailability.setOnClickListener{
+        addAvailability.setOnClickListener {
             val fragmentManager = activity!!.supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
             addAvailabilityFragment.dateSelected = calendarView.date
-            fragmentTransaction.replace(R.id.actualFragmentContainerSitter, addAvailabilityFragment).addToBackStack(null)
+            fragmentTransaction.replace(R.id.actualFragmentContainerSitter, addAvailabilityFragment)
+                .addToBackStack(null)
             fragmentTransaction.commit()
         }
 
         calendarView.date = currentTimeMillis()
     }.root
 
-    private fun initDate(selectDay:TextView){
+    private fun initDate(selectDay: TextView) {
         val today = Calendar.getInstance()
         val month = today.get(Calendar.MONTH)
         val dayOfMonth = today.get(Calendar.DAY_OF_MONTH)

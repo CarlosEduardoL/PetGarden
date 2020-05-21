@@ -54,14 +54,14 @@ data class Sitter(
 
     private suspend fun downloadPets(){
         val query = FirebaseDatabase.getInstance().reference
-            .child(Pet.FOLDER).orderByChild("sitterID").equalTo(id)
-        _pets = query.wait().children.map { it.getValue(Pet::class.java)!! }.toMutableSet()
+            .child(Pet.FOLDER).orderByChild("sitterID").equalTo(id).wait()
+        _pets = query.children.map { it.getValue(Pet::class.java)!! }.toMutableSet()
     }
 
     private suspend fun downloadOwners(){
         val query = FirebaseDatabase.getInstance().reference
-            .child(Owner.FOLDER).orderByChild("sitterList").equalTo(id)
-        _clients = query.wait().children.map { it.getValue(Owner::class.java)!! }.toMutableSet()
+            .child(Owner.FOLDER).orderByChild("sitterList/$id").equalTo(id).wait()
+        _clients = query.children.map { it.getValue(Owner::class.java)!! }.toMutableSet()
     }
 
     suspend fun image(): Bitmap {

@@ -20,7 +20,10 @@ import zero.network.petgarden.model.notifications.FCMMessage
 import zero.network.petgarden.model.notifications.Message
 import zero.network.petgarden.model.notifications.OnResponseContractingListener
 import zero.network.petgarden.services.FCMService
-import zero.network.petgarden.util.*
+import zero.network.petgarden.util.NotificationUtils
+import zero.network.petgarden.util.POSTtoFCM
+import zero.network.petgarden.util.getDate
+import zero.network.petgarden.util.show
 import java.util.*
 import kotlin.concurrent.thread
 
@@ -150,7 +153,7 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
             override fun responseContracting(response: String) {
                 println("-------------Decision del sitter desde recruinment: $response------------------")
                 if (response == NotificationUtils.ACCEPT){
-                    owner.sitterList.add(sitter.id)
+                    owner.sitterList[sitter.id] = sitter.id
                     pet.sitterID = sitter.id
                     owner.saveInDB()
                     pet.saveInDB()
