@@ -4,7 +4,7 @@ import zero.network.petgarden.model.behaivor.IPlanner
 import java.io.Serializable
 import java.util.*
 
-data class Task(var petID: String, var duration: Duration): Serializable
+data class Task(var petID: String = "", var duration: Duration = Duration()): Serializable
 
 class Planner(
     private var _availability: MutableList<Duration> = mutableListOf(),

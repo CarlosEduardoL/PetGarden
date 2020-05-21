@@ -49,9 +49,6 @@ class ScheduleFragment(view: SitterView) : Fragment(), SitterView by view {
                 scope.launch {
                     val start = time.startOfDay().time
                     val end = time.endOfDay().time
-                    println(Calendar.getInstance().apply { timeInMillis = start }.time)
-                    println(Calendar.getInstance().apply { timeInMillis = end }.time)
-                    println(sitter.planner.tasks)
                     val dayTasks = sitter.planner.tasks
                         .asSequence()
                         .filter { it.duration.start >= start && it.duration.end <= end }
