@@ -2,13 +2,15 @@ package zero.network.petgarden.model.notifications;
 
 public class MessageArrival {
 
+    public static final String TYPE ="arrival";
     private String titulo;
     private String body;
     private String petName;
+    private String type;
 
-
-
-
+    public MessageArrival(){
+        type =TYPE;
+    }
 
 
     public String getTitulo() {
@@ -33,5 +35,17 @@ public class MessageArrival {
 
     public void setPetName(String petName) {
         this.petName = petName;
+    }
+
+    public static String getTYPE() {
+        return TYPE;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
