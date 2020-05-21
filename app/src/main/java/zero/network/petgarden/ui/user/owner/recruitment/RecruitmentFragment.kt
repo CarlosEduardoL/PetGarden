@@ -106,7 +106,7 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
 
             if (available) {
                 requestContracting(duration)
-                listenResponseCOntracting(it)
+                listenResponseContracting(it)
             }else
                 show("El cuidador no tiene disponibilidad en este horario")
         }
@@ -150,10 +150,10 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
         return startTime < endTime
     }
 
-    private fun listenResponseCOntracting(pet: Pet){
+    private fun listenResponseContracting(pet: Pet){
         FCMService.listener =object : OnResponseContractingListener {
             override fun responseContracting(response: String) {
-                println("-------------Decision del sitter recibida------------------")
+                println("-------------Decision del sitter desde recruinment: $response------------------")
                 if (response == NotificationUtils.ACCEPT){
                     owner.sitterList.add(sitter.id)
                     pet.sitterID = sitter.id

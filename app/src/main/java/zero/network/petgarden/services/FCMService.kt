@@ -35,10 +35,10 @@ class FCMService():FirebaseMessagingService() {
 
 
             if (message.ownerId == "") {
-                println("-------------Mensaje del sitter recibido------------------")
+                println("-------------respuesta del sitter desde onMessageReceived: ${message.responseContracting}------------------")
 
                 if (message.responseContracting == NotificationUtils.ACCEPT)
-                //Poner un companion y meter el var listener. En vez del set El nombre de la clase .le
+
                     listener.responseContracting(NotificationUtils.ACCEPT)
                 else
                     listener.responseContracting(NotificationUtils.DECLINE)

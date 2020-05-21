@@ -48,7 +48,7 @@ class NotificationIntentService : IntentService("notificationIntentService") {
         var fcm = FCMMessage()
 
         fcm.to = "/topics/${message.ownerId}"
-        fcm.data = Message("", "", "", "", responseContracting)
+        fcm.data = Message("", "", "", "",Message.TYPE, responseContracting)
 
         val gson  = Gson()
         val json =  gson.toJson(fcm)
