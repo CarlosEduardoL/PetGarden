@@ -36,6 +36,8 @@ public class OwnerActivity extends SitterListener implements OwnerView {
     private DockFragment dockFragment;
     private Fragment actualFragment;
 
+    public static boolean active = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +53,19 @@ public class OwnerActivity extends SitterListener implements OwnerView {
 
         showMap();
 
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        active = true;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        active = false;
     }
 
     private void loadInitialFragments() {
@@ -77,8 +92,9 @@ public class OwnerActivity extends SitterListener implements OwnerView {
         Bundle extras = getIntent().getExtras();
         if(extras != null)
             owner = (Owner) extras.getSerializable("user");
-        else
+        else {
             throw new NullPointerException();
+        }
     }
 
     public void showMap() {

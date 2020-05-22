@@ -17,6 +17,7 @@ import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.notifications.Message
 import zero.network.petgarden.model.notifications.MessageArrival
 import zero.network.petgarden.model.notifications.OnResponseContractingListener
+import zero.network.petgarden.util.NotificationArriveUtil
 import zero.network.petgarden.util.NotificationUtils
 import zero.network.petgarden.util.sitterByEmail
 import zero.network.petgarden.util.suscribeToTopic
@@ -46,6 +47,10 @@ class FCMService():FirebaseMessagingService() {
 
         }else {
             //Se hace lo de chasqui
+            val obj = JSONObject(remoteMessage.data as Map<*,*>)
+            val gson = Gson()
+            val message = gson.fromJson<MessageArrival>(obj.toString(),MessageArrival::class.java)
+            NotificationArriveUtil.createNotification(this, message);
         }
     }
 

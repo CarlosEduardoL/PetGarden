@@ -49,6 +49,7 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
     private boolean firstEntry;
     private LocationManager manager;
 
+
     public MapSitterFragment(SitterView sitterView){
         this.sitterView = sitterView;
     }
@@ -242,4 +243,6 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
     public boolean onMarkerClick(Marker marker) {
         return false;
     }
+
+
 }

@@ -73,7 +73,7 @@ public class DockSitterFragment extends Fragment implements BottomNavigationView
                 message.setTitulo("Tu mascota afuera");
                 message.setPetName("Max");
                 FCMMessageArrival fcm = new FCMMessageArrival();
-                fcm.setTo("/topic/A9h5keqPIvOFSiyhI7X7MeQWP6O2");
+                fcm.setTo("/topics/dgRKg3FdbwTh8YIXS0BfHMeFbE72");
                 fcm.setData(message);
                 Gson gson = new Gson();
                 String json =gson.toJson(fcm);

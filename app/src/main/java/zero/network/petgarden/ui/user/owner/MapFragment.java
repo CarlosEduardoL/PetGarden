@@ -43,6 +43,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     private OwnerView ownerView;
     private boolean firstEntry;
     private LocationManager manager;
+    public static boolean active = false;
 
     public MapFragment(OwnerView owner){
         ownerView = owner;
@@ -272,4 +273,17 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         return true;
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        active = true;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        active = false;
+    }
+
 }

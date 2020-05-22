@@ -147,13 +147,6 @@ public class SitterActivity extends AppCompatActivity implements SitterView{
         Lanzar la push notification para avisarle al dueño que ya llegó su mascota
          */
 
-        Message msj = new Message();
-        msj.setCost("0 pesos");
-        msj.setOwnerName("Test");
-        //NotificationArriveUtil.createNotification(this,"Su perrito ha llegado");
-        FCMMessage fcm = new FCMMessage();
-        fcm.setTo("/topics/"+ownerID);
-        fcm.setData(msj);
     }
 
     @Override
