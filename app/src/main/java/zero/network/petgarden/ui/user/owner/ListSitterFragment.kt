@@ -19,13 +19,15 @@ class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
 
     private var filter = Filter()
+    private var adapterSitters: SittersAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentListSitterBinding.inflate(inflater, container, false).apply {
 
-        val adapterSitters = SittersAdapter(owner, sitters.filter(filter))
+        adapterSitters?.stopAnimation()
+        adapterSitters = SittersAdapter(owner, sitters.filter(filter))
 
         listSitters.apply {
             layoutManager = LinearLayoutManager(context)
@@ -35,7 +37,7 @@ class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                adapterSitters.update(sitters.filter { "${it.name} ${it.lastName}".contains(s,true) }.filter(filter))
+                adapterSitters?.update(sitters.filter { "${it.name} ${it.lastName}".contains(s,true) }.filter(filter))
             }
 
         })
@@ -47,6 +49,10 @@ class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
     }.root
 
+    override fun onDetach() {
+        super.onDetach()
+        adapterSitters?.stopAnimation()
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == AppCompatActivity.RESULT_OK && data != null && requestCode == FILTER){

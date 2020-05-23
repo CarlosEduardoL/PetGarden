@@ -12,7 +12,7 @@ class Planner(
 ) : IPlanner, Serializable {
 
     override var availabilities: List<Duration>
-        get() = _availability
+        get() = _availability.toList()
         set(value) {
             _availability = value.filter { it.end >= Date().time }.toMutableList()
         }
