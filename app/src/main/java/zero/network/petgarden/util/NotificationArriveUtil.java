@@ -33,19 +33,20 @@ public class NotificationArriveUtil {
             manager.createNotificationChannel(channel);
         }
 
-        // Create an explicit intent for an Activity in your app
-        Intent intent = new Intent(context, LoginActivity.class);
-        //Se está verificando si la actividad está activa y si el fragmento está activo: Manejarlos
-        Log.e(">>NotArrUtil","ActivActivi?"+OwnerActivity.active);
-        Log.e(">>NotArrUtil","ActivFragm?"+ MapFragment.active);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle(msg.getTitulo())
                 .setContentText(msg.getBody())
                 .setSmallIcon(R.drawable.logo)
-                .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
+        if(!OwnerActivity.active){
+            Intent intent = new Intent(context, LoginActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(pendingIntent);
+        }
+        Intent intent = new Intent(context, OwnerActivity.class);
+        intent.putExtra("show_dialog", "show_dialog");
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
         manager.notify(consecutive,builder.build());
         consecutive++;

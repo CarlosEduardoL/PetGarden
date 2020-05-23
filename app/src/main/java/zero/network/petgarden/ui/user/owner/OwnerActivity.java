@@ -1,8 +1,13 @@
 package zero.network.petgarden.ui.user.owner;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -52,6 +57,11 @@ public class OwnerActivity extends SitterListener implements OwnerView {
         HTTPUtilKt.suscribeToTopic(owner.getId());
 
         showMap();
+
+        Intent intent = getIntent();
+        if(intent.hasExtra("show_dialog")){
+            showArrivalDialog();
+        }
 
     }
 
@@ -164,4 +174,21 @@ public class OwnerActivity extends SitterListener implements OwnerView {
         actualFragment = sittersFragment;
         loadActualFragment();
     }
+
+    private void showArrivalDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_service_from_client,null);
+        builder.setView(view);
+
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        TextView txtSitterName = view.findViewById(R.id.sitter_name);
+        txtSitterName.setText("Cuidador X");
+
+    }
+
+
 }
