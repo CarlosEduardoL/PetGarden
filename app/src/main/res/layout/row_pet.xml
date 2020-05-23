@@ -3,20 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout3"
-    android:layout_width="360dp"
+    android:layout_width="match_parent"
     android:layout_height="108dp"
     android:layout_centerHorizontal="false"
+    android:layout_marginStart="32dp"
+    android:layout_marginEnd="32dp"
     android:layout_gravity="center_horizontal"
-    android:background="@drawable/rounded_corner_row">
+    android:background="@android:color/transparent">
 
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imagePet"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,7 +30,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:text="Raza"
-        android:textColor="#FFFFFF"
+        android:textColor="#404040"
         android:textSize="12dp"
         app:layout_constraintEnd_toStartOf="@+id/textView8"
         app:layout_constraintHorizontal_bias="0.162"
@@ -40,17 +42,16 @@
         style="@style/infoPetText"
         android:layout_width="72dp"
         android:layout_height="16dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="24dp"
         android:layout_marginEnd="40dp"
-        android:gravity="center"
         android:text="Labrador"
-        android:textSize="8dp"
+        android:textSize="10dp"
         app:layout_constraintBottom_toTopOf="@+id/agePet"
         app:layout_constraintEnd_toStartOf="@+id/recommendationsTV"
-        app:layout_constraintHorizontal_bias="0.48"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/imagePet"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
-        app:layout_constraintVertical_bias="0.033" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/textView7"
@@ -58,7 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:text="Edad"
-        android:textColor="#FFFFFF"
+        android:textColor="#404040"
         android:textSize="12dp"
         app:layout_constraintBottom_toTopOf="@+id/agePet"
         app:layout_constraintEnd_toStartOf="@+id/recommendationsTV"
@@ -72,14 +73,15 @@
         style="@style/infoPetText"
         android:layout_width="72dp"
         android:layout_height="16dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="24dp"
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="16dp"
-        android:gravity="center"
+        android:gravity="center|start"
         android:text="2 anios"
-        android:textSize="8dp"
+        android:textSize="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/recommendationsTV"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/imagePet" />
 
     <TextView
@@ -89,26 +91,29 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="Recomendaciones"
-        android:textColor="#FFFFFF"
+        android:textColor="#404040"
         android:textSize="12dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.734"
         app:layout_constraintStart_toEndOf="@+id/breedTV"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/recommendationsTV"
         style="@style/infoPetText"
-        android:layout_width="80dp"
+        android:layout_width="88dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="24dp"
         android:width="80dp"
         android:height="64dp"
-        android:gravity="center"
-        android:text="Es muy grunon y no le gusta comer solo alimento, se le debe preparar una sopa"
-        android:textSize="8dp"
+        android:elegantTextHeight="false"
+        android:gravity="start"
+        android:text="Sin comentarios"
+        android:textAlignment="viewStart"
+        android:textSize="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8"
-        app:layout_constraintVertical_bias="0.066" />
+        app:layout_constraintVertical_bias="0.2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

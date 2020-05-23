@@ -9,7 +9,7 @@
     android:background="@drawable/rounded_corner_row">
 
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imagePet"
         android:layout_width="64dp"
         android:layout_height="64dp"

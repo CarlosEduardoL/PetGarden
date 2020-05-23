@@ -80,7 +80,7 @@ class CustomersAdapter(private val ownersAndPets: Map<Owner, Set<Pet>>, private 
             //setear la info de los pets
 
         convertView.apply { breedTV.text = pet.breed
-                            agePet.text = ""+pet.years+" años"
+                            agePet.text = ("${pet.years} años")
                             recommendationsTV.text = pet.about
             CoroutineScope(Dispatchers.Main).launch { imagePet.setImageBitmap(pet.loadImage()) }
 

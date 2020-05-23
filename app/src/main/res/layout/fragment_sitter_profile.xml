@@ -80,6 +80,7 @@
         <EditText
             android:id="@+id/requestChangePass"
             style="@style/sectionSeparator"
+            android:inputType="none"
             android:text="Clientes" />
 
         <androidx.recyclerview.widget.RecyclerView
