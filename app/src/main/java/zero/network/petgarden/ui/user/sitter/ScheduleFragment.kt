@@ -23,6 +23,7 @@ import java.util.*
 class ScheduleFragment(view: SitterView) : Fragment(), SitterView by view {
 
     private lateinit var addAvailabilityFragment: AddAvailabilityFragment
+    private lateinit var dateSalected: Calendar
     private val scope = CoroutineScope(Main)
 
     @SuppressLint("SetTextI18n")
@@ -31,7 +32,7 @@ class ScheduleFragment(view: SitterView) : Fragment(), SitterView by view {
         savedInstanceState: Bundle?
     ): View = FragmentScheduleBinding.inflate(inflater, container, false)!!.apply {
         addAvailabilityFragment =
-            AddAvailabilityFragment(sitter, Calendar.getInstance().timeInMillis)
+            AddAvailabilityFragment(sitter, Calendar.getInstance())
         val adapter = ScheduleAdapter()
         val task = scope.launch { }
         listClients.apply {
@@ -39,10 +40,14 @@ class ScheduleFragment(view: SitterView) : Fragment(), SitterView by view {
             layoutManager = LinearLayoutManager(context)
         }
 
+        dateSalected =Calendar.getInstance()
         initDate(selectDay)
 
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             selectDay.text = "$dayOfMonth de ${monthToText(month)}"
+
+            dateSalected.set(year, month, dayOfMonth)
+
             Calendar.getInstance().apply {
                 set(year, month, dayOfMonth)
                 if (task.isActive) task.cancel()
@@ -71,7 +76,7 @@ class ScheduleFragment(view: SitterView) : Fragment(), SitterView by view {
         addAvailability.setOnClickListener {
             val fragmentManager = activity!!.supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
-            addAvailabilityFragment.dateSelected = calendarView.date
+            addAvailabilityFragment.dateSelected = dateSalected
             fragmentTransaction.replace(R.id.actualFragmentContainerSitter, addAvailabilityFragment)
                 .addToBackStack(null)
             fragmentTransaction.commit()

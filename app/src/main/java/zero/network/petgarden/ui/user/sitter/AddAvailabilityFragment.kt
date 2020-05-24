@@ -14,7 +14,7 @@ import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.util.show
 import java.util.*
 
-class AddAvailabilityFragment(var sitter:Sitter, var dateSelected:Long): Fragment() {
+class AddAvailabilityFragment(var sitter:Sitter, var dateSelected:Calendar): Fragment() {
 
     private var price = 2500
 
@@ -23,7 +23,6 @@ class AddAvailabilityFragment(var sitter:Sitter, var dateSelected:Long): Fragmen
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentAddAvailabilityBinding.inflate(inflater, container, false).apply {
-
         startTimeTask.setIs24HourView(true)
         endTimeTask.setIs24HourView(true)
 
@@ -57,14 +56,11 @@ class AddAvailabilityFragment(var sitter:Sitter, var dateSelected:Long): Fragmen
 
 
     private fun hourToTimeInMilis(hour:Int, min:Int):Long{
-        val date = Calendar.getInstance()
-
-            date.apply {
-                timeInMillis = dateSelected
+            dateSelected.apply {
                 set(Calendar.HOUR_OF_DAY, hour)
                 set(Calendar.MINUTE, min) }
 
-        return date.timeInMillis
+        return dateSelected.timeInMillis
     }
 
     private fun incrementPrice(){
