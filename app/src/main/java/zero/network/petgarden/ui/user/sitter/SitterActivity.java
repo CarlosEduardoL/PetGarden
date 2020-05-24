@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,10 +27,13 @@ import zero.network.petgarden.model.component.Task;
 import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Sitter;
 import zero.network.petgarden.model.notifications.FCMMessage;
+import zero.network.petgarden.model.notifications.FCMMessageArrival;
 import zero.network.petgarden.model.notifications.Message;
+import zero.network.petgarden.model.notifications.MessageArrival;
 import zero.network.petgarden.ui.element.ActionBarFragment;
 import zero.network.petgarden.ui.user.owner.DockFragment;
 import zero.network.petgarden.ui.user.owner.MapFragment;
+import zero.network.petgarden.util.HTTPUtilKt;
 import zero.network.petgarden.util.NotificationArriveUtil;
 import zero.network.petgarden.util.NotificationUtils;
 
@@ -146,7 +150,22 @@ public class SitterActivity extends AppCompatActivity implements SitterView{
         /*
         Lanzar la push notification para avisarle al dueño que ya llegó su mascota
          */
+        MessageArrival message = new MessageArrival();
+        message.setBody("Llego mascota");
+        message.setTitulo("Tu mascota afuera");
+        message.setPetName("Max");
+        FCMMessageArrival fcm = new FCMMessageArrival();
+        Log.e(">>>ntfyarrown",ownerID);
+        fcm.setTo("/topics/"+ownerID);
+        fcm.setData(message);
+        Gson gson = new Gson();
+        String json =gson.toJson(fcm);
 
+        new Thread(
+                ()->{
+                    HTTPUtilKt.POSTtoFCM(FCMMessageArrival.API_KEY,json);
+                }
+        ).start();
     }
 
     @Override

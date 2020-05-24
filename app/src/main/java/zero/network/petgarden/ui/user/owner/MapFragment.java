@@ -263,8 +263,11 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 if(mySitter.getId().equals(idSelected)){
                     //Intent a la actividad del perfil del sitter desde el cliente
                     Intent i = new Intent(getActivity(), SitterFromUserActivity.class);
-                    Bundle extras = i.getExtras();
-                    extras.putAll(extras);
+                    Bundle bundle= new Bundle();
+                    bundle.putSerializable("sitter",mySitter);
+                    bundle.putSerializable("owner",ownerView.getOwner());
+                    i.putExtras(bundle);
+                    startActivity(i);
 
                 }
             }

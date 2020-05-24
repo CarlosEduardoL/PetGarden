@@ -41,7 +41,7 @@ public class OwnerActivity extends SitterListener implements OwnerView {
     private DockFragment dockFragment;
     private Fragment actualFragment;
 
-    public static boolean active = false;
+    private static boolean active = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,6 +175,7 @@ public class OwnerActivity extends SitterListener implements OwnerView {
         loadActualFragment();
     }
 
+
     private void showArrivalDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -190,5 +191,7 @@ public class OwnerActivity extends SitterListener implements OwnerView {
 
     }
 
-
+    public static boolean isActive() {
+        return active;
+    }
 }

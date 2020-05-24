@@ -38,15 +38,22 @@ public class NotificationArriveUtil {
                 .setContentText(msg.getBody())
                 .setSmallIcon(R.drawable.logo)
                 .setAutoCancel(true);
-        if(!OwnerActivity.active){
+        if(!OwnerActivity.isActive()){
             Intent intent = new Intent(context, LoginActivity.class);
+            intent.putExtra("show_dialog", "show_dialog");
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(pendingIntent);
+        }else{
+            //Cuando se sepa mandar datos a la activity, cambiar aqui
+            Intent intent = new Intent(context, LoginActivity.class);
+            intent.putExtra("show_dialog", "show_dialog");
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             builder.setContentIntent(pendingIntent);
         }
-        Intent intent = new Intent(context, OwnerActivity.class);
+/*        Intent intent = new Intent(context, OwnerActivity.class);
         intent.putExtra("show_dialog", "show_dialog");
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
+        builder.setContentIntent(contentIntent);*/
 
         manager.notify(consecutive,builder.build());
         consecutive++;

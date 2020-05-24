@@ -40,11 +40,16 @@ fun Activity.fileToUri(file: File): Uri = FileProvider.getUriForFile(this, this.
 /**
  * start the user view
  */
-fun <T> Activity.startUserView(user: IUser, clazz: Class<T>) = startActivity(
-    intent(clazz, "user" to user).apply {
+fun <T> Activity.startUserView(user: IUser, clazz: Class<T>,showDialog: Boolean = false) {
+    val intent =         intent(clazz, "user" to user).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     }
-)
+    if(showDialog){
+        intent.putExtra("show_dialog","")
+    }
+    startActivity(intent)
+
+}
 
 fun Activity.startRegisterView(user: IUser, start: FragmentStart = FragmentStart.Name) =
     startActivity(

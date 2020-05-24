@@ -52,6 +52,7 @@ class LoginActivity : AppCompatActivity() {
     private val callbackFacebook = CallbackManager.Factory.create()
     private lateinit var auth: FirebaseAuth
     private lateinit var loginScope: CoroutineScope
+    private var showDialog: Boolean = false
 
     private lateinit var binding: ActivityLoginBinding
 
@@ -70,6 +71,15 @@ class LoginActivity : AppCompatActivity() {
             binding.splashScreen.startAnimation(animation)
             binding.splashScreen.visibility = GONE
         })
+
+
+        if (intent.hasExtra("show_dialog")) {
+            val ss:String =extra("show_dialog")
+            if(ss =="show_dialog"){
+                showDialog = true
+            }
+        }
+
 
         requestPermission()
 
@@ -125,7 +135,12 @@ class LoginActivity : AppCompatActivity() {
                     startUserView(it, SitterActivity::class.java)
                 }
                 ownerByEmail(it.email!!)?.let {
-                    startUserView(it, OwnerActivity::class.java)
+                    if(showDialog){
+                        startUserView(it, OwnerActivity::class.java, true)
+                    }else{
+                        startUserView(it, OwnerActivity::class.java, false)
+                    }
+
                 }
 
                 val animation = AnimationUtils.loadAnimation(this@LoginActivity, android.R.anim.fade_out)

@@ -68,21 +68,7 @@ public class DockSitterFragment extends Fragment implements BottomNavigationView
                 sitterView.getTopBar().update("Mapa",false,false);
 
                 sitterView.notifyArrivalToOwner("A9h5keqPIvOFSiyhI7X7MeQWP6O2");
-                MessageArrival message = new MessageArrival();
-                message.setBody("Llego mascota");
-                message.setTitulo("Tu mascota afuera");
-                message.setPetName("Max");
-                FCMMessageArrival fcm = new FCMMessageArrival();
-                fcm.setTo("/topics/dgRKg3FdbwTh8YIXS0BfHMeFbE72");
-                fcm.setData(message);
-                Gson gson = new Gson();
-                String json =gson.toJson(fcm);
 
-                new Thread(
-                        ()->{
-                             HTTPUtilKt.POSTtoFCM(FCMMessageArrival.API_KEY,json);
-                        }
-                ).start();
 
                 break;
             case R.id.nav_sitter:

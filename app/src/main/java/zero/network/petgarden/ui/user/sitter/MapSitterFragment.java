@@ -9,9 +9,11 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -148,6 +150,9 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
         markerPosActual.setPosition(  pos  );
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
 
+        zero.network.petgarden.model.component.Location newLoc = new zero.network.petgarden.model.component.Location(location.getLatitude(),location.getLongitude());
+        sitterView.getSitter().setLocation(newLoc);
+        sitterView.getSitter().saveInDB();
         hasArrived();
 
 
@@ -164,8 +169,11 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
                         Location tempLocation = new Location("");
                         tempLocation.setLongitude(temp.getLocation().getLongitude());
                         tempLocation.setLatitude(temp.getLocation().getLat());
-                        //Cambiar 45 por 45 minutos
-                        if((locationActual.distanceTo(tempLocation)) <10 && (sitterView.checkTaskTimeOfOwner(temp)>=45)){
+                        //Verfiicar que la task lleve el tiempo adecuado: && (sitterView.checkTaskTimeOfOwner(temp)>=45)
+                        Log.e(">>>hasArrived()", "Distnace: "+(locationActual.distanceTo(tempLocation))+" Hasta:"+temp.getName());
+                        Toast.makeText(getContext(), "A",Toast.LENGTH_SHORT).show();
+                        if((locationActual.distanceTo(tempLocation)) < 200 ){
+                            Log.e(">>170MpStterFrgm","Esta cerca el sitter");
                             sitterView.notifyArrivalToOwner(temp.getId());
                         }
                     }
