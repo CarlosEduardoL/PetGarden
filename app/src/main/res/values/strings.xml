@@ -34,6 +34,8 @@
     <string name="month_or_year">Años</string>
     <string name="pet_picture">¡Tomémosle una foto a tu mascota!</string>
 
+    <string name="pet_recommendation_statement">Añade una recomendación para el cuidador</string>
+
     <string name="password_confirm">Confirme la contraseña</string>
     <string name="password_question">¿Cuál será tu\n contraseña?</string>
     <string name="email_example">alguien@correo.com</string>

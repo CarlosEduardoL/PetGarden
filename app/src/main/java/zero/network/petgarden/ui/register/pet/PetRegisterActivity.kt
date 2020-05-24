@@ -25,6 +25,7 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener,
     private lateinit var ageFragment: PetAgeFragment
     private lateinit var weightFragment: PetWeightFragment
     private lateinit var picFragment: PictureFragment
+    private lateinit var recommendationFragment:PetRecommendationFragment
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +49,7 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener,
         breedFragment = PetBreedFragment(this, pet)
         ageFragment = PetAgeFragment(this, pet)
         weightFragment = PetWeightFragment(this, pet)
+        recommendationFragment= PetRecommendationFragment(this, pet)
         picFragment = PictureFragment(
             this,
             pet,
@@ -66,7 +68,8 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener,
             nameFragment -> changeTo(breedFragment)
             breedFragment -> changeTo(ageFragment)
             ageFragment -> changeTo(weightFragment)
-            weightFragment -> changeTo(picFragment)
+            weightFragment -> changeTo(recommendationFragment)
+            recommendationFragment -> changeTo(picFragment)
         }
     }
 
