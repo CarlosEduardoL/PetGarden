@@ -1,14 +1,13 @@
 package zero.network.petgarden.model.behaivor
 
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import zero.network.petgarden.model.entity.Pet
+import java.io.Serializable
 
 /**
  * @author CarlosEduardoL
  * This class represent an entity in the DB
  */
-interface Entity {
+interface Entity: Serializable {
 
     /**
      * Is the uuid of the entity

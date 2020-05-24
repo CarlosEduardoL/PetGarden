@@ -14,7 +14,6 @@ import zero.network.petgarden.ui.register.user.activities.RegisterActivity
 import zero.network.petgarden.ui.user.owner.OwnerActivity
 import zero.network.petgarden.ui.user.sitter.SitterActivity
 import java.io.File
-import java.io.Serializable
 
 
 /**
@@ -67,9 +66,3 @@ fun Activity.startRegisterView(user: IUser, start: FragmentStart = FragmentStart
     startActivity(
         intent(RegisterActivity::class.java, "user" to user).apply { putExtra("start", start) }
     )
-
-/**
- * @return a new Intent with activity context
- */
-fun <T> Activity.intent(clazz: Class<T>, vararg extra: Pair<String, Serializable>) =
-    Intent(this, clazz).apply { extra.forEach { putExtra(it.first, it.second) } }

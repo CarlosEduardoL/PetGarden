@@ -1,5 +1,6 @@
 package zero.network.petgarden.util
 
+import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.widget.EditText
@@ -17,8 +18,14 @@ fun EditText.toText() = this.text.toString()
 fun Fragment.show(message: String) =
     Toast.makeText(this.activity, message, Toast.LENGTH_LONG).show()
 
-fun <T> Fragment.intent(clazz: Class<T>, vararg extras: Pair<String, Serializable>) =
-    Intent(context, clazz).apply { extras.forEach { putExtra(it.first, it.second) } }
+fun <T> Fragment.intent(clazz: Class<T>, vararg extras: Pair<String, Serializable>) = context!!.intent(clazz, *extras)
+
+/**
+ * @return a new Intent with context
+ */
+fun<T> Context.intent(clazz: Class<T>, vararg extras: Pair<String, Serializable>) =
+    Intent(this, clazz).apply { extras.forEach { putExtra(it.first, it.second) } }
+
 
 // Short the setOnCLickListenerMethod
 fun View.onClick(action: () -> Unit) = this.setOnClickListener { action() }

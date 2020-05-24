@@ -16,14 +16,12 @@ import kotlinx.coroutines.launch
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.FragmentOwnerProfileBinding
 import zero.network.petgarden.model.entity.Pet
-import zero.network.petgarden.tools.uploadImage
+import zero.network.petgarden.ui.element.picture.PictureActivity
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity.Companion.PET_KEY
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity.Companion.TITLE_KEY
 import zero.network.petgarden.util.extra
-import zero.network.petgarden.util.getPath
 import zero.network.petgarden.util.intent
-import java.io.File
 
 class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
@@ -60,8 +58,7 @@ class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
             changePasswordBtn.visibility = View.GONE
 
         cameraBtn.setOnClickListener{
-            val gal = Intent(Intent.ACTION_GET_CONTENT)
-            gal.type = "image/*"
+            val gal = PictureActivity.intent(context!!, owner, "Selecciona tu nueva foto")
             startActivityForResult(gal, GALLERY_CALLBACK)
         }
 
@@ -85,12 +82,7 @@ class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == GALLERY_CALLBACK && resultCode == Activity.RESULT_OK && data != null) {
-            val uri = data.data!!
-            val file = File(getPath(context!!, uri)!!)
-
-            CoroutineScope(Dispatchers.Main).launch { owner.uploadImage(file)}
             CoroutineScope(Dispatchers.Main).launch { photoUserIV.setImageBitmap(owner.image()) }
-
         } else if (resultCode == Activity.RESULT_OK && data !== null && requestCode == PET_CALLBACK) {
             CoroutineScope(Dispatchers.Main).launch {
                 owner.apply { addPet(data.extra(PET_KEY) { throw Exception(it) }) }

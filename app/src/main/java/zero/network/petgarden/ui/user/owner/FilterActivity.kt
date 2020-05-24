@@ -1,9 +1,7 @@
 package zero.network.petgarden.ui.user.owner
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_filter.*
 import zero.network.petgarden.databinding.ActivityFilterBinding
@@ -16,7 +14,6 @@ class FilterActivity : AppCompatActivity() {
     private lateinit var sitters:List<Sitter>
     lateinit var binding:ActivityFilterBinding
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding =  ActivityFilterBinding.inflate(layoutInflater)
@@ -58,8 +55,6 @@ class FilterActivity : AppCompatActivity() {
         }
     }
 
-
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun initTimePicker(fromHour: Int, fromMins: Int, toHour: Int, toMins: Int){
         fromTP.apply {
             setIs24HourView(true)

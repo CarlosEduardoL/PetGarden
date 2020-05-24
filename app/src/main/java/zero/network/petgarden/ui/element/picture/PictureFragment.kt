@@ -1,7 +1,5 @@
-package zero.network.petgarden.ui.register
+package zero.network.petgarden.ui.element.picture
 
-import android.R.attr
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Bitmap
@@ -56,11 +54,13 @@ class PictureFragment(
                 .setItems(options) { _, item ->
                     when {
                         options[item] == getString(R.string.takePhoto) -> startActivityForResult(
-                            Intent(ACTION_IMAGE_CAPTURE).putExtra(EXTRA_OUTPUT, activity!!.fileToUri(imageFile)), CAMERA_INTENT
+                            Intent(ACTION_IMAGE_CAPTURE).putExtra(EXTRA_OUTPUT, activity!!.fileToUri(imageFile)),
+                            CAMERA_INTENT
                         )
                         options[item] == getString(R.string.chooseFromGallery) -> startActivityForResult(
                             Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI),
-                            GALLERY_INTENT)
+                            GALLERY_INTENT
+                        )
                     }
                 }
                 .show()

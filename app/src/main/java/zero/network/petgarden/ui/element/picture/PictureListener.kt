@@ -1,4 +1,4 @@
-package zero.network.petgarden.ui.register
+package zero.network.petgarden.ui.element.picture
 
 import zero.network.petgarden.model.behaivor.Entity
 

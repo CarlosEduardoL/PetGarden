@@ -29,6 +29,7 @@ class Filter(
         val sittersFiltered: List<Sitter>
 
         sittersFiltered = sitters
+            .asSequence()
             .filter { it.rating.toFloat() >= numStars }
             .filter { it.availability?.cost?:min in min..max }
             .filter {
@@ -36,6 +37,7 @@ class Filter(
                     Duration(fromDate.timeInMillis, toDate.timeInMillis)
                 )?:true || (fromHour+fromMins==0 && toHour+toMins ==23+59)
             }
+            .toList()
         return sittersFiltered
     }
 }

@@ -19,8 +19,8 @@ import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.ui.element.ActionBarFragment
-import zero.network.petgarden.ui.register.PictureFragment
-import zero.network.petgarden.ui.register.PictureListener
+import zero.network.petgarden.ui.element.picture.PictureFragment
+import zero.network.petgarden.ui.element.picture.PictureListener
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity.Companion.PET_KEY
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity.Companion.TITLE_KEY
@@ -107,7 +107,13 @@ class RegisterActivity : AppCompatActivity(),
             roleFragment -> if (user is Entity) {
                 FirebaseAuth.getInstance().currentUser?.let {
                     user.id = it.uid
-                    changeView(PictureFragment(this, user, getString(R.string.user_picture)))
+                    changeView(
+                        PictureFragment(
+                            this,
+                            user,
+                            getString(R.string.user_picture)
+                        )
+                    )
                 }?:throw Exception("Unexpected Error")
             }
         }

@@ -9,12 +9,13 @@ import zero.network.petgarden.R
 import zero.network.petgarden.model.behaivor.Entity
 import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.ui.element.ActionBarFragment
-import zero.network.petgarden.ui.register.PictureFragment
-import zero.network.petgarden.ui.register.PictureListener
+import zero.network.petgarden.ui.element.picture.PictureFragment
+import zero.network.petgarden.ui.element.picture.PictureListener
 import zero.network.petgarden.util.extra
 import zero.network.petgarden.util.show
 
-class PetRegisterActivity : AppCompatActivity(), OnNextListener, PictureListener {
+class PetRegisterActivity : AppCompatActivity(), OnNextListener,
+    PictureListener {
 
     private lateinit var pet: Pet
 
@@ -47,7 +48,11 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener, PictureListener
         breedFragment = PetBreedFragment(this, pet)
         ageFragment = PetAgeFragment(this, pet)
         weightFragment = PetWeightFragment(this, pet)
-        picFragment = PictureFragment(this, pet, getString(R.string.pet_picture))
+        picFragment = PictureFragment(
+            this,
+            pet,
+            getString(R.string.pet_picture)
+        )
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.body, typeFragment)

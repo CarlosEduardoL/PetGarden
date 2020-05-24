@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".ui.register.PictureFragment">
+    tools:context=".ui.element.picture.PictureFragment">
 
     <ScrollView
         android:layout_width="wrap_content"
