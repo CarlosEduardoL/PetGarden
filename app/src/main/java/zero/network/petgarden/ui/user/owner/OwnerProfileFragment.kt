@@ -21,24 +21,23 @@ import zero.network.petgarden.ui.register.pet.PetRegisterActivity
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity.Companion.PET_KEY
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity.Companion.TITLE_KEY
 import zero.network.petgarden.util.extra
-import zero.network.petgarden.util.intent
 
 class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
     private lateinit var petsAdapter: PetsAdapter
-    private  lateinit var changePasswordFragment: ChangePasswordFragment
+    private lateinit var changePasswordFragment: ChangePasswordFragment
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ):  View = FragmentOwnerProfileBinding.inflate(inflater, container, false).apply {
+    ): View = FragmentOwnerProfileBinding.inflate(inflater, container, false).apply {
 
         changePasswordFragment = ChangePasswordFragment(owner)
 
-        CoroutineScope(Dispatchers.Main).launch{
-            petsAdapter = PetsAdapter(owner.pets().toList()){
+        CoroutineScope(Dispatchers.Main).launch {
+            petsAdapter = PetsAdapter(owner.pets().toList()) {
                 startActivityForResult(
-                    intent(PetRegisterActivity::class.java, PET_KEY to it, TITLE_KEY to "Editar a ${it.name}"),
+                    PetRegisterActivity.intent(context!!, "Editar a ${it.name}", it),
                     PET_CALLBACK
                 )
             }
@@ -54,30 +53,33 @@ class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
         nameUserTV.text = owner.name
         emailUserTV.text = owner.email
 
-        if (AccessToken.getCurrentAccessToken()!=null || GoogleSignIn.getLastSignedInAccount(context)!=null)
+        if (AccessToken.getCurrentAccessToken() != null || GoogleSignIn.getLastSignedInAccount(
+                context
+            ) != null
+        )
             changePasswordBtn.visibility = View.GONE
 
-        cameraBtn.setOnClickListener{
+        cameraBtn.setOnClickListener {
             val gal = PictureActivity.intent(context!!, owner, "Selecciona tu nueva foto")
             startActivityForResult(gal, GALLERY_CALLBACK)
         }
 
-        changePasswordBtn.setOnClickListener{
+        changePasswordBtn.setOnClickListener {
             val fragmentManager = activity!!.supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.actualFragmentContainer, changePasswordFragment).addToBackStack(null)
+            fragmentTransaction.replace(R.id.actualFragmentContainer, changePasswordFragment)
+                .addToBackStack(null)
             fragmentTransaction.commit()
 
         }
 
-        addPet.setOnClickListener{
-           val intent = Intent(activity, PetRegisterActivity::class.java)
-                intent.putExtra(TITLE_KEY, "Registrar Mascota")
-                intent.putExtra(PET_KEY, Pet())
-                startActivityForResult(intent, PET_CALLBACK)
+        addPet.setOnClickListener {
+            val intent = Intent(activity, PetRegisterActivity::class.java)
+            intent.putExtra(TITLE_KEY, "Registrar Mascota")
+            intent.putExtra(PET_KEY, Pet())
+            startActivityForResult(intent, PET_CALLBACK)
         }
     }.root
-
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -92,7 +94,7 @@ class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
         }
     }
 
-    companion object{
+    companion object {
         const val GALLERY_CALLBACK = 1
         const val PET_CALLBACK = 2
     }

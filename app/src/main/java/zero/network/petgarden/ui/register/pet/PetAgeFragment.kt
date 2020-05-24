@@ -7,9 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import zero.network.petgarden.databinding.FragmentAgeOfPetBinding
 import zero.network.petgarden.model.entity.Pet
+import zero.network.petgarden.ui.register.OnNextListener
 import zero.network.petgarden.util.onClick
 
-class PetAgeFragment(private val listener: OnNextListener, private val pet: Pet) : Fragment() {
+class PetAgeFragment(private val listener: OnNextListener<Any>, private val pet: Pet) : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

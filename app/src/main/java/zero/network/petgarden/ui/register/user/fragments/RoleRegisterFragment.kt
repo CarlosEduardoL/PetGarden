@@ -7,14 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_role_register.view.*
 import zero.network.petgarden.R
+import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
-import zero.network.petgarden.ui.register.user.OnNextListener
+import zero.network.petgarden.ui.register.OnNextListener
 
 class RoleRegisterFragment(
     private val user: User,
-    private val listener: OnNextListener
+    private val listener: OnNextListener<IUser>
 ) : Fragment() {
 
     override fun onCreateView(

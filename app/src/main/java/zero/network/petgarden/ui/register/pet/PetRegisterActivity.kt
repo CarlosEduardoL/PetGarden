@@ -1,6 +1,7 @@
 package zero.network.petgarden.ui.register.pet
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -11,10 +12,12 @@ import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.ui.element.ActionBarFragment
 import zero.network.petgarden.ui.element.picture.PictureFragment
 import zero.network.petgarden.ui.element.picture.PictureListener
+import zero.network.petgarden.ui.register.OnNextListener
 import zero.network.petgarden.util.extra
+import zero.network.petgarden.util.intent
 import zero.network.petgarden.util.show
 
-class PetRegisterActivity : AppCompatActivity(), OnNextListener,
+class PetRegisterActivity : AppCompatActivity(), OnNextListener<Any>,
     PictureListener {
 
     private lateinit var pet: Pet
@@ -25,7 +28,7 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener,
     private lateinit var ageFragment: PetAgeFragment
     private lateinit var weightFragment: PetWeightFragment
     private lateinit var picFragment: PictureFragment
-    private lateinit var recommendationFragment:PetRecommendationFragment
+    private lateinit var recommendationFragment: PetRecommendationFragment
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +52,7 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener,
         breedFragment = PetBreedFragment(this, pet)
         ageFragment = PetAgeFragment(this, pet)
         weightFragment = PetWeightFragment(this, pet)
-        recommendationFragment= PetRecommendationFragment(this, pet)
+        recommendationFragment = PetRecommendationFragment(this, pet)
         picFragment = PictureFragment(
             this,
             pet,
@@ -62,7 +65,7 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener,
 
     }
 
-    override fun next(fragment: Fragment) {
+    override fun next(fragment: Fragment, vararg extra: Any) {
         when (fragment) {
             typeFragment -> changeTo(nameFragment)
             nameFragment -> changeTo(breedFragment)
@@ -72,7 +75,6 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener,
             recommendationFragment -> changeTo(picFragment)
         }
     }
-
 
 
     private fun onError(error: String) {
@@ -94,6 +96,9 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener,
         const val PET_KEY = "PET"
         const val TITLE_KEY = "TITLE"
         private const val REGISTER_STACK = "REGISTER_STACK"
+
+        fun intent(context: Context, title: String, pet: Pet) =
+            context.intent(PetRegisterActivity::class.java, PET_KEY to pet, TITLE_KEY to title)
 
     }
 }

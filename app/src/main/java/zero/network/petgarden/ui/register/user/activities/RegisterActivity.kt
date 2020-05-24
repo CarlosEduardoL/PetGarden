@@ -11,6 +11,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import zero.network.petgarden.R
+import zero.network.petgarden.exception.AuthException
+import zero.network.petgarden.exception.InvalidUserClass
 import zero.network.petgarden.model.behaivor.CallBack
 import zero.network.petgarden.model.behaivor.Entity
 import zero.network.petgarden.model.behaivor.IUser
@@ -21,14 +23,11 @@ import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.ui.element.ActionBarFragment
 import zero.network.petgarden.ui.element.picture.PictureFragment
 import zero.network.petgarden.ui.element.picture.PictureListener
+import zero.network.petgarden.ui.register.OnNextListener
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity.Companion.PET_KEY
-import zero.network.petgarden.ui.register.pet.PetRegisterActivity.Companion.TITLE_KEY
 import zero.network.petgarden.ui.register.user.FragmentStart
-import zero.network.petgarden.ui.register.user.OnNextListener
 import zero.network.petgarden.ui.register.user.fragments.*
-import zero.network.petgarden.ui.user.owner.OwnerActivity
-import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.extra
 import zero.network.petgarden.util.startUserView
 import zero.network.petgarden.model.component.Location as Location2
@@ -37,7 +36,7 @@ import zero.network.petgarden.model.component.Location as Location2
  * @author CarlosEduardoL
  */
 class RegisterActivity : AppCompatActivity(),
-    OnNextListener, PictureListener {
+    OnNextListener<IUser>, PictureListener {
 
     private lateinit var nameFragment: NameRegisterFragment
     private lateinit var emailFragment: EmailRegisterFragment
@@ -98,23 +97,19 @@ class RegisterActivity : AppCompatActivity(),
             ?: Location2(10.0, 10.0)
     }
 
-    override fun next(fragment: Fragment, user: IUser) {
+    override fun next(fragment: Fragment, vararg extra: IUser) {
         when (fragment) {
             nameFragment -> changeView(emailFragment)
             emailFragment -> changeView(passFragment)
             passFragment -> changeView(birthFragment)
             birthFragment -> changeView(roleFragment)
-            roleFragment -> if (user is Entity) {
-                FirebaseAuth.getInstance().currentUser?.let {
-                    user.id = it.uid
-                    changeView(
-                        PictureFragment(
-                            this,
-                            user,
-                            getString(R.string.user_picture)
-                        )
-                    )
-                }?:throw Exception("Unexpected Error")
+            roleFragment -> for(user in extra) {
+                if (user is Entity) {
+                    FirebaseAuth.getInstance().currentUser?.let {
+                        user.id = it.uid
+                        changeView(PictureFragment(this, user, getString(R.string.user_picture)))
+                    }?:throw AuthException("Some kind of error happen in firebase auth")
+                }
             }
         }
     }
@@ -122,12 +117,12 @@ class RegisterActivity : AppCompatActivity(),
     private fun changeView(fragment: Fragment) = supportFragmentManager.beginTransaction()
         .replace(R.id.body, fragment).addToBackStack(REGISTER_STACK).commit()
 
-    private fun <T> finishRegister(user: Entity, clazz: Class<T>) {
+    private fun finishRegister(user: Entity) {
         if (user is IUser) {
             user.saveInDB()
             finished = true
             startUserView(user)
-        } else throw Exception("Cast Exception")
+        } else throw InvalidUserClass("${user::class.simpleName} no is a valid class")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -139,23 +134,18 @@ class RegisterActivity : AppCompatActivity(),
             }?:throw Exception("Unexpected Error")
             val pet: Pet = data.extra(PET_KEY) { return }
             owner.addPet(pet, CallBack { println(pet.ownerID)})
-            finishRegister(owner, OwnerActivity::class.java)
+            finishRegister(owner)
         }
     }
 
     override fun onPictureCaptured(entity: Entity) {
         when (entity) {
-            is Owner -> Intent(this, PetRegisterActivity::class.java).apply {
-                putExtra(TITLE_KEY, "Registrar Mascota")
-                putExtra(PET_KEY, Pet())
-                startActivityForResult(
-                    this,
-                    PET_CALLBACK
-                )
-            }
-
+            is Owner -> startActivityForResult(
+                PetRegisterActivity.intent(this, "Registrar Mascota", Pet()),
+                PET_CALLBACK
+            )
             is Sitter -> {
-                finishRegister(entity, SitterActivity::class.java)
+                finishRegister(entity)
             }
             else -> println("Error")
         }

@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_type_pet.view.*
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.FragmentTypePetBinding
 import zero.network.petgarden.model.entity.Pet
+import zero.network.petgarden.ui.register.OnNextListener
 import zero.network.petgarden.util.onClick
 
-class PetTypeFragment(private val listener: OnNextListener, private val pet: Pet) : Fragment() {
+class PetTypeFragment(private val listener: OnNextListener<Any>, private val pet: Pet) : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

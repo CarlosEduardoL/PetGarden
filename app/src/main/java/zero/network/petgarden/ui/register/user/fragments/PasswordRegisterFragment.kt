@@ -8,8 +8,9 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.FragmentPasswordRegisterBinding
+import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.model.entity.User
-import zero.network.petgarden.ui.register.user.OnNextListener
+import zero.network.petgarden.ui.register.OnNextListener
 import zero.network.petgarden.util.show
 import zero.network.petgarden.util.toText
 
@@ -19,7 +20,7 @@ import zero.network.petgarden.util.toText
  */
 class PasswordRegisterFragment(
     private val user: User,
-    private val listener: OnNextListener
+    private val listener: OnNextListener<IUser>
 ) : Fragment() {
 
     override fun onCreateView(
@@ -39,11 +40,11 @@ class PasswordRegisterFragment(
                 user.password = passInput.toText()
                 val authUser = FirebaseAuth.getInstance().currentUser
                 if (authUser != null) {
-                    listener.next(this@PasswordRegisterFragment, user)
+                    listener.next(this@PasswordRegisterFragment)
                 } else FirebaseAuth.getInstance()
                     .createUserWithEmailAndPassword(user.email, user.password)
                     .addOnSuccessListener {
-                        listener.next(this@PasswordRegisterFragment, user)
+                        listener.next(this@PasswordRegisterFragment)
                     }
                     .addOnFailureListener { show(it.message ?: "Unexpected Error, please retry") }
             }

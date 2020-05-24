@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_register_email.view.*
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.FragmentRegisterEmailBinding
+import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.model.entity.User
-import zero.network.petgarden.ui.register.user.OnNextListener
+import zero.network.petgarden.ui.register.OnNextListener
 import zero.network.petgarden.util.show
 import zero.network.petgarden.util.toText
 import java.util.*
@@ -19,7 +19,7 @@ import java.util.*
  */
 class EmailRegisterFragment(
     private val user: User,
-    private val listener: OnNextListener
+    private val listener: OnNextListener<IUser>
 ) : Fragment() {
 
     override fun onCreateView(
@@ -37,7 +37,7 @@ class EmailRegisterFragment(
             emailInput.toText().let {
                 if (it.isNotEmpty()){
                     user.email = it.toLowerCase(Locale.ROOT)
-                    listener.next(this@EmailRegisterFragment, user)
+                    listener.next(this@EmailRegisterFragment)
                 }else {
                     show(getString(R.string.field_error))
                 }
