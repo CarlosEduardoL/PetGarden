@@ -13,7 +13,6 @@ import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.ui.user.owner.recruitment.SitterFromUserActivity
 import zero.network.petgarden.util.getDate
-import zero.network.petgarden.util.times
 
 class SittersAdapter(val owner: Owner, var sitters: List<Sitter> = listOf()) :
     RecyclerView.Adapter<SittersAdapter.SitterViewHolder>() {
@@ -37,7 +36,6 @@ class SittersAdapter(val owner: Owner, var sitters: List<Sitter> = listOf()) :
 
     fun stopAnimation() {
         if (scope.isActive) scope.cancel()
-        println("-" * 20)
     }
 
     class SitterViewHolder(private val view: RowSitterBinding, private val scope: CoroutineScope) :

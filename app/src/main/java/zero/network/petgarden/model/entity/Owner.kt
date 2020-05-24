@@ -20,7 +20,7 @@ data class Owner(
     var sitterList: MutableMap<String,String> = mutableMapOf()
 ) : IUser by user, Serializable, Entity, IOwner {
 
-    private var _pets: MutableSet<Pet>? = null
+    private var _pets: Set<Pet>? = null
     private var _sitter: MutableSet<Sitter>? = null
 
     suspend fun image(): Bitmap {
@@ -45,9 +45,9 @@ data class Owner(
     override suspend fun addPet(pet: Pet): Boolean {
         pet.ownerID = id
         _pets?.let {
-            return if (it.add(pet)) {
-                pet.saveInDB(); true
-            } else false
+            _pets = it.filter { it.id != pet.id }.toSet() + pet
+            pet.saveInDB()
+            return true
         }
         downloadPets()
         return addPet(pet)
@@ -67,7 +67,7 @@ data class Owner(
     private suspend fun downloadPets() {
         val query = FirebaseDatabase.getInstance().reference
             .child(Pet.FOLDER).orderByChild("ownerID").equalTo(id)
-        _pets = query.wait().children.map { it.getValue(Pet::class.java)!! }.toMutableSet()
+        _pets = query.wait().children.map { it.getValue(Pet::class.java)!! }.toSet()
     }
 
     private suspend fun downloadSitters() {

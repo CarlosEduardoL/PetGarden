@@ -78,7 +78,6 @@ class PetRegisterActivity : AppCompatActivity(), OnNextListener, PictureListener
             .addToBackStack(REGISTER_STACK).commit()
 
     override fun onPictureCaptured(entity: Entity) {
-        println("---------------------------${entity}-------------------------------------------")
         setResult(Activity.RESULT_OK, Intent().apply { putExtra(PET_KEY, pet) })
         finish()
     }

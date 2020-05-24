@@ -15,19 +15,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.FragmentOwnerProfileBinding
-import zero.network.petgarden.model.behaivor.CallBack
 import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.tools.uploadImage
 import zero.network.petgarden.ui.register.pet.PetRegisterActivity
+import zero.network.petgarden.ui.register.pet.PetRegisterActivity.Companion.PET_KEY
+import zero.network.petgarden.ui.register.pet.PetRegisterActivity.Companion.TITLE_KEY
 import zero.network.petgarden.util.extra
 import zero.network.petgarden.util.getPath
-import zero.network.petgarden.util.show
+import zero.network.petgarden.util.intent
 import java.io.File
 
 class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
-    lateinit var petsAdapter: PetsAdapter
-    private  lateinit var changePasswordFragment:ChangePasswordFragment
+    private lateinit var petsAdapter: PetsAdapter
+    private  lateinit var changePasswordFragment: ChangePasswordFragment
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,8 +38,12 @@ class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
         changePasswordFragment = ChangePasswordFragment(owner)
 
         CoroutineScope(Dispatchers.Main).launch{
-            petsAdapter = PetsAdapter(owner.pets().toList())
-
+            petsAdapter = PetsAdapter(owner.pets().toList()){
+                startActivityForResult(
+                    intent(PetRegisterActivity::class.java, PET_KEY to it, TITLE_KEY to "Editar a ${it.name}"),
+                    PET_CALLBACK
+                )
+            }
             listPets.apply {
                 adapter = petsAdapter
             }
@@ -70,8 +75,8 @@ class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
         addPet.setOnClickListener{
            val intent = Intent(activity, PetRegisterActivity::class.java)
-                intent.putExtra(PetRegisterActivity.TITLE_KEY, "Registrar Mascota")
-                intent.putExtra(PetRegisterActivity.PET_KEY, Pet())
+                intent.putExtra(TITLE_KEY, "Registrar Mascota")
+                intent.putExtra(PET_KEY, Pet())
                 startActivityForResult(intent, PET_CALLBACK)
         }
     }.root
@@ -79,23 +84,21 @@ class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == GALLERY_CALLBACK && resultCode == Activity.RESULT_OK) {
-            val uri = data!!.data
-            val file = File(getPath(context!!, uri!!))
+        if (requestCode == GALLERY_CALLBACK && resultCode == Activity.RESULT_OK && data != null) {
+            val uri = data.data!!
+            val file = File(getPath(context!!, uri)!!)
 
             CoroutineScope(Dispatchers.Main).launch { owner.uploadImage(file)}
             CoroutineScope(Dispatchers.Main).launch { photoUserIV.setImageBitmap(owner.image()) }
 
         } else if (resultCode == Activity.RESULT_OK && data !== null && requestCode == PET_CALLBACK) {
-            owner.apply { addPet(data.extra(PetRegisterActivity.PET_KEY) { return }, CallBack { }) }
-            owner.saveInDB()
-
-            show("Su nueva mascota se agregó correctamente")
-            CoroutineScope(Dispatchers.Main).launch { petsAdapter.updateListPets(owner.pets().toList()) }
+            CoroutineScope(Dispatchers.Main).launch {
+                owner.apply { addPet(data.extra(PET_KEY) { throw Exception(it) }) }
+                owner.saveInDB()
+                petsAdapter.updateListPets(owner.pets().toList())
+            }
         }
     }
-
-
 
     companion object{
         const val GALLERY_CALLBACK = 1

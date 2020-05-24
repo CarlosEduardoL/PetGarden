@@ -5,12 +5,16 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import zero.network.petgarden.exception.InvalidUserClass
 import zero.network.petgarden.model.behaivor.IUser
+import zero.network.petgarden.model.entity.Owner
+import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.ui.register.user.FragmentStart
 import zero.network.petgarden.ui.register.user.activities.RegisterActivity
+import zero.network.petgarden.ui.user.owner.OwnerActivity
+import zero.network.petgarden.ui.user.sitter.SitterActivity
 import java.io.File
 import java.io.Serializable
-import java.lang.Exception
 
 
 /**
@@ -40,12 +44,20 @@ fun Activity.fileToUri(file: File): Uri = FileProvider.getUriForFile(this, this.
 /**
  * start the user view
  */
-fun <T> Activity.startUserView(user: IUser, clazz: Class<T>,showDialog: Boolean = false) {
-    val intent =         intent(clazz, "user" to user).apply {
+fun Activity.startUserView(
+    user: IUser,
+    showDialog: Boolean = false
+) {
+    val clazz = when(user){
+        is Owner -> OwnerActivity::class.java
+        is Sitter -> SitterActivity::class.java
+        else -> throw InvalidUserClass("${user::class.simpleName} no is a valid class")
+    }
+    val intent = intent(clazz, "user" to user).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     }
-    if(showDialog){
-        intent.putExtra("show_dialog","")
+    if (showDialog) {
+        intent.putExtra("show_dialog", "")
     }
     startActivity(intent)
 
@@ -59,5 +71,5 @@ fun Activity.startRegisterView(user: IUser, start: FragmentStart = FragmentStart
 /**
  * @return a new Intent with activity context
  */
-fun <T> Activity.intent(clazz: Class<T>, extra: Pair<String, Serializable>? = null) =
-    Intent(this, clazz).apply { extra?.let { putExtra(extra.first, extra.second) } }
+fun <T> Activity.intent(clazz: Class<T>, vararg extra: Pair<String, Serializable>) =
+    Intent(this, clazz).apply { extra.forEach { putExtra(it.first, it.second) } }

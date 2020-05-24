@@ -120,7 +120,7 @@ class RegisterActivity : AppCompatActivity(),
         if (user is IUser) {
             user.saveInDB()
             finished = true
-            startUserView(user, clazz)
+            startUserView(user)
         } else throw Exception("Cast Exception")
     }
 

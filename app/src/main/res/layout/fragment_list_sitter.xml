@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:gravity="right"
+    android:gravity="end"
+    android:background="@android:color/white"
     tools:context=".ui.user.owner.ListSitterFragment">
 
 

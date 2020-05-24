@@ -40,8 +40,6 @@ import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.tools.initDatabase
 import zero.network.petgarden.ui.register.user.FragmentStart
-import zero.network.petgarden.ui.user.owner.OwnerActivity
-import zero.network.petgarden.ui.user.sitter.SitterActivity
 import zero.network.petgarden.util.*
 import java.util.*
 
@@ -131,14 +129,15 @@ class LoginActivity : AppCompatActivity() {
                 if (job.isActive) {
                     job.cancel()
                 }
+
                 sitterByEmail(it.email!!)?.let {
-                    startUserView(it, SitterActivity::class.java)
+                    startUserView(it)
                 }
                 ownerByEmail(it.email!!)?.let {
                     if(showDialog){
-                        startUserView(it, OwnerActivity::class.java, true)
+                        startUserView(it, true)
                     }else{
-                        startUserView(it, OwnerActivity::class.java, false)
+                        startUserView(it, false)
                     }
 
                 }
@@ -165,10 +164,10 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 sitterByEmail(emailInput.toText())?.let {
-                    startUserView(it, SitterActivity::class.java)
+                    startUserView(it)
                 }
                 ownerByEmail(emailInput.toText())?.let {
-                    startUserView(it, OwnerActivity::class.java)
+                    startUserView(it)
                 }
             }
         }
@@ -230,8 +229,8 @@ class LoginActivity : AppCompatActivity() {
                 val email = obj.getString("email")
                 userByEmail(email)?.let {
                     when (it) {
-                        is Sitter -> startUserView(it, SitterActivity::class.java)
-                        else -> startUserView(it, OwnerActivity::class.java)
+                        is Sitter -> startUserView(it)
+                        else -> startUserView(it)
                     }
                     return@launch
                 }
@@ -252,8 +251,8 @@ class LoginActivity : AppCompatActivity() {
             auth.signInWithCredential(credential)
             userByEmail(email)?.let {
                 when (it) {
-                    is Sitter -> startUserView(it, SitterActivity::class.java)
-                    is Owner -> startUserView(it, OwnerActivity::class.java)
+                    is Sitter -> startUserView(it)
+                    is Owner -> startUserView(it)
                     else -> show(getString(R.string.sign_in_google_error))
                 }
                 return
