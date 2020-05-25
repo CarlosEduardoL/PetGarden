@@ -31,6 +31,7 @@ class ChangePasswordFragment(val owner: Owner): Fragment(){
 
         nameUserTV.text = owner.name
         emailUserTV.text = owner.email
+        CoroutineScope(Dispatchers.Main).launch { photoSitterIV.setImageBitmap(owner.image()) }
 
         updatePass.setOnClickListener{
            val currentPass =  currentPassTV.text.toString()

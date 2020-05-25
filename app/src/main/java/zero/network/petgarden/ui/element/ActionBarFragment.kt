@@ -9,8 +9,9 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.fragment_action_bar.*
 import zero.network.petgarden.databinding.FragmentActionBarBinding
 import zero.network.petgarden.model.behaivor.CallBack
 import zero.network.petgarden.ui.login.LoginActivity
@@ -50,7 +51,8 @@ class ActionBarFragment(
             if (!isCloseButton) visibility = View.GONE
             onClick {
                 FirebaseAuth.getInstance().signOut()
-                AccessToken.setCurrentAccessToken(null)
+                deleteToken()
+
                 Intent(activity, LoginActivity::class.java).apply {
                     addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK or FLAG_ACTIVITY_CLEAR_TOP)
                     activity?.startActivity(this)
@@ -73,4 +75,16 @@ class ActionBarFragment(
     }
 
 
+    fun deleteToken(){
+        if (AccessToken.getCurrentAccessToken()!=null)
+            AccessToken.setCurrentAccessToken(null)
+
+        if (GoogleSignIn.getLastSignedInAccount(context)!=null) {
+            val gso =
+                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+
+            val googleSignInClient = GoogleSignIn.getClient(context!!, gso)
+            googleSignInClient.signOut()
+        }
+    }
 }
