@@ -102,13 +102,13 @@ class NotificationUtils {
             }
 
             val builder =
-               val notification =  NotificationCompat.Builder(context, NotificationArriveUtil.CHANNEL_ID)
+                NotificationCompat.Builder(context, NotificationArriveUtil.CHANNEL_ID)
                     .setContentTitle("Respuesta de solicitud de contratación")
                     .setContentText(response)
                     .setSmallIcon(R.drawable.logo)
                     .setAutoCancel(true)
 
-            manager.notify(2, notification.build())
+            manager.notify(1, builder.build())
             consecutive++
         }
 
