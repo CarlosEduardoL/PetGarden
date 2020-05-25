@@ -82,7 +82,7 @@ class PictureFragment(
                     picture.visibility = VISIBLE
                     picture.setImageBitmap(
                         BitmapFactory.decodeFile(imageFile.path)
-                            .let { Bitmap.createScaledBitmap(it, it.width / 4, it.height / 4, false) })
+                            .let { if(it.width > 500 || it.height >500) Bitmap.createScaledBitmap(it, it.width / 4, it.height / 4, false) else it })
                     nextButton.visibility = VISIBLE
                 }
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {

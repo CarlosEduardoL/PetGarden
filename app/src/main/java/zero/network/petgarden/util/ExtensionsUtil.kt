@@ -51,3 +51,5 @@ fun <K, V : Collection<E>, E> List<Pair<K, V>>.simplify(): List<Pair<K, E>> {
 }
 
 fun List<Sitter>.filter(filter: Filter) = filter.filterSitters(this)
+
+fun<T> T.devNull():Unit = {}()

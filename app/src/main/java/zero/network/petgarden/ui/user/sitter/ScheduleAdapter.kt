@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import zero.network.petgarden.databinding.RowTaskBinding
+import zero.network.petgarden.ui.base.BaseViewHolder
 import zero.network.petgarden.ui.user.sitter.ScheduleAdapter.ClientHolder
 import zero.network.petgarden.util.getDate
 
@@ -23,10 +24,10 @@ class ScheduleAdapter : RecyclerView.Adapter<ClientHolder>(){
 
     override fun onBindViewHolder(holder: ClientHolder, position: Int) = holder.bind(tasks[position])
 
-    class ClientHolder(private val binding: RowTaskBinding): RecyclerView.ViewHolder(binding.root){
-        fun bind(task: Pair<String, Long>){
-            binding.name.text = task.first
-            binding.time.text = task.second.getDate("hh:mm:ss")
+    inner class ClientHolder(private val binding: RowTaskBinding): BaseViewHolder<Pair<String, Long>>(binding){
+        override fun bind(element: Pair<String, Long>){
+            binding.name.text = element.first
+            binding.time.text = element.second.getDate("hh:mm:ss")
         }
     }
 }
