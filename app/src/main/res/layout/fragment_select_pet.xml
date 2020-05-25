@@ -8,30 +8,18 @@
     android:orientation="vertical"
     android:padding="10dp"
     tools:context=".ui.user.owner.ServiceClientDialog">
-
-    <LinearLayout
+1
+    <Space
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="#1AB28E"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_height="32dp" />
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/icon_step" />
-
-        <TextView
-            android:id="@+id/textView12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Elige tu mascota"
-            android:textColor="#FFFFFF"
-            android:textSize="24dp" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Elige tu mascota"
+        android:textColor="#23CBA3"
+        android:textSize="24dp" />
 
     <Space
         android:layout_width="match_parent"
@@ -40,21 +28,9 @@
     <ListView
         android:id="@+id/listPet"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></ListView>
-    <Button
-        android:id="@+id/okBtn"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="8dp"
-        android:background="@android:color/transparent"
-        android:text="Aceptar"
-        android:textAllCaps="false"
-        android:textColor="#1AB28E"
-        android:textSize="24dp" />
+        android:layout_gravity="center"></ListView>
+
 
 
 </LinearLayout>

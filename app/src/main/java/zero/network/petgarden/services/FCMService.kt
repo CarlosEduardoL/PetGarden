@@ -39,9 +39,11 @@ class FCMService :FirebaseMessagingService() {
                         owner.sitterList[sitter.id] = sitter.id
                         pet.sitterID = sitter.id
                         saveInDB(owner, pet, sitter)
-                        // Lanzar noti de que acepto
+                        NotificationUtils.createSimpleNotification(this,
+                            "El cuidador  ha aceptado la solicitud de contratación")
                     }else {
-                        //Lanzar noti de que rechazo
+                        NotificationUtils.createSimpleNotification(this,
+                            "El cuidador ha rechazado la solicitud contratación")
                     }
                 }
             } else

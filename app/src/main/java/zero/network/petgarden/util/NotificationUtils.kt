@@ -72,7 +72,7 @@ class NotificationUtils {
         }
 
 
-        private fun addListenerAcceptBtn(context: Context, message: Message, notificationLayout:RemoteViews) {
+         fun addListenerAcceptBtn(context: Context, message: Message, notificationLayout:RemoteViews) {
             //Launch intent when declineBtn is clicked
             val intent = Intent(context, NotificationIntentService::class.java)
             intent.action = "accept"
@@ -86,6 +86,27 @@ class NotificationUtils {
                     PendingIntent.FLAG_UPDATE_CURRENT
                 )
             )
+        }
+
+        fun createSimpleNotification(context: Context, response:String){
+            val manager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val channel = NotificationChannel(
+                    CHANNEL_ID,
+                    CHANNEL_NAME,
+                    CHANNEL_IMPORTANCE
+                )
+                manager.createNotificationChannel(channel)
+            }
+
+            val builder =
+                NotificationCompat.Builder(context, NotificationArriveUtil.CHANNEL_ID)
+                    .setContentTitle("Respuesta de solicitud de contratación")
+                    .setContentText(response)
+                    .setSmallIcon(R.drawable.logo)
+                    .setAutoCancel(true)
         }
     }
 }
