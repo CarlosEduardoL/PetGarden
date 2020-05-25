@@ -28,7 +28,7 @@ class FCMService :FirebaseMessagingService() {
 
             if (message.ownerId == "") {
 
-                val sitterID = "" //Aqui va el id del sitter
+                val sitterID = message.sitterId //Aqui va el id del sitter
                 val shared = getSharedPreferences(sitterID, Context.MODE_PRIVATE)
 
                 if (shared.contains("owner") && shared.contains("pet")){
