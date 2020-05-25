@@ -67,9 +67,6 @@ public class DockSitterFragment extends Fragment implements BottomNavigationView
                 sitterView.getTopBar().setVisibility(false);
                 sitterView.getTopBar().update("Mapa",false,false);
 
-                sitterView.notifyArrivalToOwner("A9h5keqPIvOFSiyhI7X7MeQWP6O2");
-
-
                 break;
             case R.id.nav_sitter:
                 sitterView.loadSchedulerView();

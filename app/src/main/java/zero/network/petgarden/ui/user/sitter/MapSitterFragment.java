@@ -27,10 +27,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import zero.network.petgarden.R;
+import zero.network.petgarden.model.component.Task;
 import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Pet;
 
@@ -94,13 +97,15 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
         markerPosActual = mMap.addMarker(  new MarkerOptions().position(act).title("Yo").snippet("Mi ubicación")  );
         firstEntry = true;
         locationActual = last;
-        googleMap.addMarker(new MarkerOptions().position(act)
-                .title("Marker in Sydney"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(act,16));
 
         mMap.setMyLocationEnabled(true);
 
         initMapLocation();
+
+        sitterView.getSitter().clientsXPets(
+                this::addOwnerMarkers
+        );
 
     }
 
@@ -159,7 +164,7 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
 
 
 
-    private boolean hasArrived() {
+    private void hasArrived() {
         boolean arrived=false;
 
         sitterView.getSitter().clients(
@@ -170,15 +175,35 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
                         tempLocation.setLatitude(temp.getLocation().getLat());
                         //Verfiicar que la task lleve el tiempo adecuado: && (sitterView.checkTaskTimeOfOwner(temp)>=45)
                         Log.e(">>>hasArrived()", "Distnace: "+(locationActual.distanceTo(tempLocation))+" Hasta:"+temp.getName());
-                        if((locationActual.distanceTo(tempLocation)) < 200 ){
+                        if((locationActual.distanceTo(tempLocation)) < 100 ){
                             Log.e(">>170MpStterFrgm","Esta cerca el sitter");
-                            sitterView.notifyArrivalToOwner(temp.getId());
+                            //Sacar las tasks que tiene este owner y verificar si alguna ya terminó
+                            sitterView.getSitter().clientsXPets(
+                                    (ownerPetsMap)->{
+
+                                        Set<Pet> petsOfOwner = ownerPetsMap.get(temp);
+                                        //Por cada Pet, ver cuál task ya ha terminado
+                                        assert petsOfOwner != null;
+                                        for(Pet petTemp: petsOfOwner){
+
+                                            //Si una task correspondiente a alguna mascota del dueño está finalizada
+                                            //Manda la pushNotification
+                                            if(Objects.requireNonNull(sitterView.getSitter().getPlanner().getTaskByID(petTemp.getId())).isFinalized()){
+                                                sitterView.notifyArrivalToOwner(temp.getId());
+                                            }
+                                        }
+                                    }
+                            );
+
+
+
+
+
                         }
                     }
                 }
         );
 
-        return arrived;
     }
 
     @Override

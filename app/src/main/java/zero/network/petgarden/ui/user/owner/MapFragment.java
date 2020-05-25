@@ -27,6 +27,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import zero.network.petgarden.R;
@@ -44,6 +45,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     private boolean firstEntry;
     private LocationManager manager;
     public static boolean active = false;
+    private ArrayList<Marker> sitterMarkers;
 
     public MapFragment(OwnerView owner){
         ownerView = owner;
@@ -74,7 +76,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnMarkerDragListener(this);
-
+        sitterMarkers = new ArrayList<>();
 
         //Llevar marker de posicion actual con zoom la primer vez
         Location last = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -146,6 +148,9 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     public void addSittersMarkers(List<Sitter> sitters){
         LatLng pos;
 
+        removeSitterMarkers();
+
+
         for(Sitter sitter: sitters){
             pos = new LatLng(sitter.getLocation().getLat(),sitter.getLocation().getLongitude());
             Location tempLocation = new Location("");
@@ -161,10 +166,19 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                         .draggable(false)
                         .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_sitter_map)));
                 temp.setTag("sitter::"+sitter.getId());
-
+                sitterMarkers.add(temp);
 
             }
 
+
+        }
+    }
+
+    private void removeSitterMarkers() {
+        if(sitterMarkers!=null){
+            for(int i=0;i<sitterMarkers.size();i++){
+                sitterMarkers.get(i).remove();
+            }
         }
     }
 

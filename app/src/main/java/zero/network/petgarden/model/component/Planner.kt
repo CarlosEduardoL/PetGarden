@@ -4,7 +4,20 @@ import zero.network.petgarden.model.behaivor.IPlanner
 import java.io.Serializable
 import java.util.*
 
-data class Task(var petID: String = "", var duration: Duration = Duration()): Serializable
+data class Task(var petID: String = "", var duration: Duration = Duration()): Serializable{
+
+    fun getTotalCost(): Double{
+        val durationTotal = duration.end - duration.start
+        val durationInHours = (durationTotal.toDouble()/1000)/3600
+
+        return durationInHours*duration.cost.toDouble()
+    }
+
+    fun isFinalized(): Boolean{
+        return System.currentTimeMillis()>= duration.end
+
+    }
+}
 
 class Planner(
     private var _availability: MutableList<Duration> = mutableListOf(),
@@ -43,5 +56,10 @@ class Planner(
             }
             else -> false
         }
+    }
+
+    fun getTaskByID(id: String): Task?{
+
+        return tasks.firstOrNull { it.petID == id }
     }
 }

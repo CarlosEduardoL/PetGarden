@@ -4,7 +4,7 @@ public class MessageArrival {
 
     public static final String TYPE ="arrival";
     private String titulo;
-    private String body;
+    private double cost;
     private String petName;
     private String type;
 
@@ -21,12 +21,12 @@ public class MessageArrival {
         this.titulo = titulo;
     }
 
-    public String getBody() {
-        return body;
+    public double getCost() {
+        return cost;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public void setCost(double cost) {
+        this.cost = cost;
     }
 
     public String getPetName() {
