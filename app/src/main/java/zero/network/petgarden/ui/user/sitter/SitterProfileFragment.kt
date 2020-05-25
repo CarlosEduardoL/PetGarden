@@ -32,7 +32,10 @@ class SitterProfileFragment(view: SitterView) : Fragment(), SitterView by view {
     ): View = FragmentSitterProfileBinding.inflate(inflater, container, false).apply {
         changePasswordFragment = ChangePassFragment(sitter)
 
-        CoroutineScope(Dispatchers.Main).launch { adapter = CustomersAdapter(sitter.clientsXPets(), context!!) }
+        CoroutineScope(Dispatchers.Main).launch { adapter = CustomersAdapter(sitter.clientsXPets(), context!!)
+        val x   = sitter.clientsXPets()
+            println("numero de clientes: ${x.keys}  Numero de pets: ${x.values}")
+        }
         CoroutineScope(Dispatchers.Main).launch { photoSitterIV.setImageBitmap(sitter.image()) }
         nameSitterTV.text = sitter.name
         emailSitterTV.text = sitter.email

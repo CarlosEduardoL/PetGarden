@@ -23,7 +23,7 @@ class CustomersAdapter(private val ownersAndPets: Map<Owner, Set<Pet>>, private 
     private val listHeaders = ownersAndPets.keys.toList()
 
     override fun getChildrenCount(listPosition:Int): Int {
-        return ownersAndPets.get(listHeaders.get(listPosition))!!.size
+        return ownersAndPets[listHeaders[listPosition]]!!.size
     }
 
     override fun getGroup(groupPosition: Int): Any {
@@ -69,6 +69,8 @@ class CustomersAdapter(private val ownersAndPets: Map<Owner, Set<Pet>>, private 
     override fun getChildView(listPosition: Int, expandedListPosition: Int,
                               isLastChild:Boolean, convertView:View, parent: ViewGroup): View {
 
+        println("-----Entro al inflater de las mascotas-------")
+
         var convertView = convertView
 
         if (convertView == null) {
@@ -77,7 +79,6 @@ class CustomersAdapter(private val ownersAndPets: Map<Owner, Set<Pet>>, private 
         }
 
         val pet = getChild(listPosition, expandedListPosition) as Pet
-            //setear la info de los pets
 
         convertView.apply { breedTV.text = pet.breed
                             agePet.text = ("${pet.years} años")
@@ -103,6 +104,9 @@ class CustomersAdapter(private val ownersAndPets: Map<Owner, Set<Pet>>, private 
 
     override fun getGroupView(listPosition:Int, isExpanded: Boolean,
                               convertView: View, parent: ViewGroup): View {
+        println("-----Entro al inflater de los clientes-------")
+
+
         var convertView = convertView
 
         if (convertView == null) {
