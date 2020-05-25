@@ -1,12 +1,14 @@
 package zero.network.petgarden.ui.user.owner.recruitment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TimePicker
 import androidx.annotation.RequiresApi
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
@@ -18,9 +20,6 @@ import zero.network.petgarden.model.component.Task
 import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.model.notifications.FCMMessage
 import zero.network.petgarden.model.notifications.Message
-import zero.network.petgarden.model.notifications.OnResponseContractingListener
-import zero.network.petgarden.services.FCMService
-import zero.network.petgarden.util.NotificationUtils
 import zero.network.petgarden.util.POSTtoFCM
 import zero.network.petgarden.util.getDate
 import zero.network.petgarden.util.show
@@ -113,7 +112,7 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
     }
 
     private fun requestContracting(duration: Duration){
-        var fcm = FCMMessage()
+        val fcm = FCMMessage()
         val schedule = "Horario:  ${duration.start.getDate("hh:mm:ss")} a ${duration.end.getDate("hh:mm:ss")}"
 
         fcm.to = "/topics/${sitter.id}"
@@ -149,19 +148,11 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
     }
 
     private fun listenResponseContracting(pet: Pet){
-        FCMService.listener =object : OnResponseContractingListener {
-            override fun responseContracting(response: String) {
-                println("-------------Decision del sitter desde recruinment: $response------------------")
-                if (response == NotificationUtils.ACCEPT){
-                    owner.sitterList[sitter.id] = sitter.id
-                    pet.sitterID = sitter.id
-                    owner.saveInDB()
-                    pet.saveInDB()
-                    sitter.saveInDB()
-                    CoroutineScope(Dispatchers.Main).launch {show("El cuidador seleccionado ha sido contratado")}
-                }else
-                    CoroutineScope(Dispatchers.Main).launch {show("El cuidador no aceptó la oferta de contratación")}
-            }
+        val gson = Gson()
+        val editor = context!!.getSharedPreferences(sitter.id, Context.MODE_PRIVATE).edit(true) {
+            putString("owner",gson.toJson(owner))
+            putString("sitter",gson.toJson(sitter))
+            putString("pet",gson.toJson(pet))
         }
     }
 }

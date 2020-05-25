@@ -65,7 +65,7 @@ class SitterFromUserActivity : AppCompatActivity(), RecruitmentView {
                 println("---------------- Estoy Pasando -------------------------------")
 
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.main_content, SelectPetFragment(owner.pets().toList(), it))
+                    .replace(R.id.main_content, SelectPetFragment(owner.pets().filter { it.sitterID == null }, it))
                     .addToBackStack("Default")
                     .commit()
             }

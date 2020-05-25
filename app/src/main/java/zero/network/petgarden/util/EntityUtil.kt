@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.database.FirebaseDatabase
 import org.json.JSONObject
+import zero.network.petgarden.model.behaivor.Entity
 import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.model.component.Location
 import zero.network.petgarden.model.entity.Owner
@@ -27,6 +28,8 @@ suspend fun sitterByEmail(email: String): Sitter? {
 suspend fun userByEmail(email: String): IUser? {
     return sitterByEmail(email)?: ownerByEmail(email)
 }
+
+fun saveInDB(vararg entity: Entity) = entity.forEach { it.saveInDB() }
 
 val GoogleSignInAccount.user
     get() = User(
