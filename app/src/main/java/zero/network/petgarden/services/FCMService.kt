@@ -39,11 +39,16 @@ class FCMService :FirebaseMessagingService() {
                         owner.sitterList[sitter.id] = sitter.id
                         pet.sitterID = sitter.id
                         saveInDB(owner, pet, sitter)
+
                         NotificationUtils.createSimpleNotification(this,
                             "El cuidador  ha aceptado la solicitud de contratación")
+                        println("------------notificacion de respuesta de contratacion lanzada")
+
                     }else {
                         NotificationUtils.createSimpleNotification(this,
                             "El cuidador ha rechazado la solicitud contratación")
+                        println("------------notificacion de respuesta de contratacion lanzada")
+
                     }
                 }
             } else
