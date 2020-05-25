@@ -102,7 +102,7 @@ class NotificationUtils {
             }
 
             val builder =
-                NotificationCompat.Builder(context, NotificationArriveUtil.CHANNEL_ID)
+                NotificationCompat.Builder(context, CHANNEL_ID)
                     .setContentTitle("Respuesta de solicitud de contratación")
                     .setContentText(response)
                     .setSmallIcon(R.drawable.logo)
