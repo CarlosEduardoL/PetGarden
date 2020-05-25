@@ -31,10 +31,10 @@ class FCMService :FirebaseMessagingService() {
                 val sitterID = message.sitterId //Aqui va el id del sitter
                 val shared = getSharedPreferences(sitterID, Context.MODE_PRIVATE)
 
-                if (shared.contains("owner") && shared.contains("pet")){
+                if (shared.contains("owner") && shared.contains("pet") && shared.contains("sitter")){
                     val owner = gson.fromJson(shared.getString("owner", ""), Owner::class.java)
                     val sitter = gson.fromJson(shared.getString("sitter",""), Sitter::class.java)
-                    val pet = gson.fromJson(shared.getString("sitter",""), Pet::class.java)
+                    val pet = gson.fromJson(shared.getString("pet",""), Pet::class.java)
                     if (message.responseContracting == NotificationUtils.ACCEPT){
                         owner.sitterList[sitter.id] = sitter.id
                         pet.sitterID = sitter.id
@@ -51,6 +51,7 @@ class FCMService :FirebaseMessagingService() {
 
                     }
                 }
+                shared.edit().clear().apply()
             } else
                 NotificationUtils.createNotification(this, message)
 

@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -171,7 +170,6 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
                         tempLocation.setLatitude(temp.getLocation().getLat());
                         //Verfiicar que la task lleve el tiempo adecuado: && (sitterView.checkTaskTimeOfOwner(temp)>=45)
                         Log.e(">>>hasArrived()", "Distnace: "+(locationActual.distanceTo(tempLocation))+" Hasta:"+temp.getName());
-                        Toast.makeText(getContext(), "A",Toast.LENGTH_SHORT).show();
                         if((locationActual.distanceTo(tempLocation)) < 200 ){
                             Log.e(">>170MpStterFrgm","Esta cerca el sitter");
                             sitterView.notifyArrivalToOwner(temp.getId());

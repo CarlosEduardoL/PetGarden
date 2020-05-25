@@ -63,12 +63,6 @@ class ScheduleFragment(view: SitterView) : Fragment(), SitterView by view {
                         .map { it.first to it.second.toSet().intersect(dayTasks.keys) }
                         .simplify()
                         .map { it.first to (dayTasks[it.second] ?: 0) }
-                    println(dayTasks)
-                    println(
-                        sitter.clientsXPets()
-                            .map { "${it.key.name} ${it.key.lastName}" to it.value.map { pet -> pet.id } }
-                            .map { it.first to it.second.toSet().intersect(dayTasks.keys) }
-                    )
                 }
             }
         }
@@ -85,6 +79,7 @@ class ScheduleFragment(view: SitterView) : Fragment(), SitterView by view {
         calendarView.date = currentTimeMillis()
     }.root
 
+    @SuppressLint("SetTextI18n")
     private fun initDate(selectDay: TextView) {
         val today = Calendar.getInstance()
         val month = today.get(Calendar.MONTH)
