@@ -12,10 +12,18 @@ import com.facebook.AccessToken
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import zero.network.petgarden.databinding.FragmentActionBarBinding
 import zero.network.petgarden.model.behaivor.CallBack
+import zero.network.petgarden.model.behaivor.Entity
+import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.ui.login.LoginActivity
 import zero.network.petgarden.util.onClick
+import zero.network.petgarden.util.userByEmail
 
 
 /**
@@ -50,9 +58,13 @@ class ActionBarFragment(
         exitButton.apply {
             if (!isCloseButton) visibility = View.GONE
             onClick {
+                val emailUser = FirebaseAuth.getInstance().currentUser!!.email
+                CoroutineScope(Dispatchers.Main).launch {
+                    when(val currentUser = userByEmail(emailUser!!)) {
+                         is Entity -> FirebaseMessaging.getInstance().unsubscribeFromTopic(currentUser.id) }}
+
                 FirebaseAuth.getInstance().signOut()
                 deleteToken()
-
                 Intent(activity, LoginActivity::class.java).apply {
                     addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK or FLAG_ACTIVITY_CLEAR_TOP)
                     activity?.startActivity(this)
