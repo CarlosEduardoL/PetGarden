@@ -3,6 +3,7 @@ package zero.network.petgarden.ui.user.owner.recruitment
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
@@ -14,6 +15,7 @@ import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.ui.element.ActionBarFragment
 import zero.network.petgarden.util.extra
+import zero.network.petgarden.util.show
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -60,14 +62,29 @@ class SitterFromUserActivity : AppCompatActivity(), RecruitmentView {
         continuation?.resume(null)
         continuation = it
         CoroutineScope(Main).launch {
-            if (owner.pets().size == 1) it.resume(owner.pets().first())
-            else {
-                println("---------------- Estoy Pasando -------------------------------")
-
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.main_content, SelectPetFragment(owner.pets().filter { it.sitterID == null }, it))
-                    .addToBackStack("Default")
-                    .commit()
+            val pets = owner.pets().filter {pet -> pet.sitterID == null }
+            when {
+                pets.isEmpty() ->{
+                    show("Todas tus mascotas ya estan al cuidado de alguien")
+                    it.resume(null)
+                }
+                pets.size == 1 -> it.resume(owner.pets().first())
+                pets.size < 5 -> {
+                    val options = pets.map { it.name }.toTypedArray()
+                    AlertDialog.Builder(this@SitterFromUserActivity)
+                        .setTitle("Selecciona a tu mascota")
+                        .setItems(options) { _, item ->
+                            it.resume(pets[item])
+                        }
+                        .setOnCancelListener { _ -> it.resume(null) }
+                        .show()
+                }
+                else -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_content, SelectPetFragment(pets, it))
+                        .addToBackStack("Default")
+                        .commit()
+                }
             }
         }
     }.also {
