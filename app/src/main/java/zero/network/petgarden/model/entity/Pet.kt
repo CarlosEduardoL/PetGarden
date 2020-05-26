@@ -14,7 +14,8 @@ data class Pet(
     var weight: Int = 0,
     var about: String = "Sin comentarios",
     var ownerID: String = "",
-    var sitterID: String? = null
+    var sitterID: String? = null,
+    override var debug: String = ""
 ): Serializable, Entity{
 
     suspend fun loadImage() = downloadImage()

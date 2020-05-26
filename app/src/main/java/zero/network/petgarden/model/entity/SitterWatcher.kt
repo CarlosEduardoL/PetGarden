@@ -35,11 +35,6 @@ class SitterWatcher private constructor(private var sitter: SitterIMP) :
         set(value) {
             sitter.kindPets = value
         }
-    override var additional: String
-        get() = sitter.additional
-        set(value) {
-            sitter.additional = value
-        }
     override var planner: Planner
         get() = sitter.planner
         set(value) {
@@ -53,6 +48,11 @@ class SitterWatcher private constructor(private var sitter: SitterIMP) :
         }
 
     override fun folder(): String = sitter.folder()
+    override var debug: String
+        get() = sitter.debug
+        set(value) {
+            sitter.debug = value
+        }
 
     override var name: String
         get() = sitter.name

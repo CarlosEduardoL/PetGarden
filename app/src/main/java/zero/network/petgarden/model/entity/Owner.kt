@@ -15,7 +15,8 @@ import java.io.Serializable
 data class Owner(
     private val user: User = User(),
     override var id: String = "Default Value",
-    var sitterList: MutableMap<String, String> = mutableMapOf()
+    var sitterList: MutableMap<String, String> = mutableMapOf(),
+    override var debug: String = ""
 ) : IUser by user, Serializable, Entity, IOwner {
 
     private var _pets: Set<Pet>? = null

@@ -15,7 +15,7 @@ data class SitterIMP(
     override var id: String = "",
     override var rating: Double = 0.0,
     override var kindPets: String = "Nothing Especial",
-    override var additional: String = "Nothing Especial",
+    override var debug: String = "Nothing Especial",
     override var planner: Planner = Planner()
 ) : Sitter, IUser by user {
 
@@ -68,7 +68,7 @@ data class SitterIMP(
             if(sitter.id != "")sitter.id else id,
             if(sitter.rating != 0.0)sitter.rating else rating,
             if(sitter.kindPets != "Nothing Especial")sitter.kindPets else kindPets,
-            if(sitter.additional != "Nothing Especial")sitter.additional else additional,
+            if (sitter.debug != "Nothing Especial") sitter.debug else debug,
             if("planner" == sitterKey.second)sitter.planner else planner
         )
         if("planner" == sitterKey.second) {

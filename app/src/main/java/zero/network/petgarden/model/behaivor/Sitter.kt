@@ -25,7 +25,6 @@ interface Sitter: Serializable, Entity, IUser {
 
     var rating: Double
     var kindPets: String
-    var additional: String
     var planner: Planner
 
 

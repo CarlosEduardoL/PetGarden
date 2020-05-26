@@ -19,13 +19,13 @@ interface Entity : Serializable {
      */
     fun folder(): String
 
+    var debug: String
+
     /**
      * upload the entity to the DB
      */
     fun saveInDB(debug: String) {
-        when (this) {
-            is Sitter -> additional = debug
-        }
+        this.debug = debug
         FirebaseDatabase.getInstance().reference.child(folder()).child(id).setValue(this)
     }
 }
