@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import zero.network.petgarden.databinding.FragmentListSitterBinding
 import zero.network.petgarden.model.component.Filter
-import zero.network.petgarden.util.filter
 
 
 class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
@@ -27,7 +26,7 @@ class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
     ): View = FragmentListSitterBinding.inflate(inflater, container, false).apply {
 
         adapterSitters?.stopAnimation()
-        adapterSitters = SittersAdapter(owner, sitters.filter(filter))
+        adapterSitters = SittersAdapter(owner, filter.filterSitters(sitters))
 
         listSitters.apply {
             layoutManager = LinearLayoutManager(context)
@@ -37,7 +36,12 @@ class ListSitterFragment(view: OwnerView) : Fragment(), OwnerView by view {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                adapterSitters?.update(sitters.filter { "${it.name} ${it.lastName}".contains(s,true) }.filter(filter))
+                adapterSitters?.update(filter.filterSitters(sitters.filter {
+                    "${it.name} ${it.lastName}".contains(
+                        s,
+                        true
+                    )
+                }))
             }
 
         })

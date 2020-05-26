@@ -1,6 +1,6 @@
 package zero.network.petgarden.model.component
 
-import zero.network.petgarden.model.entity.SitterIMP
+import zero.network.petgarden.model.behaivor.Sitter
 import java.io.Serializable
 import java.util.*
 
@@ -14,7 +14,7 @@ class Filter(
     var numStars: Float = 0f
 ): Serializable {
 
-    fun filterSitters(sitters: List<SitterIMP>): List<SitterIMP> {
+    fun filterSitters(sitters: List<Sitter>): List<Sitter> {
 
         val fromDate = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, fromHour)
@@ -26,14 +26,14 @@ class Filter(
             set(Calendar.MINUTE, toMins)
         }
 
-        val sittersFiltered: List<SitterIMP>
+        val sittersFiltered: List<Sitter>
 
         sittersFiltered = sitters
             .asSequence()
             .filter { it.rating.toFloat() >= numStars }
-            .filter { it.availability?.cost?:min in min..max }
+            .filter { it.planner.availabilities.firstOrNull()?.cost ?: min in min..max }
             .filter {
-                it.availability?.contains(
+                it.planner.availabilities.firstOrNull()?.contains(
                     Duration(fromDate.timeInMillis, toDate.timeInMillis)
                 )?:true || (fromHour+fromMins==0 && toHour+toMins ==23+59)
             }
