@@ -94,7 +94,6 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
             last.setLatitude(sitterView.getSitter().getLocation().getLat());
         }
         LatLng act = new LatLng(last.getLatitude(), last.getLongitude());
-        markerPosActual = mMap.addMarker(  new MarkerOptions().position(act).title("Yo").snippet("Mi ubicación")  );
         firstEntry = true;
         locationActual = last;
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(act,16));
@@ -189,7 +188,7 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
                                             //Si una task correspondiente a alguna mascota del dueño está finalizada
                                             //Manda la pushNotification
                                             if(Objects.requireNonNull(sitterView.getSitter().getPlanner().getTaskByID(petTemp.getId())).isFinalized()){
-                                                sitterView.notifyArrivalToOwner(temp.getId());
+                                                sitterView.notifyArrivalToOwner(temp,sitterView.getSitter().getPlanner().getTaskByID(petTemp.getId()).getTotalCost(),petTemp.getName());
                                             }
                                         }
                                     }

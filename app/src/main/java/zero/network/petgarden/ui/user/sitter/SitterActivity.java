@@ -146,17 +146,18 @@ public class SitterActivity extends AppCompatActivity implements SitterView{
 
 
     @Override
-    public void notifyArrivalToOwner(String ownerID) {
+    public void notifyArrivalToOwner(Owner owner,double cost, String petName) {
         /*
         Lanzar la push notification para avisarle al dueño que ya llegó su mascota
          */
         MessageArrival message = new MessageArrival();
-        message.setCost(0);
-        message.setTitulo("Tu mascota afuera");
-        message.setPetName("Max");
+        message.setCost(cost);
+        message.setTitulo("Tu mascota está afuera");
+        message.setPetName(petName);
+        message.setSitterID(sitter.getId());
         FCMMessageArrival fcm = new FCMMessageArrival();
-        Log.e(">>>ntfyarrown",ownerID);
-        fcm.setTo("/topics/"+ownerID);
+        Log.e(">>>ntfyarrown",owner.getId());
+        fcm.setTo("/topics/"+owner.getId());
         fcm.setData(message);
         Gson gson = new Gson();
         String json =gson.toJson(fcm);

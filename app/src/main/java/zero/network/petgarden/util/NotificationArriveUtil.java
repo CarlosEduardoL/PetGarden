@@ -5,11 +5,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.text.Editable;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.common.api.internal.PendingResultFacade;
+import com.google.gson.Gson;
 
 import zero.network.petgarden.R;
 import zero.network.petgarden.model.notifications.MessageArrival;
@@ -35,20 +38,22 @@ public class NotificationArriveUtil {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle(msg.getTitulo())
-                .setContentText(msg.getBody())
+                .setContentText("Tu mascota ha llegado")
                 .setSmallIcon(R.drawable.logo)
                 .setAutoCancel(true);
+
+        Gson gson = new Gson();
         if(!OwnerActivity.isActive()){
+            SharedPreferences.Editor editor= context.getSharedPreferences("dialog",Context.MODE_PRIVATE).edit();
             Intent intent = new Intent(context, LoginActivity.class);
-            intent.putExtra("show_dialog", "show_dialog");
+            editor.putString("messageArrival",gson.toJson(msg));
+
+            editor.apply();
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             builder.setContentIntent(pendingIntent);
         }else{
             //Cuando se sepa mandar datos a la activity, cambiar aqui
-            Intent intent = new Intent(context, LoginActivity.class);
-            intent.putExtra("show_dialog", "show_dialog");
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            builder.setContentIntent(pendingIntent);
+
         }
 /*        Intent intent = new Intent(context, OwnerActivity.class);
         intent.putExtra("show_dialog", "show_dialog");

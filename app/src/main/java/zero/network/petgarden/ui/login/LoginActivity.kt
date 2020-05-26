@@ -51,6 +51,10 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var loginScope: CoroutineScope
     private var showDialog: Boolean = false
+    private var petName: String=""
+    private var cost: Double=0.0
+    private var sitterID: String=""
+
 
     private lateinit var binding: ActivityLoginBinding
 
@@ -135,9 +139,9 @@ class LoginActivity : AppCompatActivity() {
                 }
                 ownerByEmail(it.email!!)?.let {
                     if(showDialog){
-                        startUserView(it, true)
+                        startUserView(it)
                     }else{
-                        startUserView(it, false)
+                        startUserView(it)
                     }
 
                 }

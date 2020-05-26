@@ -6,6 +6,7 @@ public class MessageArrival {
     private String titulo;
     private double cost;
     private String petName;
+    private String sitterID;
     private String type;
 
     public MessageArrival(){
@@ -47,5 +48,13 @@ public class MessageArrival {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getSitterID() {
+        return sitterID;
+    }
+
+    public void setSitterID(String sitterID) {
+        this.sitterID = sitterID;
     }
 }

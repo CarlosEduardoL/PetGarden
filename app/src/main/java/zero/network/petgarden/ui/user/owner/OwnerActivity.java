@@ -2,7 +2,9 @@ package zero.network.petgarden.ui.user.owner;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +13,8 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+
+import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +26,8 @@ import zero.network.petgarden.R;
 import zero.network.petgarden.databinding.ActivityOwnerBinding;
 import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Sitter;
+import zero.network.petgarden.model.notifications.Message;
+import zero.network.petgarden.model.notifications.MessageArrival;
 import zero.network.petgarden.ui.element.ActionBarFragment;
 import zero.network.petgarden.util.ActivityUtilKt;
 import zero.network.petgarden.util.HTTPUtilKt;
@@ -59,9 +65,16 @@ public class OwnerActivity extends SitterListener implements OwnerView {
         showMap();
 
         Intent intent = getIntent();
-        if(intent.hasExtra("show_dialog")){
-            showArrivalDialog();
+
+        SharedPreferences sp = getSharedPreferences("dialog", Context.MODE_PRIVATE);
+
+        if(sp.contains("show_dialog")){
+
+            Gson gson = new Gson();
+            MessageArrival msgArrival= gson.fromJson(sp.getString("messageArrival",""), MessageArrival.class);
+            showArrivalDialog(msgArrival);
         }
+        sp.edit().clear().apply();
 
     }
 
@@ -176,7 +189,7 @@ public class OwnerActivity extends SitterListener implements OwnerView {
     }
 
 
-    private void showArrivalDialog(){
+    private void showArrivalDialog(MessageArrival msg){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = getLayoutInflater();

@@ -44,8 +44,7 @@ fun Activity.fileToUri(file: File): Uri = FileProvider.getUriForFile(this, this.
  * start the user view
  */
 fun Activity.startUserView(
-    user: IUser,
-    showDialog: Boolean = false
+    user: IUser
 ) {
     val clazz = when(user){
         is Owner -> OwnerActivity::class.java
@@ -55,9 +54,7 @@ fun Activity.startUserView(
     val intent = intent(clazz, "user" to user).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     }
-    if (showDialog) {
-        intent.putExtra("show_dialog", "")
-    }
+
     startActivity(intent)
 
 }
