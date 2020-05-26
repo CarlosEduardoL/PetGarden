@@ -43,7 +43,7 @@ class RecruitmentFragment(view: RecruitmentView) : RecruitmentView by view, Frag
     ) = FragmentRecruitmentBinding.inflate(inflater, container, false).apply {
         binding = this
 
-        CoroutineScope(Dispatchers.Main).launch { photoSitter.setImageBitmap(sitter.image()) }
+        scope.launch { photoSitter.setImageBitmap(sitter.image()) }
         nameSitterTxt.text = sitter.name
         emailSitterTxt.text = sitter.email
 
@@ -56,8 +56,8 @@ class RecruitmentFragment(view: RecruitmentView) : RecruitmentView by view, Frag
                 while (isActive)
                     sitter.planner.availabilities.forEach {
                         scheduleSitter.text =
-                            """Disponible desde: ${it.start.getDate("MM/dd hh:mm a")}
-                                    |Disponible hasta: ${it.end.getDate("MM/dd hh:mm a")}""".trimMargin()
+                            """Disponible desde: ${it.start.getDate("dd/MM hh:mm a")}
+                                    |Disponible hasta: ${it.end.getDate("dd/MM hh:mm a")}""".trimMargin()
                         priceText.text = "Precio:  ${it.cost}/hora"
                         delay(3000)
                     }
@@ -67,13 +67,13 @@ class RecruitmentFragment(view: RecruitmentView) : RecruitmentView by view, Frag
         //kindPets
         kindPet.text = sitter.kindPets
 
-        date.setText(time.timeInMillis.getDate("yyyy/MM/dd"))
+        date.setText(time.timeInMillis.getDate("dd/MM/yyyy"))
 
         date.onClick {
             DatePickerDialog(activity!!).apply {
-                setOnDateSetListener { view, year, month, dayOfMonth ->
+                setOnDateSetListener { _, year, month, dayOfMonth ->
                     time.set(year, month, dayOfMonth)
-                    date.setText(time.timeInMillis.getDate("yyyy/MM/dd"))
+                    date.setText(time.timeInMillis.getDate("dd/MM/yyyy"))
                 }
             }.show()
         }
@@ -81,12 +81,12 @@ class RecruitmentFragment(view: RecruitmentView) : RecruitmentView by view, Frag
         nextButton.setOnClickListener {
 
             //Date to Long
-            val start = HourToTimeInMilis(startTime.hour, startTime.minute)
-            val end = HourToTimeInMilis(endTime.hour, endTime.minute)
+            val start = hourToTimeInMilis(startTime.hour, startTime.minute)
+            val end = hourToTimeInMilis(endTime.hour, endTime.minute)
 
             if (checkValidSchedule(start, end)) {
                 if (sitter.availability != null) {
-                    CoroutineScope(Dispatchers.Main).launch {
+                    scope.launch {
                         contracting(startTime, endTime)
                     }
                 } else show("El cuidador que desea contratar no está disponible")
@@ -103,8 +103,8 @@ class RecruitmentFragment(view: RecruitmentView) : RecruitmentView by view, Frag
     @RequiresApi(Build.VERSION_CODES.M)
     private suspend fun contracting(startTime: TimePicker, endTime: TimePicker) {
 
-        val start = HourToTimeInMilis(startTime.hour, startTime.minute)
-        val end = HourToTimeInMilis(endTime.hour, endTime.minute)
+        val start = hourToTimeInMilis(startTime.hour, startTime.minute)
+        val end = hourToTimeInMilis(endTime.hour, endTime.minute)
         val duration = Duration(
             start,
             end,
@@ -157,7 +157,7 @@ class RecruitmentFragment(view: RecruitmentView) : RecruitmentView by view, Frag
         return date.get(Calendar.MINUTE)
     }
 
-    private fun HourToTimeInMilis(hour: Int, min: Int): Long {
+    private fun hourToTimeInMilis(hour: Int, min: Int): Long {
         return time.apply {
             set(Calendar.HOUR_OF_DAY, hour)
             set(Calendar.MINUTE, min)

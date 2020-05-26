@@ -15,7 +15,8 @@ import zero.network.petgarden.ui.base.PetGardenActivity
 import zero.network.petgarden.util.times
 import java.util.*
 
-class SitterWatcher private constructor(private var sitter: SitterIMP) : Sitter {
+class SitterWatcher private constructor(private var sitter: SitterIMP) :
+    Sitter {
     override suspend fun clients(): Set<Owner> = sitter.clients()
 
     override suspend fun pets(): Set<Pet> = sitter.pets()
@@ -69,20 +70,10 @@ class SitterWatcher private constructor(private var sitter: SitterIMP) : Sitter 
         set(value) {
             sitter.email = value
         }
-    override var password: String
-        get() = sitter.password
-        set(value) {
-            sitter.password = value
-        }
     override var birthDay: Date
         get() = sitter.birthDay
         set(value) {
             sitter.birthDay = value
-        }
-    override var imageURL: String?
-        get() = sitter.imageURL
-        set(value) {
-            sitter.imageURL = value
         }
     override var location: Location
         get() = sitter.location

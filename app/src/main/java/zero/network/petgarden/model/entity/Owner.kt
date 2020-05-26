@@ -6,8 +6,6 @@ import zero.network.petgarden.model.behaivor.Entity
 import zero.network.petgarden.model.behaivor.IOwner
 import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.tools.downloadImage
-import zero.network.petgarden.tools.uploadImage
-import zero.network.petgarden.util.saveURLImageOnFile
 import zero.network.petgarden.util.wait
 import java.io.Serializable
 
@@ -23,14 +21,7 @@ data class Owner(
     private var _pets: Set<Pet>? = null
     private var _sitter: MutableSet<SitterIMP>? = null
 
-    suspend fun image(): Bitmap {
-        imageURL?.let {
-            uploadImage(saveURLImageOnFile(it, "temp.png"))
-            imageURL = null
-            saveInDB("Called by owner")
-        }
-        return downloadImage()
-    }
+    suspend fun image(): Bitmap = downloadImage()
 
     override fun folder() = FOLDER
 

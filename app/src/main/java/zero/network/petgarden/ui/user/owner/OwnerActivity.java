@@ -24,17 +24,17 @@ import java.util.List;
 
 import zero.network.petgarden.R;
 import zero.network.petgarden.databinding.ActivityOwnerBinding;
+import zero.network.petgarden.model.behaivor.Sitter;
 import zero.network.petgarden.model.entity.Owner;
-import zero.network.petgarden.model.entity.SitterIMP;
 import zero.network.petgarden.model.notifications.MessageArrival;
 import zero.network.petgarden.ui.element.ActionBarFragment;
 import zero.network.petgarden.util.ActivityUtilKt;
 import zero.network.petgarden.util.HTTPUtilKt;
 
-public class OwnerActivity extends SitterListener implements OwnerView {
+public class OwnerActivity extends SitterListener {
 
     private Owner owner;
-    private List<SitterIMP> sitters = Collections.emptyList();
+    private List<? extends Sitter> sitters = Collections.emptyList();
 
     private MapFragment fragmentMap;
     private ListSitterFragment sittersFragment;
@@ -132,7 +132,7 @@ public class OwnerActivity extends SitterListener implements OwnerView {
     }
 
     @Override
-    public void onSittersUpdate(@NotNull List<SitterIMP> sitters) {
+    public void onSittersUpdate(@NotNull List<? extends Sitter> sitters) {
         this.sitters = sitters;
         if(fragmentMap == actualFragment) fragmentMap.addSittersMarkers(sitters);
         else if (sittersFragment == actualFragment) reloadView();
@@ -154,11 +154,11 @@ public class OwnerActivity extends SitterListener implements OwnerView {
     }
 
     @NotNull
-    public List<SitterIMP> getSitters() {
-        return sitters;
+    public List<Sitter> getSitters() {
+        return (List<Sitter>) sitters;
     }
 
-    public void setSitters(@NotNull List<SitterIMP> sitters) {
+    public void setSitters(@NotNull List<? extends Sitter> sitters) {
         this.sitters = sitters;
     }
 

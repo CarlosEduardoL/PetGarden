@@ -28,8 +28,6 @@ class PasswordRegisterFragment(
         savedInstanceState: Bundle?
     ): View? = FragmentPasswordRegisterBinding.inflate(inflater, container, false).apply {
 
-        passInput.setText(user.password)
-        passConfirmInput.setText(user.password)
 
         nextButton.setOnClickListener {
             if (passInput.toText().isEmpty() || passConfirmInput.toText().isEmpty())
@@ -37,12 +35,12 @@ class PasswordRegisterFragment(
             else if (passInput.toText() != passConfirmInput.toText())
                 show(getString(R.string.pass_confirm_message))
             else{
-                user.password = passInput.toText()
+                val password = passInput.toText()
                 val authUser = FirebaseAuth.getInstance().currentUser
                 if (authUser != null) {
                     listener.next(this@PasswordRegisterFragment)
                 } else FirebaseAuth.getInstance()
-                    .createUserWithEmailAndPassword(user.email, user.password)
+                    .createUserWithEmailAndPassword(user.email, password)
                     .addOnSuccessListener {
                         listener.next(this@PasswordRegisterFragment)
                     }

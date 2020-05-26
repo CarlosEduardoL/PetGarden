@@ -7,8 +7,6 @@ import zero.network.petgarden.model.behaivor.Sitter
 import zero.network.petgarden.model.component.Duration
 import zero.network.petgarden.model.component.Planner
 import zero.network.petgarden.tools.downloadImage
-import zero.network.petgarden.tools.uploadImage
-import zero.network.petgarden.util.saveURLImageOnFile
 import zero.network.petgarden.util.times
 import zero.network.petgarden.util.wait
 
@@ -63,7 +61,7 @@ data class SitterIMP(
         _clients = query.children.map { it.getValue(Owner::class.java)!! }.toMutableSet()
     }
 
-    operator fun plus(sitterKey: Pair<SitterIMP, String>): SitterIMP{
+    operator fun plus(sitterKey: Pair<SitterIMP, String>): zero.network.petgarden.model.entity.SitterIMP {
         val sitter = sitterKey.first
         val a = SitterIMP(
             if(sitter.user.name != "") sitter.user else user,
@@ -81,15 +79,7 @@ data class SitterIMP(
         return a
     }
 
-    override suspend fun image(): Bitmap {
-        imageURL?.let {
-            uploadImage(saveURLImageOnFile(it, "temp.png"))
-            imageURL = null
-            saveInDB("Called By ${this::class.java.name} in line ${Throwable().stackTrace[0]
-                .lineNumber}")
-        }
-        return downloadImage()
-    }
+    override suspend fun image(): Bitmap = downloadImage()
 
     override fun folder() = FOLDER
 

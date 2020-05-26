@@ -5,8 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,28 +28,16 @@ class ChangePassFragment(val sitter: Sitter): Fragment(){
             val currentPass =  currentPassTV.text.toString()
             val newPass = newPassTV.text.toString()
 
-            if (currentPass == sitter.password) {
+            FirebaseAuth.getInstance().currentUser?.let {
                 if (newPass.isNotEmpty()) {
-                    CoroutineScope(Dispatchers.Main).launch { updatePassword(newPass) }
+                    CoroutineScope(Dispatchers.Main).launch { it.updatePassword(newPass) }
                     show("Contraseña actualizada correctamente")
                     fragmentManager!!.popBackStack()
-                }else
+                } else
                     show("Su nueva contraseña no contiene caracteres")
-            } else {
-                show("Contraseña actual incorrecta")
             }
         }
     }.root
 
-
-    private suspend fun updatePassword(password:String){
-        val ref = FirebaseDatabase.getInstance().reference
-        val sittersRef: DatabaseReference = ref.child("sitters")
-        val sitterRef: DatabaseReference = sittersRef.child(sitter.id)
-        val sitterUpdates: MutableMap<String, Any> = HashMap()
-        sitterUpdates["password"] = password
-
-        sitterRef.updateChildren(sitterUpdates)
-    }
 
 }

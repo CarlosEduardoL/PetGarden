@@ -182,7 +182,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:gravity="center_horizontal|left"
-                android:text="  Hora de inicio"
+                android:text="  Fecha de contratacion"
                 android:textStyle="bold" />
 
             <Space

@@ -6,7 +6,6 @@ import com.google.firebase.database.FirebaseDatabase
 import org.json.JSONObject
 import zero.network.petgarden.model.behaivor.Entity
 import zero.network.petgarden.model.behaivor.IUser
-import zero.network.petgarden.model.behaivor.Sitter
 import zero.network.petgarden.model.component.Location
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.SitterIMP
@@ -20,7 +19,7 @@ suspend fun ownerByEmail(email: String): Owner? {
     return query.wait().children.firstOrNull()?.getValue(Owner::class.java)
 }
 
-suspend fun sitterByEmail(email: String): Sitter? {
+suspend fun sitterByEmail(email: String): zero.network.petgarden.model.behaivor.Sitter? {
     val query = FirebaseDatabase.getInstance().reference
         .child(SitterIMP.FOLDER).orderByChild("email").equalTo(email)
     return query.wait().children.firstOrNull()?.getValue(SitterIMP::class.java)
@@ -38,9 +37,7 @@ val GoogleSignInAccount.user
         givenName!!,
         familyName!!,
         email!!,
-        "123456",
         Date(),
-        photoUrl.toString(),
         Location(0.0, 0.0)
     )
 
@@ -50,7 +47,5 @@ val JSONObject.user
         getString("first_name"),
         getString("last_name"),
         getString("email"),
-        "",
-        SimpleDateFormat("dd/MM/yyyy").parse(getString("birthday"))!!,
-        "https://graph.facebook.com/${getString("id")}/picture?width=500&height=500"
+        SimpleDateFormat("dd/MM/yyyy").parse(getString("birthday"))!!
     )

@@ -51,8 +51,8 @@ class SittersAdapter(val owner: Owner, sitters: List<SitterIMP> = listOf()) :
                     while (isActive)
                         element.planner.availabilities.forEach {
                             view.schedule.text =
-                                """Disponible desde: ${it.start.getDate("MM/dd hh:mm a")}
-                                    |Disponible hasta: ${it.end.getDate("MM/dd hh:mm a")}""".trimMargin()
+                                """Disponible desde: ${it.start.getDate("dd/MM hh:mm a")}
+                                    |Disponible hasta: ${it.end.getDate("dd/MM hh:mm a")}""".trimMargin()
                             view.price.text = "Precio:  ${it.cost}/hora"
                             delay(3000)
                         }
