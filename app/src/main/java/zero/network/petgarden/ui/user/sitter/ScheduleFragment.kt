@@ -8,11 +8,15 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.fragment_schedule.*
+import kotlinx.android.synthetic.main.fragment_schedule.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.FragmentScheduleBinding
+import zero.network.petgarden.model.component.Task
 import zero.network.petgarden.util.endOfDay
 import zero.network.petgarden.util.monthToText
 import zero.network.petgarden.util.simplify
@@ -41,7 +45,8 @@ class ScheduleFragment(view: SitterView) : Fragment(), SitterView by view {
         }
 
         dateSalected =Calendar.getInstance()
-        initDate(selectDay)
+        initSchedule(adapter, selectDay)
+
 
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             selectDay.text = "$dayOfMonth de ${monthToText(month)}"
@@ -79,13 +84,30 @@ class ScheduleFragment(view: SitterView) : Fragment(), SitterView by view {
         calendarView.date = currentTimeMillis()
     }.root
 
-    @SuppressLint("SetTextI18n")
-    private fun initDate(selectDay: TextView) {
+    private fun initSchedule(adapter: ScheduleAdapter, selectDay: TextView){
         val today = Calendar.getInstance()
         val month = today.get(Calendar.MONTH)
         val dayOfMonth = today.get(Calendar.DAY_OF_MONTH)
+        val year  = today.get(Calendar.YEAR)
+
         selectDay.text = "$dayOfMonth de ${monthToText(month)}"
+        dateSalected.set(year, month, dayOfMonth)
+
+        Calendar.getInstance().apply {
+            set(year, month, dayOfMonth)
+            scope.launch {
+                val start = time.startOfDay().time
+                val end = time.endOfDay().time
+                val dayTasks = sitter.planner.tasks
+                    .asSequence()
+                    .filter { it.duration.start >= start && it.duration.end <= end }
+                    .map { it.petID to it.duration.start }.toMap()
+                adapter.tasks = sitter.clientsXPets()
+                    .map { "${it.key.name} ${it.key.lastName}" to it.value.map { pet -> pet.id } }
+                    .map { it.first to it.second.toSet().intersect(dayTasks.keys) }
+                    .simplify()
+                    .map { it.first to (dayTasks[it.second] ?: 0) }
+            }
+        }
     }
-
-
 }

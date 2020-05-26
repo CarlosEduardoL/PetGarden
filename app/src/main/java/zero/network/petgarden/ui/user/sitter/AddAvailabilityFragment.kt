@@ -42,7 +42,7 @@ class AddAvailabilityFragment(var sitter: Sitter, var dateSelected:Calendar): Fr
                 priceTV.text.toString().toInt()
             )
 
-        val isAvailable = sitter.planner.addAvailability(duration)
+        val isAvailable = sitter.planner.addAvailability(duration, override = false)
         if (isAvailable){
             sitter.saveInDB("Called By ${this::class.java.name} in line ${Throwable().stackTrace[0]
                 .lineNumber}")

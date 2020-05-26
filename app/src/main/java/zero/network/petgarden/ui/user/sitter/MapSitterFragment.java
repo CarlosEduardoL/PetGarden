@@ -130,6 +130,8 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
         locationActual.setLatitude(sitterView.getSitter().getLocation().getLat());
 
         //Actualizar la ubicación del sitter sólo al inicio
+        System.out.println("*************************************************--------------**************************");
+        System.out.println(sitterView.getSitter());
         sitterView.getSitter().setLocation(new zero.network.petgarden.model.component.Location(locationActual.getLatitude(),locationActual.getLongitude()));
         sitterView.getSitter().saveInDB("Called By " + this.getClass().getName() + " in line " + new Throwable().getStackTrace()[0].getLineNumber());
 
