@@ -33,7 +33,7 @@ data class Planner(
         return false
     }
 
-    fun addAvailability(duration: Duration, override: Boolean): Boolean {
+    fun addAvailability(duration: Duration, override: Boolean = false): Boolean {
         val crashes = availabilities.filter { it.collide(duration) }
         return when {
             crashes.isEmpty() -> availabilities.add(duration)

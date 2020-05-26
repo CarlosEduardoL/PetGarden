@@ -59,6 +59,8 @@ class SittersAdapter(val owner: Owner, sitters: List<SitterIMP> = listOf()) :
                 }
             }
 
+
+
             itemView.setOnClickListener { v: View ->
                 val currentActivity = v.context
                 val i = Intent(currentActivity, SitterFromUserActivity::class.java)

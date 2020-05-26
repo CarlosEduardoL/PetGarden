@@ -1,6 +1,7 @@
 package zero.network.petgarden.ui.user.owner.recruitment
 
 import android.annotation.SuppressLint
+import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -11,9 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import zero.network.petgarden.databinding.FragmentRecruitmentBinding
 import zero.network.petgarden.model.component.Duration
 import zero.network.petgarden.model.component.Task
@@ -22,6 +21,7 @@ import zero.network.petgarden.model.notifications.FCMMessage
 import zero.network.petgarden.model.notifications.Message
 import zero.network.petgarden.util.POSTtoFCM
 import zero.network.petgarden.util.getDate
+import zero.network.petgarden.util.onClick
 import zero.network.petgarden.util.show
 import java.util.*
 import kotlin.concurrent.thread
@@ -29,11 +29,13 @@ import kotlin.concurrent.thread
 /**
  * A simple [Fragment] subclass.
  */
-class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragment(){
+class RecruitmentFragment(view: RecruitmentView) : RecruitmentView by view, Fragment() {
 
     private lateinit var binding: FragmentRecruitmentBinding
+    private val scope = CoroutineScope(Dispatchers.Main)
+    private var animation: Job = scope.launch { }
+    private val time = Calendar.getInstance()
 
-    @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,28 +48,35 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
         emailSitterTxt.text = sitter.email
 
         //Availability
-        if (sitter.availability != null) {
-            val duration = sitter.availability!!
-            scheduleSitter.text ="Horario:  ${duration.start.getDate("hh:mm:ss")} a ${duration.end.getDate("hh:mm:ss")}"
-
-            //Cost
-            val cost = sitter.availability!!.cost
-            priceText.text = "$cost por hora"
-
+        if (sitter.planner.availabilities.isEmpty()) {
+            scheduleSitter.text = "Horario: No disponible"
+            priceText.text = "Precio: No disponible"
         } else {
-            scheduleSitter.text = "  No disponible"
-            priceText.text = "No disponible"
+            animation = scope.launch {
+                while (isActive)
+                    sitter.planner.availabilities.forEach {
+                        scheduleSitter.text =
+                            """Disponible desde: ${it.start.getDate("MM/dd hh:mm a")}
+                                    |Disponible hasta: ${it.end.getDate("MM/dd hh:mm a")}""".trimMargin()
+                        priceText.text = "Precio:  ${it.cost}/hora"
+                        delay(3000)
+                    }
+            }
         }
 
         //kindPets
         kindPet.text = sitter.kindPets
 
-        //AddInfo
-        addInfo.text = sitter.additional
+        date.setText(time.timeInMillis.getDate("yyyy/MM/dd"))
 
-        //24h format
-        startTime.setIs24HourView(true)
-        endTime.setIs24HourView(true)
+        date.onClick {
+            DatePickerDialog(activity!!).apply {
+                setOnDateSetListener { view, year, month, dayOfMonth ->
+                    time.set(year, month, dayOfMonth)
+                    date.setText(time.timeInMillis.getDate("yyyy/MM/dd"))
+                }
+            }.show()
+        }
 
         nextButton.setOnClickListener {
 
@@ -81,14 +90,18 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
                         contracting(startTime, endTime)
                     }
                 } else show("El cuidador que desea contratar no está disponible")
-            }else
+            } else
                 show("El periodo de tiempo seleccionado no es válido")
         }
     }.root
 
+    override fun onDetach() {
+        super.onDetach()
+        animation.cancel()
+    }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private suspend fun contracting(startTime: TimePicker, endTime: TimePicker){
+    private suspend fun contracting(startTime: TimePicker, endTime: TimePicker) {
 
         val start = HourToTimeInMilis(startTime.hour, startTime.minute)
         val end = HourToTimeInMilis(endTime.hour, endTime.minute)
@@ -106,53 +119,61 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
             if (available) {
                 listenResponseContracting(it)
                 requestContracting(duration)
-            }else
+            } else
                 show("El cuidador no tiene disponibilidad en este horario")
         }
     }
 
-    private fun requestContracting(duration: Duration){
+    private fun requestContracting(duration: Duration) {
         val fcm = FCMMessage()
-        val schedule = "Horario:  ${duration.start.getDate("hh:mm:ss")} a ${duration.end.getDate("hh:mm:ss")}"
+        val schedule =
+            "Horario:  ${duration.start.getDate("hh:mm:ss")} a ${duration.end.getDate("hh:mm:ss")}"
 
         fcm.to = "/topics/${sitter.id}"
-        fcm.data = Message(sitter.id, owner.id, owner.name, schedule, "$${duration.cost}/h", Message.TYPE, "")
-        val gson  = Gson()
-        val json =  gson.toJson(fcm)
+        fcm.data = Message(
+            sitter.id,
+            owner.id,
+            owner.name,
+            schedule,
+            "$${duration.cost}/h",
+            Message.TYPE,
+            ""
+        )
+        val gson = Gson()
+        val json = gson.toJson(fcm)
 
-        thread{ POSTtoFCM(FCMMessage.API_KEY, json) }
+        thread { POSTtoFCM(FCMMessage.API_KEY, json) }
     }
 
-    private fun getHour(time:Long):Int{
+    private fun getHour(time: Long): Int {
         val date = Calendar.getInstance()
         date.timeInMillis = time
         return date.get(Calendar.HOUR_OF_DAY)
     }
 
-    private fun getMinute(time:Long):Int{
+    private fun getMinute(time: Long): Int {
         val date = Calendar.getInstance()
         date.timeInMillis = time
         return date.get(Calendar.MINUTE)
     }
 
-    private fun HourToTimeInMilis(hour:Int, min:Int ):Long{
-        val date = Calendar.getInstance().apply {
+    private fun HourToTimeInMilis(hour: Int, min: Int): Long {
+        return time.apply {
             set(Calendar.HOUR_OF_DAY, hour)
             set(Calendar.MINUTE, min)
-        }
-        return date.timeInMillis
+        }.timeInMillis
     }
 
-    private  fun checkValidSchedule(startTime: Long, endTime: Long): Boolean{
+    private fun checkValidSchedule(startTime: Long, endTime: Long): Boolean {
         return startTime < endTime
     }
 
-    private fun listenResponseContracting(pet: Pet){
+    private fun listenResponseContracting(pet: Pet) {
         val gson = Gson()
         val editor = context!!.getSharedPreferences(sitter.id, Context.MODE_PRIVATE).edit(true) {
-            putString("owner",gson.toJson(owner))
-            putString("sitter",gson.toJson(sitter))
-            putString("pet",gson.toJson(pet))
+            putString("owner", gson.toJson(owner))
+            putString("sitter", gson.toJson(sitter))
+            putString("pet", gson.toJson(pet))
         }
     }
 }
