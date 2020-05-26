@@ -46,20 +46,26 @@ public class NotificationArriveUtil {
         if(!OwnerActivity.isActive()){
             SharedPreferences.Editor editor= context.getSharedPreferences("dialog",Context.MODE_PRIVATE).edit();
             Intent intent = new Intent(context, LoginActivity.class);
-            editor.putString("messageArrival",gson.toJson(msg));
+            editor.putString("show_dialog",gson.toJson(msg));
 
             editor.apply();
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             builder.setContentIntent(pendingIntent);
         }else{
-            //Cuando se sepa mandar datos a la activity, cambiar aqui
+            SharedPreferences.Editor editor= context.getSharedPreferences("dialog",Context.MODE_PRIVATE).edit();
+            Intent intent = new Intent(context, LoginActivity.class);
+            editor.putString("show_dialog",gson.toJson(msg));
+
+            editor.apply();
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(pendingIntent);
 
         }
 /*        Intent intent = new Intent(context, OwnerActivity.class);
         intent.putExtra("show_dialog", "show_dialog");
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(contentIntent);*/
-
+        Log.e(">>>>reaching notify","Yeah!");
         manager.notify(consecutive,builder.build());
         consecutive++;
 

@@ -8,7 +8,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
@@ -26,6 +30,7 @@ import zero.network.petgarden.R;
 import zero.network.petgarden.databinding.ActivityOwnerBinding;
 import zero.network.petgarden.model.behaivor.Sitter;
 import zero.network.petgarden.model.entity.Owner;
+import zero.network.petgarden.model.entity.SitterIMP;
 import zero.network.petgarden.model.notifications.MessageArrival;
 import zero.network.petgarden.ui.element.ActionBarFragment;
 import zero.network.petgarden.util.ActivityUtilKt;
@@ -197,9 +202,37 @@ public class OwnerActivity extends SitterListener {
         final AlertDialog dialog = builder.create();
         dialog.show();
 
-        TextView txtSitterName = view.findViewById(R.id.sitter_name);
-        txtSitterName.setText("Cuidador X");
 
+
+        TextView txtSitterName = view.findViewById(R.id.sitter_name);
+        EditText commentaryET = view.findViewById(R.id.commentaryET);
+        String commentaryString = commentaryET.getText().toString();
+/*        RatingBar ratingBar = view.findViewById(R.id.ratingBar);
+        ratingBar.setOnTouchListener(
+            (v, event) -> {
+            float rating = ratingBar.getRating();
+
+            if(msg.getSitterID() != null){
+                Sitter sitter =sitterByID(msg.getSitterID());
+                sitter.setRating(rating);
+            }
+
+            return ratingBar.onTouchEvent(event);
+        });*/
+
+        //Mandar al sitter estrellas y comentarios
+        TextView txtCost = view.findViewById(R.id.costTV);
+
+
+        txtCost.setText("$"+msg.getCost());
+        txtSitterName.setText("NameSitter");
+
+        Button acceptBtn = view.findViewById(R.id.okBtn);
+        acceptBtn.setOnClickListener(
+                (event)->{
+                    dialog.dismiss();
+                }
+        );
     }
 
     public static boolean isActive() {

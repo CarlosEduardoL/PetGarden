@@ -1,9 +1,12 @@
 package zero.network.petgarden.ui.user.sitter;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -15,13 +18,16 @@ import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Date;
-import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import zero.network.petgarden.R;
+import zero.network.petgarden.model.behaivor.CallBack;
 import zero.network.petgarden.model.behaivor.Sitter;
 import zero.network.petgarden.model.component.Task;
 import zero.network.petgarden.model.entity.Owner;
+import zero.network.petgarden.model.entity.Pet;
 import zero.network.petgarden.model.entity.SitterIMP;
 import zero.network.petgarden.model.entity.SitterWatcher;
 import zero.network.petgarden.model.notifications.FCMMessageArrival;
@@ -160,20 +166,53 @@ public class SitterActivity extends PetGardenActivity implements SitterView{
                     HTTPUtilKt.POSTtoFCM(FCMMessageArrival.API_KEY,json);
                 }
         ).start();
+
+
     }
 
     @Override
-    public double checkTaskTimeOfOwner(Owner owner) {
-        Date currentDate = new Date(System.currentTimeMillis());
+    public void checkTaskTimeOfOwner(Owner temp, CallBack<Boolean> booleanCallBack) {
 
-        /*Obtener las tareas para ver cual coincide con la del owner del parametro para sacarle el Date y compararlo con el
-        momento actual*/
-        List<Task> tasks =getSitter().getPlanner().getTasks();
-        for(Task task: tasks){
+        AtomicBoolean completed = new AtomicBoolean(false);
+        getSitter().clientsXPets(
+                (ownerPetsMap)->{
+
+                    Set<Pet> petsOfOwner = ownerPetsMap.get(temp);
+                    //Por cada Pet, ver cuál task ya ha terminado
+                    assert petsOfOwner != null;
+                    for(Pet petTemp: petsOfOwner){
+
+                        //Si una task correspondiente a alguna mascota del dueño está finalizada
+                        //Manda la pushNotification
+                        if(Objects.requireNonNull(getSitter().getPlanner().getTaskByID(petTemp.getId())).isFinalized()){
+
+                            notifyArrivalToOwner(temp,getSitter().getPlanner().getTaskByID(petTemp.getId()).getTotalCost(),petTemp.getName());
+                            //Mostrar el dialog de pago al sitter
+                            showPay(getSitter().getPlanner().getTaskByID(petTemp.getId()));
+                            booleanCallBack.onResult(true);
+                        }
+                    }
+
+                    //SÓLO PARA PRUEBAS ELIMINAR CUANDO SE PONGA EN MARCHA
+                    notifyArrivalToOwner(temp,0,"Nombre perro");
+                    //Mostrar el dialog de pago al sitter
+                    showPay(getSitter().getPlanner().getTaskByID("Id Perro"));
+                }
+        );
+
+    }
 
 
-        }
+    @Override
+    public void showPay(@NotNull Task TaskByID) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_service_from_sitter,null);
+        builder.setView(view);
 
-        return 0;
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+
     }
 }

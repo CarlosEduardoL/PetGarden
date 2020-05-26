@@ -31,6 +31,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import zero.network.petgarden.R;
+import zero.network.petgarden.model.component.Task;
 import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Pet;
 
@@ -130,10 +131,8 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
         locationActual.setLatitude(sitterView.getSitter().getLocation().getLat());
 
         //Actualizar la ubicación del sitter sólo al inicio
-        System.out.println("*************************************************--------------**************************");
-        System.out.println(sitterView.getSitter());
         sitterView.getSitter().setLocation(new zero.network.petgarden.model.component.Location(locationActual.getLatitude(),locationActual.getLongitude()));
-        sitterView.getSitter().saveInDB("Called By " + this.getClass().getName() + " in line " + new Throwable().getStackTrace()[0].getLineNumber());
+        sitterView.getSitter().saveInDB("Called By " + "this::class.java.name" + " in line " + new Throwable().getStackTrace()[0].getLineNumber());
 
     }
 
@@ -179,6 +178,8 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
                         Log.e(">>>hasArrived()", "Distnace: "+(locationActual.distanceTo(tempLocation))+" Hasta:"+temp.getName());
                         if((locationActual.distanceTo(tempLocation)) < 100 ){
                             Log.e(">>170MpStterFrgm","Esta cerca el sitter");
+                                sitterView.notifyArrivalToOwner(temp,0,"Max");
+                            sitterView.showPay(new Task());
                             //Sacar las tasks que tiene este owner y verificar si alguna ya terminó
                             sitterView.getSitter().clientsXPets(
                                     (ownerPetsMap)->{
