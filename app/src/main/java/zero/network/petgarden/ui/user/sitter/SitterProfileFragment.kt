@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -15,9 +16,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.FragmentSitterProfileBinding
+import zero.network.petgarden.model.entity.Owner
+import zero.network.petgarden.model.entity.Pet
 import zero.network.petgarden.tools.uploadImage
 import zero.network.petgarden.ui.user.owner.ChangePassFragment
-import zero.network.petgarden.ui.user.owner.ChangePasswordFragment
 import zero.network.petgarden.util.getPath
 import java.io.File
 
@@ -32,15 +34,15 @@ class SitterProfileFragment(view: SitterView) : Fragment(), SitterView by view {
     ): View = FragmentSitterProfileBinding.inflate(inflater, container, false).apply {
         changePasswordFragment = ChangePassFragment(sitter)
 
-        CoroutineScope(Dispatchers.Main).launch { adapter = CustomersAdapter(sitter.clientsXPets(), context!!)
-        val x   = sitter.clientsXPets()
-            println("numero de clientes: ${x.keys}  Numero de pets: ${x.values}")
-        }
+        CoroutineScope(Dispatchers.Main).launch {
+            val listClients = sitter.clientsXPets()
+            adapter = CustomersAdapter(activity!!, listClients)
+            listClientsAndPets.setAdapter(adapter)
+            expandListCustoners(listClients)}
+
         CoroutineScope(Dispatchers.Main).launch { photoSitterIV.setImageBitmap(sitter.image()) }
         nameSitterTV.text = sitter.name
         emailSitterTV.text = sitter.email
-
-        CoroutineScope(Dispatchers.Main).launch {println("-------Clientes sitter view = ${sitter.clients().size}")}
 
         if (AccessToken.getCurrentAccessToken()!=null || GoogleSignIn.getLastSignedInAccount(context)!=null) {
             changePasswordBtn.visibility = View.GONE
@@ -72,6 +74,12 @@ class SitterProfileFragment(view: SitterView) : Fragment(), SitterView by view {
                 sitter.uploadImage(file)
                 photoSitterIV.setImageBitmap(sitter.image())
             }
+        }
+    }
+
+    private fun expandListCustoners(clientXPets: Map<Owner, Set<Pet>>){
+        for (i in 0 until clientXPets.size) {
+            listClientsAndPets.expandGroup(i)
         }
     }
 

@@ -116,7 +116,7 @@ class RecruitmentFragment(view: RecruitmentView): RecruitmentView by view, Fragm
         val schedule = "Horario:  ${duration.start.getDate("hh:mm:ss")} a ${duration.end.getDate("hh:mm:ss")}"
 
         fcm.to = "/topics/${sitter.id}"
-        fcm.data = Message(sitter.id, owner.id, owner.name, schedule, "$${duration.cost}/h", Message.TYPE)
+        fcm.data = Message(sitter.id, owner.id, owner.name, schedule, "$${duration.cost}/h", Message.TYPE, "")
         val gson  = Gson()
         val json =  gson.toJson(fcm)
 

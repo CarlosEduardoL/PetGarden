@@ -83,10 +83,11 @@
             android:inputType="none"
             android:text="Clientes" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listClients"
+        <ExpandableListView
+            android:id="@+id/listClientsAndPets"
             android:layout_marginHorizontal="24dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:groupIndicator="@null"
+            android:layout_height="260dp"/>
     </LinearLayout>
 </ScrollView>
