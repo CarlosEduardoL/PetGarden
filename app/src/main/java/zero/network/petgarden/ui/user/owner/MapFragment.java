@@ -142,7 +142,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         //Actualizar la ubicación del dueño sólo al inicio
         ownerView.getOwner().setLocation(new zero.network.petgarden.model.component.Location(locationActual.getLatitude(), locationActual.getLongitude()));
-        ownerView.getOwner().saveInDB("Called By " + "this::class.java.name" + " in line " + new Throwable().getStackTrace()[0].getLineNumber());
+        ownerView.getOwner().saveInDB("Called By " + this.getClass().getName() + " in line " + new Throwable().getStackTrace()[0].getLineNumber());
 
     }
 

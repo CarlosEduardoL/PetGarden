@@ -90,6 +90,10 @@ class SitterWatcher private constructor(private var sitter: SitterIMP) : Sitter 
             sitter.location = value
         }
 
+    override fun toString(): String {
+        return sitter.toString()
+    }
+
     private fun map(map: Map<*, *>): Map<*,*> {
         return map.map {
             when (val second = it.value) {

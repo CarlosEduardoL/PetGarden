@@ -65,8 +65,7 @@ data class SitterIMP(
 
     operator fun plus(sitterKey: Pair<SitterIMP, String>): SitterIMP{
         val sitter = sitterKey.first
-        if("planner" == sitterKey.second) println("${"-"*30}planner${"-"*30}")
-        return SitterIMP(
+        val a = SitterIMP(
             if(sitter.user.name != "") sitter.user else user,
             if(sitter.id != "")sitter.id else id,
             if(sitter.rating != 0.0)sitter.rating else rating,
@@ -74,6 +73,12 @@ data class SitterIMP(
             if(sitter.additional != "Nothing Especial")sitter.additional else additional,
             if("planner" == sitterKey.second)sitter.planner else planner
         )
+        if("planner" == sitterKey.second) {
+            println("${"-"*30}planner${"-"*30}")
+            println(sitterKey.first)
+            println(a)
+        }
+        return a
     }
 
     override suspend fun image(): Bitmap {
