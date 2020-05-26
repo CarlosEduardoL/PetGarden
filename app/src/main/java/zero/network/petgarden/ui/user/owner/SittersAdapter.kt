@@ -9,14 +9,14 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
 import zero.network.petgarden.databinding.RowSitterBinding
 import zero.network.petgarden.model.entity.Owner
-import zero.network.petgarden.model.entity.Sitter
+import zero.network.petgarden.model.entity.SitterIMP
 import zero.network.petgarden.ui.base.BaseListAdapter
 import zero.network.petgarden.ui.base.BaseViewHolder
 import zero.network.petgarden.ui.user.owner.recruitment.SitterFromUserActivity
 import zero.network.petgarden.util.getDate
 
-class SittersAdapter(val owner: Owner, sitters: List<Sitter> = listOf()) :
-    BaseListAdapter<Sitter>(sitters) {
+class SittersAdapter(val owner: Owner, sitters: List<SitterIMP> = listOf()) :
+    BaseListAdapter<SitterIMP>(sitters) {
 
     private val scope = CoroutineScope(Main)
 
@@ -30,13 +30,13 @@ class SittersAdapter(val owner: Owner, sitters: List<Sitter> = listOf()) :
     }
 
     inner class SitterViewHolder(private val view: RowSitterBinding, private val scope: CoroutineScope) :
-        BaseViewHolder<Sitter>(view) {
+        BaseViewHolder<SitterIMP>(view) {
 
         private var loadImage = scope.launch { }
         private var animation = scope.launch { }
 
         @SuppressLint("SetTextI18n")
-        override fun bind(element: Sitter) {
+        override fun bind(element: SitterIMP) {
             if (loadImage.isActive) loadImage.cancel()
             if (animation.isActive) animation.cancel()
             loadImage = scope.launch { view.photoSitterList.setImageBitmap(element.image()) }

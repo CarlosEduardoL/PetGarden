@@ -10,8 +10,6 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
-import zero.network.petgarden.model.entity.Sitter
-import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.tools.appContext
 import java.io.*
 import java.net.HttpURLConnection

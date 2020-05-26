@@ -7,19 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.android.synthetic.main.fragment_change_password.*
-import kotlinx.android.synthetic.main.fragment_change_password.emailUserTV
-import kotlinx.android.synthetic.main.fragment_change_password.nameUserTV
-import kotlinx.android.synthetic.main.fragment_change_password.updatePass
-import kotlinx.android.synthetic.main.fragment_owner_profile.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import zero.network.petgarden.R
 import zero.network.petgarden.databinding.FragmentChangePassBinding
-import zero.network.petgarden.model.entity.Owner
-import zero.network.petgarden.model.entity.Sitter
-import zero.network.petgarden.model.entity.User
+import zero.network.petgarden.model.behaivor.Sitter
 import zero.network.petgarden.util.show
 
 

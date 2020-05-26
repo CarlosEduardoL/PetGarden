@@ -18,7 +18,7 @@ import zero.network.petgarden.model.behaivor.Entity
 import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Pet
-import zero.network.petgarden.model.entity.Sitter
+import zero.network.petgarden.model.entity.SitterIMP
 import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.ui.element.ActionBarFragment
 import zero.network.petgarden.ui.element.picture.PictureFragment
@@ -144,7 +144,7 @@ class RegisterActivity : AppCompatActivity(),
                 PetRegisterActivity.intent(this, "Registrar Mascota", Pet()),
                 PET_CALLBACK
             )
-            is Sitter -> {
+            is SitterIMP -> {
                 finishRegister(entity)
             }
             else -> println("Error")

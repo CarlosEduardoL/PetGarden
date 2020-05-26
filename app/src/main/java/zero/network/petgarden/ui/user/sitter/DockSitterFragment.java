@@ -1,33 +1,18 @@
 package zero.network.petgarden.ui.user.sitter;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.gson.Gson;
 
 import zero.network.petgarden.R;
-import zero.network.petgarden.databinding.FragmentDockBinding;
 import zero.network.petgarden.databinding.FragmentDockSitterBinding;
-import zero.network.petgarden.model.entity.Sitter;
-import zero.network.petgarden.model.notifications.FCMMessage;
-import zero.network.petgarden.model.notifications.FCMMessageArrival;
-import zero.network.petgarden.model.notifications.MessageArrival;
-import zero.network.petgarden.ui.user.owner.ListSitterFragment;
-import zero.network.petgarden.ui.user.owner.MapFragment;
-import zero.network.petgarden.ui.user.owner.OwnerProfileFragment;
-import zero.network.petgarden.ui.user.owner.OwnerView;
-import zero.network.petgarden.util.HTTPUtilKt;
-import zero.network.petgarden.util.NotificationArriveUtil;
 
 /**
  * A simple {@link Fragment} subclass.

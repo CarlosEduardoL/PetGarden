@@ -9,16 +9,15 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_add_availability.*
 import zero.network.petgarden.databinding.FragmentAddAvailabilityBinding
+import zero.network.petgarden.model.behaivor.Sitter
 import zero.network.petgarden.model.component.Duration
-import zero.network.petgarden.model.entity.Sitter
 import zero.network.petgarden.util.show
 import java.util.*
 
-class AddAvailabilityFragment(var sitter:Sitter, var dateSelected:Calendar): Fragment() {
+class AddAvailabilityFragment(var sitter: Sitter, var dateSelected:Calendar): Fragment() {
 
     private var price = 2500
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

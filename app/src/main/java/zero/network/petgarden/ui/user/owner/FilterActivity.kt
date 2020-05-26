@@ -6,12 +6,12 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_filter.*
 import zero.network.petgarden.databinding.ActivityFilterBinding
 import zero.network.petgarden.model.component.Filter
-import zero.network.petgarden.model.entity.Sitter
+import zero.network.petgarden.model.entity.SitterIMP
 
 
 class FilterActivity : AppCompatActivity() {
 
-    private lateinit var sitters:List<Sitter>
+    private lateinit var sitters:List<SitterIMP>
     lateinit var binding:ActivityFilterBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

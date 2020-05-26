@@ -13,7 +13,7 @@ import zero.network.petgarden.exception.CacheException
 import zero.network.petgarden.model.behaivor.Entity
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Pet
-import zero.network.petgarden.model.entity.Sitter
+import zero.network.petgarden.model.entity.SitterIMP
 import zero.network.petgarden.ui.login.LoginActivity
 import zero.network.petgarden.util.saveURLImageOnFile
 import java.io.File
@@ -32,7 +32,7 @@ fun appRoot() = appContext.getExternalFilesDir(null)
 fun LoginActivity.initDatabase() {
     appContext = applicationContext
     File(appRoot(), Pet.FOLDER).let { if (!it.exists()) it.mkdir() }
-    File(appRoot(), Sitter.FOLDER).let { if (!it.exists()) it.mkdir() }
+    File(appRoot(), SitterIMP.FOLDER).let { if (!it.exists()) it.mkdir() }
     File(appRoot(), Owner.FOLDER).let { if (!it.exists()) it.mkdir() }
     db = Room.databaseBuilder(
         appContext,

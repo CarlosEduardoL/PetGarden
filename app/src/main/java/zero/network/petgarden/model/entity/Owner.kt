@@ -21,7 +21,7 @@ data class Owner(
 ) : IUser by user, Serializable, Entity, IOwner {
 
     private var _pets: Set<Pet>? = null
-    private var _sitter: MutableSet<Sitter>? = null
+    private var _sitter: MutableSet<SitterIMP>? = null
 
     suspend fun image(): Bitmap {
         imageURL?.let {
@@ -53,7 +53,7 @@ data class Owner(
         return addPet(pet)
     }
 
-    override suspend fun petXSitters(): List<Pair<Pet, Sitter>> {
+    override suspend fun petXSitters(): List<Pair<Pet, SitterIMP>> {
         _sitter?.let {
             return pets().asSequence()
                 .filter { pet -> pet.sitterID != null }
@@ -72,8 +72,8 @@ data class Owner(
 
     private suspend fun downloadSitters() {
         _sitter = FirebaseDatabase.getInstance().reference
-            .child(Sitter.FOLDER).orderByChild("clients").orderByValue().equalTo(id)
-            .wait().children.map { it.getValue(Sitter::class.java)!! }.toMutableSet()
+            .child(SitterIMP.FOLDER).orderByChild("clients").orderByValue().equalTo(id)
+            .wait().children.map { it.getValue(SitterIMP::class.java)!! }.toMutableSet()
     }
 
     companion object {

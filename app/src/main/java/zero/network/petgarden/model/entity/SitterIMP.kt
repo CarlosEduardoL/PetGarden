@@ -2,25 +2,24 @@ package zero.network.petgarden.model.entity
 
 import android.graphics.Bitmap
 import com.google.firebase.database.FirebaseDatabase
-import zero.network.petgarden.model.behaivor.Entity
-import zero.network.petgarden.model.behaivor.ISitter
 import zero.network.petgarden.model.behaivor.IUser
+import zero.network.petgarden.model.behaivor.Sitter
 import zero.network.petgarden.model.component.Duration
 import zero.network.petgarden.model.component.Planner
 import zero.network.petgarden.tools.downloadImage
 import zero.network.petgarden.tools.uploadImage
 import zero.network.petgarden.util.saveURLImageOnFile
+import zero.network.petgarden.util.times
 import zero.network.petgarden.util.wait
-import java.io.Serializable
 
-data class Sitter(
+data class SitterIMP(
     private val user: User = User(),
     override var id: String = "",
-    var rating: Double = 0.0,
-    var kindPets: String = "Nothing Especial",
-    var additional: String = "Nothing Especial",
-    var planner: Planner = Planner()
-) : IUser by user, Serializable, Entity, ISitter {
+    override var rating: Double = 0.0,
+    override var kindPets: String = "Nothing Especial",
+    override var additional: String = "Nothing Especial",
+    override var planner: Planner = Planner()
+) : Sitter, IUser by user {
 
     val availability: Duration?
         get() {
@@ -64,7 +63,20 @@ data class Sitter(
         _clients = query.children.map { it.getValue(Owner::class.java)!! }.toMutableSet()
     }
 
-    suspend fun image(): Bitmap {
+    operator fun plus(sitterKey: Pair<SitterIMP, String>): SitterIMP{
+        val sitter = sitterKey.first
+        if("planner" == sitterKey.second) println("${"-"*30}planner${"-"*30}")
+        return SitterIMP(
+            if(sitter.user.name != "") sitter.user else user,
+            if(sitter.id != "")sitter.id else id,
+            if(sitter.rating != 0.0)sitter.rating else rating,
+            if(sitter.kindPets != "Nothing Especial")sitter.kindPets else kindPets,
+            if(sitter.additional != "Nothing Especial")sitter.additional else additional,
+            if("planner" == sitterKey.second)sitter.planner else planner
+        )
+    }
+
+    override suspend fun image(): Bitmap {
         imageURL?.let {
             uploadImage(saveURLImageOnFile(it, "temp.png"))
             imageURL = null
@@ -77,6 +89,7 @@ data class Sitter(
 
     companion object {
         const val FOLDER = "sitters"
+        private val defaultPlanner = Planner()
     }
 
 }

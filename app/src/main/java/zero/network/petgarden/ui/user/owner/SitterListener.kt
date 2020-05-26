@@ -1,17 +1,17 @@
 package zero.network.petgarden.ui.user.owner
 
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import zero.network.petgarden.model.entity.Sitter
+import zero.network.petgarden.model.entity.SitterIMP
+import zero.network.petgarden.ui.base.PetGardenActivity
 
-abstract class SitterListener: AppCompatActivity() {
+abstract class SitterListener: PetGardenActivity() {
 
-    private val sitters = mutableListOf<Sitter>()
-    private fun DataSnapshot.toSitter() = getValue(Sitter::class.java)!!
+    private val sitters = mutableListOf<SitterIMP>()
+    private fun DataSnapshot.toSitter() = getValue(SitterIMP::class.java)!!
     private lateinit var listener: ChildEventListener
 
     override fun onResume() {
@@ -38,7 +38,7 @@ abstract class SitterListener: AppCompatActivity() {
             })
     }
 
-    abstract fun onSittersUpdate(sitters: List<Sitter>)
+    abstract fun onSittersUpdate(sitters: List<SitterIMP>)
 
     override fun onPause() {
         super.onPause()

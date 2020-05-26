@@ -8,7 +8,7 @@ import androidx.core.content.FileProvider
 import zero.network.petgarden.exception.InvalidUserClass
 import zero.network.petgarden.model.behaivor.IUser
 import zero.network.petgarden.model.entity.Owner
-import zero.network.petgarden.model.entity.Sitter
+import zero.network.petgarden.model.entity.SitterIMP
 import zero.network.petgarden.ui.register.user.FragmentStart
 import zero.network.petgarden.ui.register.user.activities.RegisterActivity
 import zero.network.petgarden.ui.user.owner.OwnerActivity
@@ -48,7 +48,7 @@ fun Activity.startUserView(
 ) {
     val clazz = when(user){
         is Owner -> OwnerActivity::class.java
-        is Sitter -> SitterActivity::class.java
+        is SitterIMP -> SitterActivity::class.java
         else -> throw InvalidUserClass("${user::class.simpleName} no is a valid class")
     }
     val intent = intent(clazz, "user" to user).apply {

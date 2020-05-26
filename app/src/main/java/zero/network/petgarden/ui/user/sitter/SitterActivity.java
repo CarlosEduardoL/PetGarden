@@ -1,19 +1,15 @@
 package zero.network.petgarden.ui.user.sitter;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.util.Log;
+
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.os.Bundle;
-import android.util.Log;
-
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 
@@ -23,21 +19,18 @@ import java.util.Date;
 import java.util.List;
 
 import zero.network.petgarden.R;
+import zero.network.petgarden.model.behaivor.Sitter;
 import zero.network.petgarden.model.component.Task;
 import zero.network.petgarden.model.entity.Owner;
-import zero.network.petgarden.model.entity.Sitter;
-import zero.network.petgarden.model.notifications.FCMMessage;
+import zero.network.petgarden.model.entity.SitterIMP;
+import zero.network.petgarden.model.entity.SitterWatcher;
 import zero.network.petgarden.model.notifications.FCMMessageArrival;
-import zero.network.petgarden.model.notifications.Message;
 import zero.network.petgarden.model.notifications.MessageArrival;
+import zero.network.petgarden.ui.base.PetGardenActivity;
 import zero.network.petgarden.ui.element.ActionBarFragment;
-import zero.network.petgarden.ui.user.owner.DockFragment;
-import zero.network.petgarden.ui.user.owner.MapFragment;
 import zero.network.petgarden.util.HTTPUtilKt;
-import zero.network.petgarden.util.NotificationArriveUtil;
-import zero.network.petgarden.util.NotificationUtils;
 
-public class SitterActivity extends AppCompatActivity implements SitterView{
+public class SitterActivity extends PetGardenActivity implements SitterView{
 
     private Sitter sitter;
 
@@ -93,7 +86,7 @@ public class SitterActivity extends AppCompatActivity implements SitterView{
 
         //PONER A CARGAR LOS DATOS DEL EXTRA
         Bundle extras = getIntent().getExtras();
-        sitter =(Sitter) extras.getSerializable("user");
+        sitter = SitterWatcher.Companion.bind(this,(SitterIMP) extras.getSerializable("user"));
 
     }
 

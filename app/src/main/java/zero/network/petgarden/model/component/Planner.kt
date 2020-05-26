@@ -19,7 +19,7 @@ data class Task(var petID: String = "", var duration: Duration = Duration()): Se
     }
 }
 
-class Planner(
+data class Planner(
     private var _availability: MutableList<Duration> = mutableListOf(),
     private var _tasks: MutableList<Task> = mutableListOf()
 ) : IPlanner, Serializable {

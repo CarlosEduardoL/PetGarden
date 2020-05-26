@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import zero.network.petgarden.model.entity.Pet
-import zero.network.petgarden.model.entity.Sitter
+import zero.network.petgarden.model.entity.SitterIMP
 
 /**
  * @author CarlosEduardoL
@@ -40,13 +40,13 @@ interface IOwner {
     /**
      * Return a list whit the owner pets whit sitters whit their sitters
      */
-    suspend fun petXSitters(): List<Pair<Pet, Sitter>>
+    suspend fun petXSitters(): List<Pair<Pet, SitterIMP>>
 
 
     /**
      * java call of [petXSitters]
      */
-    fun petXSitters(callBack: CallBack<List<Pair<Pet, Sitter>>>) = CoroutineScope(Main).launch {
+    fun petXSitters(callBack: CallBack<List<Pair<Pet, SitterIMP>>>) = CoroutineScope(Main).launch {
         callBack.onResult(petXSitters())
     }
 

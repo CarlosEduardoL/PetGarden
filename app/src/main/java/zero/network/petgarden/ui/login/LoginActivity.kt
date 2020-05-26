@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 import zero.network.petgarden.R
 import zero.network.petgarden.databinding.ActivityLoginBinding
 import zero.network.petgarden.model.entity.Owner
-import zero.network.petgarden.model.entity.Sitter
+import zero.network.petgarden.model.entity.SitterIMP
 import zero.network.petgarden.model.entity.User
 import zero.network.petgarden.tools.initDatabase
 import zero.network.petgarden.ui.register.user.FragmentStart
@@ -233,7 +233,7 @@ class LoginActivity : AppCompatActivity() {
                 val email = obj.getString("email")
                 userByEmail(email)?.let {
                     when (it) {
-                        is Sitter -> startUserView(it)
+                        is SitterIMP -> startUserView(it)
                         else -> startUserView(it)
                     }
                     return@launch
@@ -255,7 +255,7 @@ class LoginActivity : AppCompatActivity() {
             auth.signInWithCredential(credential)
             userByEmail(email)?.let {
                 when (it) {
-                    is Sitter -> startUserView(it)
+                    is SitterIMP -> startUserView(it)
                     is Owner -> startUserView(it)
                     else -> show(getString(R.string.sign_in_google_error))
                 }

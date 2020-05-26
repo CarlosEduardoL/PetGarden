@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import zero.network.petgarden.R;
-import zero.network.petgarden.model.entity.Sitter;
+import zero.network.petgarden.model.entity.SitterIMP;
 import zero.network.petgarden.ui.user.owner.recruitment.SitterFromUserActivity;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -145,13 +145,13 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     }
 
-    public void addSittersMarkers(List<Sitter> sitters){
+    public void addSittersMarkers(List<SitterIMP> sitters){
         LatLng pos;
 
         removeSitterMarkers();
 
 
-        for(Sitter sitter: sitters){
+        for(SitterIMP sitter: sitters){
             pos = new LatLng(sitter.getLocation().getLat(),sitter.getLocation().getLongitude());
             Location tempLocation = new Location("");
             tempLocation.setLatitude(sitter.getLocation().getLat());
@@ -273,7 +273,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             String[] temp = marker.getTag().toString().split("::");
             String idSelected = temp[1];
             Log.e(">>>","Entrando a sitter from map");
-            for(Sitter mySitter: ownerView.getSitters()){
+            for(SitterIMP mySitter: ownerView.getSitters()){
                 if(mySitter.getId().equals(idSelected)){
                     //Intent a la actividad del perfil del sitter desde el cliente
                     Intent i = new Intent(getActivity(), SitterFromUserActivity.class);

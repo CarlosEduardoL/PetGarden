@@ -12,7 +12,7 @@ import zero.network.petgarden.R
 import zero.network.petgarden.databinding.ActivitySitterFromUserBinding
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Pet
-import zero.network.petgarden.model.entity.Sitter
+import zero.network.petgarden.model.entity.SitterIMP
 import zero.network.petgarden.ui.element.ActionBarFragment
 import zero.network.petgarden.util.extra
 import zero.network.petgarden.util.show
@@ -22,7 +22,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class SitterFromUserActivity : AppCompatActivity(), RecruitmentView {
 
-    private lateinit var _sitter: Sitter
+    private lateinit var _sitter: SitterIMP
     private lateinit var _owner: Owner
     lateinit var binding: ActivitySitterFromUserBinding
 
@@ -46,7 +46,7 @@ class SitterFromUserActivity : AppCompatActivity(), RecruitmentView {
 
     }
 
-    override val sitter: Sitter
+    override val sitter: SitterIMP
         get() = _sitter
     override val owner: Owner
         get() = _owner

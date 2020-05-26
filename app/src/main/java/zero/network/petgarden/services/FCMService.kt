@@ -7,7 +7,7 @@ import com.google.gson.Gson
 import org.json.JSONObject
 import zero.network.petgarden.model.entity.Owner
 import zero.network.petgarden.model.entity.Pet
-import zero.network.petgarden.model.entity.Sitter
+import zero.network.petgarden.model.entity.SitterIMP
 import zero.network.petgarden.model.notifications.Message
 import zero.network.petgarden.model.notifications.MessageArrival
 import zero.network.petgarden.model.notifications.OnResponseContractingListener
@@ -33,7 +33,7 @@ class FCMService :FirebaseMessagingService() {
 
                 if (shared.contains("owner") && shared.contains("pet") && shared.contains("sitter")){
                     val owner = gson.fromJson(shared.getString("owner", ""), Owner::class.java)
-                    val sitter = gson.fromJson(shared.getString("sitter",""), Sitter::class.java)
+                    val sitter = gson.fromJson(shared.getString("sitter",""), SitterIMP::class.java)
                     val pet = gson.fromJson(shared.getString("pet",""), Pet::class.java)
                     if (message.responseContracting == NotificationUtils.ACCEPT){
                         owner.sitterList[sitter.id] = sitter.id
