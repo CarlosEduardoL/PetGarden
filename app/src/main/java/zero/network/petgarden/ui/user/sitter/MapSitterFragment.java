@@ -94,6 +94,7 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
             last.setLatitude(sitterView.getSitter().getLocation().getLat());
         }
         LatLng act = new LatLng(last.getLatitude(), last.getLongitude());
+        markerPosActual = mMap.addMarker(  new MarkerOptions().position(act).title("Yo").snippet("Mi ubicación").visible(false)  );
         firstEntry = true;
         locationActual = last;
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(act,16));
@@ -102,8 +103,11 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
 
         initMapLocation();
 
-        sitterView.getSitter().clientsXPets(
-                this::addOwnerMarkers
+        sitterView.getSitter().clients(
+                (clients)->{
+                    Log.e(">>>MpSttrFrmgt: ", ""+clients.size());
+                    addOwnerMarkers(clients);
+                }
         );
 
     }
@@ -220,10 +224,10 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
 
     }
 
-    public void addOwnerMarkers(Map<Owner, Set<Pet>> clientsXpets){
+    public void addOwnerMarkers(Set<Owner> clients){
         LatLng pos = null;
 
-        for(Owner owner: clientsXpets.keySet()){
+        for(Owner owner: clients){
 
 
             pos = new LatLng(owner.getLocation().getLat(),owner.getLocation().getLongitude());

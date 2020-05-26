@@ -47,6 +47,7 @@
         <EditText
             android:id="@+id/editText2"
             style="@style/sectionSeparator"
+            android:enabled="false"
             android:text="Información del cuidador" />
 
         <Space
@@ -182,6 +183,7 @@
             style="@style/sectionSeparator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:text="Solicitar servicio" />
 
         <Space
