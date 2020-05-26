@@ -17,7 +17,7 @@ import java.io.Serializable
 data class Owner(
     private val user: User = User(),
     override var id: String = "Default Value",
-    var sitterList: MutableMap<String,String> = mutableMapOf()
+    var sitterList: MutableMap<String, String> = mutableMapOf()
 ) : IUser by user, Serializable, Entity, IOwner {
 
     private var _pets: Set<Pet>? = null
@@ -27,7 +27,7 @@ data class Owner(
         imageURL?.let {
             uploadImage(saveURLImageOnFile(it, "temp.png"))
             imageURL = null
-            saveInDB()
+            saveInDB("Called by owner")
         }
         return downloadImage()
     }
@@ -46,7 +46,10 @@ data class Owner(
         pet.ownerID = id
         _pets?.let {
             _pets = it.filter { it.id != pet.id }.toSet() + pet
-            pet.saveInDB()
+            pet.saveInDB(
+                "Called By ${this::class.java.name} in line ${Throwable().stackTrace[0]
+                    .lineNumber}"
+            )
             return true
         }
         downloadPets()

@@ -47,7 +47,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     public static boolean active = false;
     private ArrayList<Marker> sitterMarkers;
 
-    public MapFragment(OwnerView owner){
+    public MapFragment(OwnerView owner) {
         ownerView = owner;
     }
 
@@ -87,7 +87,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             last.setLatitude(ownerView.getOwner().getLocation().getLat());
         }
         LatLng act = new LatLng(last.getLatitude(), last.getLongitude());
-        markerPosActual = mMap.addMarker(  new MarkerOptions()
+        markerPosActual = mMap.addMarker(new MarkerOptions()
                 .position(act)
                 .title("Mi ubicación")
                 .snippet("Presione y arrastre para fijar")
@@ -99,7 +99,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         firstEntry = true;
         locationActual = last;
 
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(act,17));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(act, 17));
 
         mMap.setMyLocationEnabled(true);
         mMap.setOnMarkerClickListener(this);
@@ -110,7 +110,8 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     }
 
-    @Override @SuppressLint("MissingPermission")
+    @Override
+    @SuppressLint("MissingPermission")
     public void onResume() {
         super.onResume();
         manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 2, this);
@@ -123,13 +124,13 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     }
 
     @SuppressLint("MissingPermission")
-    public void initMapLocation(){
+    public void initMapLocation() {
 
         Location last = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         //Solicitar actualizaciones de posicion
         locationActual = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-       if (last == null && locationActual== null) {
+        if (last == null && locationActual == null) {
             last = new Location("");
             last.setLongitude(ownerView.getOwner().getLocation().getLongitude());
             last.setLatitude(ownerView.getOwner().getLocation().getLat());
@@ -140,32 +141,32 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         locationActual.setLatitude(ownerView.getOwner().getLocation().getLat());
 
         //Actualizar la ubicación del dueño sólo al inicio
-        ownerView.getOwner().setLocation(new zero.network.petgarden.model.component.Location(locationActual.getLatitude(),locationActual.getLongitude()));
-        ownerView.getOwner().saveInDB();
+        ownerView.getOwner().setLocation(new zero.network.petgarden.model.component.Location(locationActual.getLatitude(), locationActual.getLongitude()));
+        ownerView.getOwner().saveInDB("Called By " + "this::class.java.name" + " in line " + new Throwable().getStackTrace()[0].getLineNumber());
 
     }
 
-    public void addSittersMarkers(List<SitterIMP> sitters){
+    public void addSittersMarkers(List<SitterIMP> sitters) {
         LatLng pos;
 
         removeSitterMarkers();
 
 
-        for(SitterIMP sitter: sitters){
-            pos = new LatLng(sitter.getLocation().getLat(),sitter.getLocation().getLongitude());
+        for (SitterIMP sitter : sitters) {
+            pos = new LatLng(sitter.getLocation().getLat(), sitter.getLocation().getLongitude());
             Location tempLocation = new Location("");
             tempLocation.setLatitude(sitter.getLocation().getLat());
             tempLocation.setLongitude(sitter.getLocation().getLongitude());
 
             //Si la distancia es menor que 4K, ponga los marcadores en el mapa
-            if(locationActual.distanceTo(tempLocation) <4000){
+            if (locationActual.distanceTo(tempLocation) < 4000) {
 
-                Marker temp = mMap.addMarker(  new MarkerOptions()
+                Marker temp = mMap.addMarker(new MarkerOptions()
                         .position(pos)
                         .title(sitter.getName())
                         .draggable(false)
                         .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_sitter_map)));
-                temp.setTag("sitter::"+sitter.getId());
+                temp.setTag("sitter::" + sitter.getId());
                 sitterMarkers.add(temp);
 
             }
@@ -175,8 +176,8 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     }
 
     private void removeSitterMarkers() {
-        if(sitterMarkers!=null){
-            for(int i=0;i<sitterMarkers.size();i++){
+        if (sitterMarkers != null) {
+            for (int i = 0; i < sitterMarkers.size(); i++) {
                 sitterMarkers.get(i).remove();
             }
         }
@@ -196,7 +197,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     public void onLocationChanged(Location location) {
         locationActual = location;
         LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
-        markerPosActual.setPosition(  pos  );
+        markerPosActual.setPosition(pos);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
 
 
@@ -217,7 +218,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     }
 
-    public void addLocations(){
+    public void addLocations() {
 
     }
 
@@ -257,29 +258,29 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
-        if(markerPosActual!=null && marker.getTag().equals("owner_position")){
+        if (markerPosActual != null && marker.getTag().equals("owner_position")) {
             markerPosActual.hideInfoWindow();
-            LatLng position =  marker.getPosition();
-            ownerView.getOwner().setLocation(new zero.network.petgarden.model.component.Location(position.latitude,position.longitude));
-            ownerView.getOwner().saveInDB();
+            LatLng position = marker.getPosition();
+            ownerView.getOwner().setLocation(new zero.network.petgarden.model.component.Location(position.latitude, position.longitude));
+            ownerView.getOwner().saveInDB("Called By " + "this::class.java.name" + " in line " + new Throwable().getStackTrace()[0].getLineNumber());
         }
     }
 
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Log.e(">>>Tag: ",marker.getTag().toString());
-        if(marker.getTag().toString().contains("sitter")){
+        Log.e(">>>Tag: ", marker.getTag().toString());
+        if (marker.getTag().toString().contains("sitter")) {
             String[] temp = marker.getTag().toString().split("::");
             String idSelected = temp[1];
-            Log.e(">>>","Entrando a sitter from map");
-            for(SitterIMP mySitter: ownerView.getSitters()){
-                if(mySitter.getId().equals(idSelected)){
+            Log.e(">>>", "Entrando a sitter from map");
+            for (SitterIMP mySitter : ownerView.getSitters()) {
+                if (mySitter.getId().equals(idSelected)) {
                     //Intent a la actividad del perfil del sitter desde el cliente
                     Intent i = new Intent(getActivity(), SitterFromUserActivity.class);
-                    Bundle bundle= new Bundle();
-                    bundle.putSerializable("sitter",mySitter);
-                    bundle.putSerializable("owner",ownerView.getOwner());
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("sitter", mySitter);
+                    bundle.putSerializable("owner", ownerView.getOwner());
                     i.putExtras(bundle);
                     startActivity(i);
 

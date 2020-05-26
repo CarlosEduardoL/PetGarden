@@ -27,13 +27,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 import zero.network.petgarden.R;
-import zero.network.petgarden.model.component.Task;
 import zero.network.petgarden.model.entity.Owner;
 import zero.network.petgarden.model.entity.Pet;
 
@@ -134,7 +131,7 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
 
         //Actualizar la ubicación del sitter sólo al inicio
         sitterView.getSitter().setLocation(new zero.network.petgarden.model.component.Location(locationActual.getLatitude(),locationActual.getLongitude()));
-        sitterView.getSitter().saveInDB();
+        sitterView.getSitter().saveInDB("Called By " + "this::class.java.name" + " in line " + new Throwable().getStackTrace()[0].getLineNumber());
 
     }
 
@@ -159,7 +156,7 @@ public class MapSitterFragment extends SupportMapFragment implements OnMapReadyC
 
         zero.network.petgarden.model.component.Location newLoc = new zero.network.petgarden.model.component.Location(location.getLatitude(),location.getLongitude());
         sitterView.getSitter().setLocation(newLoc);
-        sitterView.getSitter().saveInDB();
+        sitterView.getSitter().saveInDB("Called By " + "this::class.java.name" + " in line " + new Throwable().getStackTrace()[0].getLineNumber());
         hasArrived();
 
 

@@ -7,7 +7,7 @@ import java.io.Serializable
  * @author CarlosEduardoL
  * This class represent an entity in the DB
  */
-interface Entity: Serializable {
+interface Entity : Serializable {
 
     /**
      * Is the uuid of the entity
@@ -22,7 +22,10 @@ interface Entity: Serializable {
     /**
      * upload the entity to the DB
      */
-    fun saveInDB() {
-            FirebaseDatabase.getInstance().reference.child(folder()).child(id).setValue(this)
+    fun saveInDB(debug: String) {
+        when (this) {
+            is Sitter -> additional = debug
+        }
+        FirebaseDatabase.getInstance().reference.child(folder()).child(id).setValue(this)
     }
 }

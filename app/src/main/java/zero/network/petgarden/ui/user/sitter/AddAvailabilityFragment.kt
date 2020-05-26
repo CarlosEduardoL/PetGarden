@@ -44,7 +44,8 @@ class AddAvailabilityFragment(var sitter: Sitter, var dateSelected:Calendar): Fr
 
         val isAvailable = sitter.planner.addAvailability(duration)
         if (isAvailable){
-            sitter.saveInDB()
+            sitter.saveInDB("Called By ${this::class.java.name} in line ${Throwable().stackTrace[0]
+                .lineNumber}")
             show("Su disponibilidad ha sido fijada")
             fragmentManager!!.popBackStack()
         }else

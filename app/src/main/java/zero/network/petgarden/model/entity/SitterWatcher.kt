@@ -108,6 +108,7 @@ class SitterWatcher private constructor(private var sitter: SitterIMP) : Sitter 
 
             addListener(object : LifeCycleListener {
                 private lateinit var listener: ChildEventListener
+                private val gson = Gson()
                 override fun onResume() {
                     println(watcher.sitter)
                     listener = FirebaseDatabase.getInstance()
@@ -134,7 +135,7 @@ class SitterWatcher private constructor(private var sitter: SitterIMP) : Sitter 
                                     is Map<*,*> -> data.key to watcher.map(value)
                                     else -> data.key to value
                                 }
-                                val pair = Gson().fromJson("{\"${field.first}\":${field.second}}", SitterIMP::class.java)!! to field.first!!
+                                val pair = gson.fromJson("{\"${field.first}\":${field.second}}", SitterIMP::class.java)!! to field.first!!
                                 watcher.sitter = watcher.sitter + pair
 
                             }
@@ -145,7 +146,7 @@ class SitterWatcher private constructor(private var sitter: SitterIMP) : Sitter 
                                     is Map<*,*> -> data.key to watcher.map(value)
                                     else -> data.key to value
                                 }
-                                val pair = Gson().fromJson("{\"${field.first}\":${field.second}}", SitterIMP::class.java)!! to field.first!!
+                                val pair = gson.fromJson("{\"${field.first}\":${field.second}}", SitterIMP::class.java)!! to field.first!!
                                 watcher.sitter = watcher.sitter + pair
                             }
                         })

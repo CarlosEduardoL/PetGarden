@@ -88,7 +88,8 @@ class OwnerProfileFragment(view: OwnerView) : Fragment(), OwnerView by view {
         } else if (resultCode == Activity.RESULT_OK && data !== null && requestCode == PET_CALLBACK) {
             CoroutineScope(Dispatchers.Main).launch {
                 owner.apply { addPet(data.extra(PET_KEY) { throw Exception(it) }) }
-                owner.saveInDB()
+                owner.saveInDB("Called By ${this::class.java.name} in line ${Throwable().stackTrace[0]
+                    .lineNumber}")
                 petsAdapter.updateListPets(owner.pets().toList())
             }
         }

@@ -119,7 +119,8 @@ class RegisterActivity : AppCompatActivity(),
 
     private fun finishRegister(user: Entity) {
         if (user is IUser) {
-            user.saveInDB()
+            user.saveInDB("Called By ${this::class.java.name} in line ${Throwable().stackTrace[0]
+                .lineNumber}")
             finished = true
             startUserView(user)
         } else throw InvalidUserClass("${user::class.simpleName} no is a valid class")

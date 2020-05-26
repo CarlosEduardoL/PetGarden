@@ -80,7 +80,8 @@ data class SitterIMP(
         imageURL?.let {
             uploadImage(saveURLImageOnFile(it, "temp.png"))
             imageURL = null
-            saveInDB()
+            saveInDB("Called By ${this::class.java.name} in line ${Throwable().stackTrace[0]
+                .lineNumber}")
         }
         return downloadImage()
     }
